@@ -1,0 +1,126 @@
+<?php
+// New controller for Admin profile and change password page of admin
+
+namespace App\Http\Controllers\admin;
+use App\Http\Requests;
+use App\Http\Controllers\admin\Controller;
+use Illuminate\Http\Request;
+use App\Dibilrequest;
+use App\Complain;
+use App\Document;
+use Carbon\Carbon;
+use Validator;
+use App\Admin;
+use App\User;
+use App\UserDetail;
+use Auth;
+use Session;
+use Hash;
+use File;
+use App;
+use Illuminate\Support\Facades\Storage;
+use URL;
+use DB;
+
+class AdminController extends Controller {
+    
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+      $this->middleware(['web','admin']);
+    }
+
+    public function index() {
+      
+      return view('admin.dashboard',array()); 
+    }
+
+    public function getChangePass() {
+    	return view('admin.changepass',array('title' => 'Change Password'));
+    }
+	
+  	public function changePass(Request $request) {
+  		$messages = [
+      	'currentpass.required' => 'The Current Password field is required.',
+  			'newpass.required' => 'The New Password field is required.',
+  			'newpass.min' => 'The New Password must be at least 6 characters.',
+  			'newpass.confirmed' => 'The New Password and Confirm Password does not match.',
+  			'newpass_confirmation.required' => 'The Confirm Password field is required.',
+  		];
+
+      $request->validate([           
+        'currentpass' => 'required',
+        'newpass' => 'required|min:6|confirmed',
+        'newpass_confirmation' => 'required|min:6',
+      ], $messages);
+
+  		$userData = Admin::find(Auth::guard('admin')->user()->id);
+  		if(!Hash::check($request->get('currentpass'),$userData->password)){
+  			$request->session()->flash('alert-danger','Please enter valid current password.');
+  			return redirect(route('admin.changepass'));
+  		}
+
+  		$userData->password = Hash::make($request->get('newpass'));
+  		if($userData->save()){
+  			$request->session()->flash('alert-success','Password changed successfully.');
+  		}
+
+  		return redirect(route('admin.changepass'));
+    }
+	
+  	public function profile() {
+      
+  		$userData = Admin::find(Auth::guard('admin')->user()->id);
+      return view('admin.profile.edit',array('title' => 'Edit Profile','userData' => $userData));
+    }
+	
+  	public function postprofile(Request $request) {
+      $request->validate([           
+        'name' => 'required|max:255',
+        'username' => 'required|max:255',
+        'email' => 'required|email|max:255',
+      ]);
+      //dd($request->all());
+
+  		$userData = Admin::find(Auth::guard('admin')->user()->id);
+  		$userData->name = $request->name;
+  		$userData->username = $request->username;
+  		$userData->email = $request->email;
+
+      $file=$request->file('profile_img');
+        if($file){
+          $request->validate([
+              'profile_img' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+          ]);
+            if (is_file($userData->profile_img)) { 
+                // echo "<pre>";print_r(unlink($userData->profile_img));exit();
+                unlink($userData->profile_img);
+            }
+            $file_name =$file->getClientOriginalName();
+            $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
+            $imageName = md5($fileslug.time());
+            $imgext =$file->getClientOriginalExtension();
+            $path = 'adminprofile/'.$userData->id.'/'.$imageName.".".$imgext;
+            Storage::disk('public')->putFileAs('adminprofile/'.$userData->id,$file,$imageName.".".$imgext);
+            
+            $userData->profile_img = 'storage/'.$path;
+             // echo "<pre>";print_r($userData); exit();
+        }else{
+
+            if($request->profile_avatar_remove){
+              unlink($userData->profile_img);
+              $userData->profile_img = NULL;
+            }else{
+              unset($userData->profile_img);
+            }
+        }
+        
+  		if($userData->save()){
+  			$request->session()->flash('alert-success','Profile updated successfully.');
+  		}
+  		return redirect(route('admin.editprofile'));
+    }
+}
