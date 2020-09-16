@@ -16,7 +16,7 @@ Route::get('/login','Adminauth\LoginController@showLoginForm')->name('admin.logi
 Route::post('/login','Adminauth\LoginController@adminLogin')->name('admin.login');
 Route::get('/forgotpassword','Adminauth\ForgotPasswordController@showForgotPasswordForm')->name('admin.forgotpassword');
 Route::post('/password/email','Adminauth\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.eamil');
-Route::get('/password/reset/{token}', 'Adminauth\ResetPasswordController@showResetPasswordForm')->name('admin.password.token');
+Route::get('/password/reset/{token}/{email}', 'Adminauth\ResetPasswordController@showResetPasswordForm')->name('admin.password.token');
 Route::post('/password/reset', 'Adminauth\ResetPasswordController@reset')->name('admin.password.reset');
 
 // Add new route for 'admin' middleware
@@ -39,18 +39,18 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::get('/dashboard','admin\AdminController@index')->name('admin.dashboard');
 
 	// Category Module Routes
-	Route::post('/category/list/data','admin\CategoryController@listdata')->name('category.listdata');
-	Route::post('/category/deletebytag','admin\CategoryController@orgTagDelete')->name('category.tagdelete');
+	Route::post('/category/list/data','admin\CategoryController@listdata')->name('admin.category.listdata');
 	Route::resource('/category', 'admin\CategoryController', [
 	    'names' => [
-	        'index' => 'category.list',
-	        'edit' => 'category.edit',
-	        'update' => 'category.update',
-	        'destroy' => 'category.destroy',
-	        'show' => 'category.show'
+
+	        'index' => 'admin.category.list',
+	        'edit' => 'admin.category.edit',
+	        'create' => 'admin.category.create',
+	        'store' => 'admin.category.store',
+	        'update' => 'admin.category.update',
+	        'destroy' => 'admin.category.destroy',
 	    ]
 	]);
-
 
 	// User Module Routes
 	Route::get('/user/document/details/{document_id}','admin\UserController@userDocumentDetail')->name('user.document.details');
@@ -70,7 +70,7 @@ Route::group(['middleware' => ['admin']],function(){
 	    ]
 	]);
 
-	// Organization Module Routes
+	// Self Diagnosis Module Routes
 	Route::resource('/selfdiagnosis', 'admin\SelfDiagnosisController', [
 	    'names' => [
 	        'index' => 'admin.selfdiagnosis.list',
@@ -94,8 +94,6 @@ Route::group(['middleware' => ['admin']],function(){
 	        'show' => 'cms.pages.show'
 	    ]
 	]);
-
-
 });
 
 

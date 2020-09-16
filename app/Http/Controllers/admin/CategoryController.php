@@ -5,20 +5,16 @@ namespace App\Http\Controllers\admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Category;
-use App\Documentgroupassign;
-use App\Groupofdocument;
-use App\Organizationtypegroupassigned;
 use Response;
 class CategoryController extends Controller
 {
 
     public function __construct() {
-      $this->middleware('admin');
-
-      $this->messages = [
-          'required' => 'The :attribute is required.',
-          'mime_types' => 'Only excel file allowed.'
-      ];
+        $this->middleware(['web','admin']);
+        $this->messages = [
+            'required' => 'The :attribute is required.',
+            'mime_types' => 'Only excel file allowed.'
+        ];
 
     }
     /**
@@ -28,7 +24,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('admin.category.list',array('title' => 'Organization Type List'));
+        return view('admin.category.list',array('title' => 'Category List'));
     }
 
     /**
@@ -39,56 +35,81 @@ class CategoryController extends Controller
      */
     public function listdata(Request $request)
     {
-        $result = array();
-        $perpage= (isset($request->pagination['perpage']))? $request->pagination['perpage'] : 10;
-        $page= (isset($request->pagination['page']))? $request->pagination['page'] : 1;
-        $sort= (isset($request->sort['sort']))? $request->sort['sort'] : 'desc';
-        $field= (isset($request->sort['field']))? $request->sort['field'] : 'created_at';
-        
-        $categories = Category::where('status','!=', '0')->orderBy($field,$sort);
-        if(isset($request['query']['generalSearch']) && !empty(isset($request['query']['generalSearch']))){
-            $keyword=$request['query']['generalSearch'];
-            $categories=$categories->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', '%'.$keyword.'%');
-            });
+      // echo "<pre>"; print_r($request->session()->token()); exit();
+      $columns = array( 
+                            0 =>'id', 
+                            1 =>'name',
+                            2=> 'status',
+                            3=> 'created_at',
+                        );
+  
+        $totalData = Category::count();
+            
+        $totalFiltered = $totalData; 
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+            
+        if(empty($request->input('search.value')))
+        {            
+            $posts = Category::offset($start)
+                         ->limit($limit)
+                         ->orderBy($order,$dir)
+                         ->get();
         }
-        $categories=$categories->paginate($perpage,['*'],'page',$page);
-        // echo "<pre>";print_r($request['query']);exit();
-        $result['meta']=array(
-            'page' => $page,
-            "pages" => $categories->lastPage(),
-            'perpage' => $perpage,
-            'total' => $categories->total(),
-            'sort' => $sort,
-            'field' => $field
-        );
-        $result['data']=array();
+        else {
+            $search = $request->input('search.value'); 
 
-        $pageCal = '';
-        $countbase = 1;
-        $gePage = $page - 1;
-        if($gePage == 0){
-            $pageCal=$countbase;
-        }else{
-           $pageCal= $gePage.$countbase;
+            $posts =  Category::where('id','LIKE',"%{$search}%")
+                            ->orWhere('name', 'LIKE',"%{$search}%")
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order,$dir)
+                            ->get();
+
+            $totalFiltered = Category::where('id','LIKE',"%{$search}%")
+                             ->orWhere('name', 'LIKE',"%{$search}%")
+                             ->count();
         }
 
-        if(count($categories) > 0){
-            $count = $pageCal;
-            foreach ($categories as $key => $category) {
+        $data = array();
+        if(!empty($posts))
+        {   $srnumber = 1;
+            foreach ($posts as $post)
+            {
+                $destroy =  route('admin.category.destroy',$post->id);
+                $edit =  route('admin.category.edit',$post->id);
+                $token =  $request->session()->token();
 
-                $result['data'][] = array(
-                    "id" => $category->id,
-                    "number" => $count,
-                    "name" => $category->name,
-                    "status" => $category->status,
-                    "Actions" => null        
-                );
-
-                $count++;
+                $nestedData['id'] = $post->id;
+                $nestedData['srnumber'] = $srnumber;
+                $nestedData['name'] = $post->name;
+                if($post->status == '1'){ 
+                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Active</span>';
+                }elseif($post->status == '0'){
+                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Inactive</span>';
+                }else{
+                  $nestedData['status'] = '<span class="badge badge-pill badge-danger">Deleted</span>';
+                };
+                $nestedData['created_at'] = date('j M Y h:i a',strtotime($post->created_at));
+                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-primary btn-sm mr-0' title='EDIT' >Edit</a> 
+                                          &emsp;<form action='{$destroy}' method='POST' style='display: contents;'> <input type='hidden' name='_method' value='DELETE'> <input type='hidden' name='_token' value='{$token}'> <input type='submit' class='btn btn-danger btn-sm' value='Delete'/></form>";
+                
+                $srnumber++;
+                $data[] = $nestedData;
             }
         }
-        return Response::json($result);
+          
+        $json_data = array(
+                    "draw"            => intval($request->input('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    );
+            
+        echo json_encode($json_data);
     }
 
     /**
@@ -98,9 +119,7 @@ class CategoryController extends Controller
      */
     public function create()
     {   
-        $document_group_assigned = Documentgroupassign::orderBy('created_at','desc')->pluck('document_group_id')->toArray();
-        $groupofdocument = Groupofdocument::whereIn('id',array_unique($document_group_assigned))->get();
-        return view('admin.category.add',array('title' => 'Organization Type Add','groupofdocuments'=>$groupofdocument));
+        return view('admin.category.add',array('title' => 'Category Add'));
     }
 
     /**
@@ -113,27 +132,20 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'groupofdocument' => 'required',
         ]);
         $input = $request->all();
-        $input['status']=(isset($input['status']))?$input['status']:'2';
+        $input['status']=(isset($input['status']))?'1':'0';
         
         try {
             $category = Category::create($input);
-            if($category){
-                foreach ($request->groupofdocument as $key => $groupdocument_value) {
-                    Organizationtypegroupassigned::create([
-                        'organization_type_id' => $category->id,
-                        'document_group_assign_id' => $groupdocument_value,
-                    ]);
-                }
+            if($category){ 
+              $request->session()->flash('alert-success', 'Category Added successfuly.');
             }
         } catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('category.add'));
-        }
-        $request->session()->flash('alert-success', 'Organization Type Added successfuly.'); 
-        return redirect(route('category.list'));
+            return redirect(route('admin.category.add'));
+        } 
+        return redirect(route('admin.category.list'));
     }
 
     /**
@@ -155,11 +167,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {    
-
-        $document_group_id = Documentgroupassign::orderBy('created_at','desc')->pluck('document_group_id')->toArray();
-        $groupofdocument = Groupofdocument::whereIn('id',array_unique($document_group_id))->get();
-        $Organizationtypegroupassigned = Organizationtypegroupassigned::where('organization_type_id',$category->id)->pluck('document_group_assign_id')->toArray();
-        return view('admin.category.edit',array('title' => 'Organization Type Edit','categorydata'=>$category,'groupofdocuments'=>$groupofdocument,'Organizationtypegroupassigned'=>$Organizationtypegroupassigned));
+        return view('admin.category.edit',array('title' => 'Category Edit','categorydata'=>$category));
     }
 
     /**
@@ -173,7 +181,6 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'groupofdocument' => 'required',
         ]);
 
         try {
@@ -183,30 +190,17 @@ class CategoryController extends Controller
           }
          
           $category->name = $request->name;
-          $category->status = (isset($request->status))?$request->status:'2';
-            foreach ($request->groupofdocument as $key => $groupdocument_value) {
-                $typegroupassigned = Organizationtypegroupassigned::where('organization_type_id',$category->id)->where('document_group_assign_id',$groupdocument_value)->first();
-                if($typegroupassigned){   
-                    $typegroupassigned->organization_type_id = $category->id;
-                    $typegroupassigned->document_group_assign_id = $groupdocument_value;
-                    $typegroupassigned->save();
-                }else{
-                    Organizationtypegroupassigned::create([
-                        'organization_type_id' => $category->id,
-                        'document_group_assign_id' => $groupdocument_value,
-                    ]);
-                }
-            }
+          $category->status = (isset($request->status))?'1':'0';
           
           if($category->save())
           {
-              $request->session()->flash('alert-success', 'Organization Type updated successfuly.');  
+              $request->session()->flash('alert-success', 'Category updated successfuly.');  
           }
-          return redirect(route('category.list'));
+          return redirect(route('admin.category.list'));
 
         } catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('category.list'));
+            return redirect(route('admin.category.list'));
         }
     }
 
@@ -223,31 +217,14 @@ class CategoryController extends Controller
             if(!$category){
                 return abort(404) ;
             }
-            $category->status = '0';
+            $category->status = '2';
             if ($category->save()) {
-                // Storage::deleteDirectory(storage_path('app\category/'.$id));
-                $request->session()->flash('alert-success', 'Organization Type deleted successfuly.');
+                $request->session()->flash('alert-success', 'Category deleted successfuly.');
             }
-            return redirect(route('category.list'));
+            return redirect(route('admin.category.list'));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('category.list'));
-        }
-    }
-
-    public function orgTagDelete(Request $request)
-    {
-        try {
-          $organizationtypegroupassigned = Organizationtypegroupassigned::where('organization_type_id',$request->categoryId)->where('document_group_assign_id',$request->tagId)->first();
-            if(!$organizationtypegroupassigned){
-                return abort(404) ;
-            }
-            if ($organizationtypegroupassigned->delete()) {
-                return response()->json();
-            }
-        }catch (ModelNotFoundException $exception) {
-            $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return response()->json();
+            return redirect(route('admin.category.list'));
         }
     }
 }

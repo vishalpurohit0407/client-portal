@@ -16,19 +16,17 @@
       <div class="row justify-content-center">
         <div class="col-lg-5 col-md-7">
           <div class="card bg-secondary border-0 mb-0">
-           
             <div class="card-body px-lg-5 py-lg-5">
-                @if(Session::has('alert-success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-                        <span class="alert-inner--text"><strong>Success!</strong> {{Session::get('alert-success')}}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    </div>
-                @endif
-                
                 <div class="text-center text-muted mb-4">
                     <small>Sign In</small>
                 </div>
+                @if(Session::has('status'))
+                    <div class="alert alert-success alert-dismissible fade show mb-2" role="alert">
+                        <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+                        <span class="alert-inner--text"><strong>Success!</strong> {{Session::get('status')}}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                @endif
                 <form role="form" method="POST" action="{{ route('admin.login') }}">
                     @csrf
 
@@ -50,7 +48,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                             </div>
-                            <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password" value="secret" >
+                            <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password" >
                         </div>
                         @if ($errors->has('password'))
                             <span class="invalid-feedback" style="display: block;" role="alert">
