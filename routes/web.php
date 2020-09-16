@@ -25,15 +25,5 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
-
-	Route::resource('/category', 'CategoryController', [
-	    'names' => [
-	        'index' => 'category.list',
-	        'edit' => 'category.edit',
-	        'update' => 'category.update',
-	        'destroy' => 'category.destroy',
-	        'show' => 'category.show'
-	    ]
-	]);
 });
 
