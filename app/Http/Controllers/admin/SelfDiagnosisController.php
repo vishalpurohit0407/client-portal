@@ -4,19 +4,13 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\User;
-use App\UserDetail;
-use App\Dibilrequest;
-use App\Document;
 use App\Category;
-use App\Common;
-use App\Pushnotification;
 use Response;
 use Hash;
-use QrCode;
 use Auth;
 use Storage;
 
-class OrganizationController extends Controller
+class SelfDiagnosisController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -100,8 +94,8 @@ class OrganizationController extends Controller
      */
     public function create()
     { 
-        $organization_type = Category::where('status','1')->get();
-        return view('admin.organization.create',array('title' => 'Organization Add','organization_type'=>$organization_type));
+        $category = Category::where('status','1')->get();
+        return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=>$category));
     }
 
     /**
