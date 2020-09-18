@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="{{asset('assets/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/vendor/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/vendor/sweetalert2/dist/sweetalert2.min.css')}}">
   <!-- Argon CSS -->
   <link rel="stylesheet" href="{{asset('assets/css/argon.css?v=1.1.0')}}" type="text/css">
   @yield('pagewise_css')
@@ -58,10 +59,21 @@
   <script src="{{asset('assets/vendor/datatables.net-select/js/dataTables.select.min.js')}}"></script>
   <script src="{{asset('assets/vendor/chart.js/dist/Chart.min.js')}}"></script>
   <script src="{{asset('assets/vendor/chart.js/dist/Chart.extension.js')}}"></script>
+  <script src="{{asset('assets/vendor/sweetalert2/dist/sweetalert2.min.js')}}"></script>
   <!-- Argon JS -->
   <script src="{{asset('assets/js/argon.js?v=1.1.0')}}"></script>
   <!-- Demo JS - remove this in your project -->
   <script src="{{asset('assets/js/demo.min.js')}}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+    // show the alert
+      setTimeout(function() {
+        $(".alert-dismissible").fadeTo(2000, 500).slideUp(800, function(){
+          $(".alert-dismissible").alert('close');
+        });
+      }, 2000);
+    });
+  </script>
   @yield('pagewise_js')
 </body>
 

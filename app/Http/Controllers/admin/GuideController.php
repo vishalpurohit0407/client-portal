@@ -1,27 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\admin\admin;
+namespace App\Http\Controllers\admin;
 
-use Illuminate\Http\Request;
-use App\User;
+use App\Guide;
 use App\Category;
-use App\Selfdiagnosis;
-use App\Guidecategory;
-use Response;
-use Hash;
-use Auth;
-use Storage;
+use Illuminate\Http\Request;
 
-class SelfDiagnosisController extends Controller
+class GuideController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->getrecord = '12';
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request){
-        $selfdiagnosis = Selfdiagnosis::with('guide_category','guide_category.category')->orderBy('created_at', 'desc')->paginate(6);
-        // Selfdiagnosis::with('guide_category','guide_category.category')
+    public function index(Request $request)
+    {
+        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
         
         if($request->ajax()){
             return view('admin.selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
@@ -34,10 +33,10 @@ class SelfDiagnosisController extends Controller
 
     public function search(Request $request){
 
-        $selfdiagnosis=Selfdiagnosis::with('guide_category','guide_category.category')
-            ->orderBy('created_at', 'desc');
+        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('status','!=','2');
+        //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
-            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search."%");
+            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
         }
         if(isset($request->category_id) && !empty($request->category_id)){
             $category_id=$request->category_id;
@@ -45,17 +44,18 @@ class SelfDiagnosisController extends Controller
                     $query->where('category_id', $category_id);
                 });
         }
-        $selfdiagnosis=$selfdiagnosis->paginate(6);
+        $selfdiagnosis=$selfdiagnosis->orderBy('created_at', 'desc')->paginate($this->getrecord);
 
         return view('admin.selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
     }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
-    { 
+    {
         //
     }
 
@@ -71,12 +71,12 @@ class SelfDiagnosisController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Guide  $guide
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Guide $guide)
     {
         //
     }
@@ -84,23 +84,22 @@ class SelfDiagnosisController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Guide  $guide
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Guide $guide)
     {
-        //
+        echo "<pre>";print_r($guide);exit();
     }
-
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Guide  $guide
      * @return \Illuminate\Http\Response
      */
-    public function update(User $user, Request $request)
+    public function update(Request $request, Guide $guide)
     {
         //
     }
@@ -108,18 +107,18 @@ class SelfDiagnosisController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Guide  $guide
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Selfdiagnosis $selfdiagnosis, Request $request)
+    public function destroy(Guide $guide, Request $request)
     {
-        echo "<pre>";print_r($selfdiagnosis);exit();
         try {
-            if(!$selfdiagnosis){
+            if(!$guide){
                 return abort(404) ;
             }
-            $selfdiagnosis->status = '3';
-            if ($selfdiagnosis->save()) {
+            $guide->status = '2';
+            if ($guide->save()) {
+                $request->session()->flash('alert-success', 'Selfdiagnosis deleted successfuly.');
             }
             return redirect(route('admin.selfdiagnosis.list'));
         }catch (ModelNotFoundException $exception) {
@@ -127,8 +126,4 @@ class SelfDiagnosisController extends Controller
             return redirect(route('admin.selfdiagnosis.list'));
         }
     }
-
-
-
-    
 }

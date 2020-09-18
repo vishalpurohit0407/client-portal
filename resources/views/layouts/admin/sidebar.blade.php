@@ -30,17 +30,17 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link collapsed" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms">
+              <a class="nav-link {{ Request::routeIs('admin.selfdiagnosis.*') ? 'active' : '' }}" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms">
                 <i class="ni ni-settings text-orange"></i>
                 <span class="nav-link-text">Self Diagnosis</span>
               </a>
-              <div class="collapse" id="navbar-forms" style="">
+              <div class="collapse {{ Request::routeIs('admin.selfdiagnosis.*') ? 'show' : '' }}" id="navbar-forms" style="">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="" class="nav-link">Listing</a>
+                    <a href="{{route('admin.selfdiagnosis.list')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.list') ? 'active' : '' }}">Listing</a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{route('admin.selfdiagnosis.create')}}" class="nav-link">Add New</a>
+                    <a href="{{route('admin.selfdiagnosis.create')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.create') ? 'active' : '' }}">Add New</a>
                   </li>
                 </ul>
               </div>

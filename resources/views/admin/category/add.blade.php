@@ -51,13 +51,13 @@
                             <div class="form-group">
                                 <label class="custom-toggle custom-toggle-success">
                                     <input type="checkbox" checked value="1" name="status">
-                                    <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                    <span class="custom-toggle-slider rounded-circle" data-label-off="Inactive" data-label-on="Active"></span>
                                 </label>
                             </div>
                         </div>
                     </div>
                     <hr>
-                    <button class="btn btn-primary" type="submit">Button</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
                 </form>
             </div>
         </div>

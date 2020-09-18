@@ -43,7 +43,7 @@ class CategoryController extends Controller
                             3=> 'created_at',
                         );
   
-        $totalData = Category::count();
+        $totalData = Category::where('status','!=','2')->count();
             
         $totalFiltered = $totalData; 
 
@@ -57,6 +57,7 @@ class CategoryController extends Controller
             $posts = Category::offset($start)
                          ->limit($limit)
                          ->orderBy($order,$dir)
+                         ->where('status','!=','2')
                          ->get();
         }
         else {
@@ -64,14 +65,16 @@ class CategoryController extends Controller
 
             $posts =  Category::where('id','LIKE',"%{$search}%")
                             ->orWhere('name', 'LIKE',"%{$search}%")
+                            ->where('status','!=','2')
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = Category::where('id','LIKE',"%{$search}%")
-                             ->orWhere('name', 'LIKE',"%{$search}%")
-                             ->count();
+                            ->where('status','!=','2')
+                            ->orWhere('name', 'LIKE',"%{$search}%")
+                            ->count();
         }
 
         $data = array();
@@ -85,7 +88,7 @@ class CategoryController extends Controller
 
                 $nestedData['id'] = $post->id;
                 $nestedData['srnumber'] = $srnumber;
-                $nestedData['name'] = $post->name;
+                $nestedData['name'] = ucfirst($post->name);
                 if($post->status == '1'){ 
                   $nestedData['status'] = '<span class="badge badge-pill badge-success">Active</span>';
                 }elseif($post->status == '0'){
@@ -93,9 +96,9 @@ class CategoryController extends Controller
                 }else{
                   $nestedData['status'] = '<span class="badge badge-pill badge-danger">Deleted</span>';
                 };
-                $nestedData['created_at'] = date('j M Y h:i a',strtotime($post->created_at));
+                $nestedData['created_at'] = date('d-M-Y',strtotime($post->created_at));
                 $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-primary btn-sm mr-0' title='EDIT' >Edit</a> 
-                                          &emsp;<form action='{$destroy}' method='POST' style='display: contents;'> <input type='hidden' name='_method' value='DELETE'> <input type='hidden' name='_token' value='{$token}'> <input type='submit' class='btn btn-danger btn-sm' value='Delete'/></form>";
+                                          &emsp;<form action='{$destroy}' method='POST' style='display: contents;' id='frm_{$post->id}'> <input type='hidden' name='_method' value='DELETE'> <input type='hidden' name='_token' value='{$token}'> <a type='submit' class='btn btn-danger btn-sm' style='color: white;' onclick='return deleteConfirm(this);' id='{$post->id}'>Delete</a></form>";
                 
                 $srnumber++;
                 $data[] = $nestedData;
