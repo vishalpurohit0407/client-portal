@@ -96,6 +96,8 @@ Route::group(['middleware' => ['admin']],function(){
 	]);
 });
 
+//ckeditor file upload
+Route::post('ckeditor/upload', 'CkeditorController@upload')->name('ckeditor.upload');
 
 //Clear Cache facade value:
 Route::get('/reset-app', function() {

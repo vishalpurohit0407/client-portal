@@ -107,53 +107,15 @@ class SelfDiagnosisController extends Controller
     public function store(Request $request)
     {
         $messages = [
-            'password.required' => 'The MPIN field is required.',
-            'password.digits' => 'The MPIN must be only 4 digits.',
+            'guide_step.*.step_title.required' => 'The title field is required.',
+            'guide_step.*.step_description.required' => 'The points/description field is required.',
         ];
         $request->validate([
-            'name' => 'required|max:500',
-            'organization_name' => 'required',
-            'organization_type' => 'required',
-            'mobile' => 'required|numeric|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|digits:4|numeric',
+            'guide_step.*.step_title' => 'required',
+            'guide_step.*.step_description' => 'required'
         ],$messages);
-        try {
-            $saveuser = User::create([
-                'mobile' => $request->mobile,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'status' => $request->status != '' ? '1' : '2' ,
-                'user_type' => 'organization',
-            ]);
-            if ($saveuser) {
-                $user_detail = new UserDetail;
-                $user_detail->user_id = $saveuser->id;
-                $user_detail->name = $request->name;
-                $user_detail->organization_name = $request->organization_name;
-                $user_detail->organization_type = $request->organization_type;
-                $user_detail->birth_date = $request->birth_date ? date("Y-m-d", strtotime($request->birth_date)) : NULL;
-                $user_detail->full_address = $request->full_address;
-                $user_detail->city = $request->city;
-                $user_detail->gendar = $request->gender != '' && $request->gender == 'male' ? 'male' : 'female' ;
-                
-                $file=$request->file('profile_img');
-                if($file){
-                    $request->validate([
-                        'profile_img' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
-                    ]);
-                    if ($saveuser->image) { 
-                        Common::deleteImage($fileurl = $user_detail->profile_img);
-                    }
-                    $path = Common::storeImage($file=$file,$type='profile',$user_id=$saveuser->id);
-                    $user_detail->profile_img = $path;
-                }
 
-                if($user_detail->save())
-                {
-                    $request->session()->flash('alert-success', 'Organization Added successfuly.');  
-                }
-            }
+        try {            
             return redirect(route('organization.list'));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
