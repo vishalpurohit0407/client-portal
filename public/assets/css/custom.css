@@ -1,0 +1,94 @@
+.bootstrap-tagsinput{
+	border:1px solid;
+	width: 100%;
+}
+.hr-dotted{
+	border-top: 2px dotted;
+}
+
+/*-------drop zone------*/
+
+.dz-preview.list-group{
+	display: block;
+}
+.dz-preview.list-group-flush .list-group-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.dz-preview.list-group-flush .list-group-item {
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+/*-------detail page------*/
+.bootstrap-tagsinput{
+	border:1px solid;
+	width: 100%;
+}
+.hr-dotted{
+	border-top: 2px dotted;
+}
+.tuto-items-container .alert-text-right {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+}
+.tuto-items-container .alert{
+	padding: 0.5rem 1rem;
+}
+.tuto-items-container .alert .fa-check-circle{color: #74af5c}
+.tuto-items-container .alert ul{
+	list-style: none;
+	padding-left: 2.75rem;
+}
+.carousel-thumbnails-bottom .carousel-indicators{
+	position: static;
+	display: block;
+	padding: 0;
+	margin: 10px 0 0 0;
+}
+.carousel-thumbnails-bottom .carousel-item{text-align: center;}
+.carousel-thumbnails-bottom .carousel-item img{
+	height: 415px;
+	width: auto;
+	    border: 1px solid #ddd;
+    background: #f9f9f9;
+}
+.carousel-thumbnails-bottom .carousel-indicators li{
+	width: 15%;
+	display: inline-block;
+	height: 50px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+.carousel-thumbnails-bottom .carousel-indicators li img{
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+}
+.tabbing ul.tab-nav{
+	padding: 0;margin: 0;list-style: none;
+}
+.tabbing ul.tab-nav li{
+	background-color: #f8fbfc;
+	display: inline-block;
+	padding: 10px 20px;
+	border-radius: 5px 5px 0 0;
+}
+.tabbing .tab-content {
+    background-color: #f8fbfc;
+    padding: 20px;
+    border-radius: 0 5px 5px 5px;
+}
+.hrContentMinor-2 {
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    margin: 20px 0;
+    border: 0;
+    border-bottom: 2px dotted #ddd;
+}

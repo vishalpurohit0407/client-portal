@@ -17,8 +17,11 @@
   <link rel="stylesheet" href="{{asset('assets/vendor/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/vendor/sweetalert2/dist/sweetalert2.min.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/vendor/select2/dist/css/select2.min.css')}}">
   <!-- Argon CSS -->
   <link rel="stylesheet" href="{{asset('assets/css/argon.css?v=1.1.0')}}" type="text/css">
+
+  <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}" type="text/css">
   @yield('pagewise_css')
 </head>
 
@@ -46,6 +49,8 @@
   <script src="{{asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
 
   <script src="{{asset('assets/vendor/dropzone/dist/min/dropzone.min.js')}}"></script>
+  <!-- <script src="{{asset('assets/vendor/dropzone-1/dropzone.js')}}"></script> -->
+  
   <script src="{{asset('assets/vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js')}}"></script>
 
   <!-- Optional JS -->
@@ -60,6 +65,8 @@
   <script src="{{asset('assets/vendor/chart.js/dist/Chart.min.js')}}"></script>
   <script src="{{asset('assets/vendor/chart.js/dist/Chart.extension.js')}}"></script>
   <script src="{{asset('assets/vendor/sweetalert2/dist/sweetalert2.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/select2/dist/js/select2.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/quill/dist/quill.min.js')}}"></script>
   <!-- Argon JS -->
   <script src="{{asset('assets/js/argon.js?v=1.1.0')}}"></script>
   <!-- Demo JS - remove this in your project -->

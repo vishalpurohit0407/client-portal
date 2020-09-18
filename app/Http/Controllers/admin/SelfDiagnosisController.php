@@ -67,7 +67,22 @@ class SelfDiagnosisController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $messages = [
+            'guide_step.*.step_title.required' => 'The title field is required.',
+            'guide_step.*.step_description.required' => 'The points/description field is required.',
+        ];
+        $request->validate([
+            'guide_step.*.step_title' => 'required',
+            'guide_step.*.step_description' => 'required'
+        ],$messages);
+
+        try {            
+            return redirect(route('organization.list'));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('organization.list'));
+        }
     }
 
     /**
