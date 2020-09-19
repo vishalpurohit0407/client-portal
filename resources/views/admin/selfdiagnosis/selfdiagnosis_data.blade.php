@@ -12,7 +12,7 @@
                     $category_id = $selfdiagnos->guide_category->pluck('category_id')->toArray();
                     $category_name = App\Category::whereIn('id',$category_id)->pluck('name')->toArray();
                     @endphp
-                    <p class="card-text mt-4 text-uppercase text-muted h3">
+                    <p class="card-text mt-4 text-uppercase text-muted h5">
                         {{implode(', ',$category_name)}}
                     </p>
                     <a href="{{route('admin.selfdiagnosis.edit',$selfdiagnos->id)}}" class="btn btn-info btn-sm">Edit</a>

@@ -91,13 +91,17 @@
               }
             },
             "ajax":{
-                    "url": "{{ route('admin.category.listdata') }}",
-                    "dataType": "json",
-                    "type": "POST",
-                     data: {
-                    "_token": "{{ csrf_token() }}",
-                    }
-                   },
+              "url": "{{ route('admin.category.listdata') }}",
+              "dataType": "json",
+              "type": "POST",
+               data: {
+              "_token": "{{ csrf_token() }}",
+              }
+            },
+            'columnDefs': [{
+                "targets": -1,
+                "orderable": false
+            }],
             "columns": [
                 { "data": "srnumber" },
                 { "data": "name" },
