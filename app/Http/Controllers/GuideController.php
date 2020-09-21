@@ -77,7 +77,7 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('selfdiagnosis.detail',array('title'=>'Selfdiagnosis Detail','selfdiagnosis'=>$guide));
+        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Detail','selfdiagnosis'=>$guide));
     }
 
     /**

@@ -1,22 +1,24 @@
-@extends('layouts.adminapp')
+@extends('layouts.app')
 
 @section('content')
 <div class="header bg-primary pb-6">
-  <div class="container-fluid">
-    <div class="header-body">
-      <div class="row align-items-center py-4">
-        <div class="col-lg-6 col-7">
-          <h6 class="h2 text-white d-inline-block mb-0">Connected weather station 9-11 activities</h6>
-          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-              
-            </ol>
-          </nav>
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">{{$title}}</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{$selfdiagnosis->main_title}}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    
+                </div>
+            </div>
         </div>
-       
-      </div>
-    </div>
     </div>
 </div>
 <div class="container-fluid mt--6">
@@ -24,7 +26,7 @@
     <div class="card">
         <div class="card-header">
             <div class="row align-items-center">
-                <div class="col-8"> <h5 class="h3 mb-0">Connected weather station 9-11 activities</h5>
+                <div class="col-8"> <h5 class="h3 mb-0">{{$selfdiagnosis->main_title}}</h5>
                 </div>
             </div>
         </div>
@@ -32,39 +34,45 @@
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="tuto-main-image noprint">
-                        <a class="image" href="https://wikifab.org/images/thumb/4/42/Connected_weather_station_9-11_activities_GmN2ye.jpg/ia-f291fed598a88c2f6fabccb90aa5f860-1000px-Connected_weather_station_9-11_activities_GmN2ye.jpg.png" data-toggle="lightbox"><img class="img-fluid" style="filter: blur(0px);" src="https://wikifab.org/images/thumb/4/42/Connected_weather_station_9-11_activities_GmN2ye.jpg/ia-f291fed598a88c2f6fabccb90aa5f860-px-Connected_weather_station_9-11_activities_GmN2ye.jpg.png"></a>
+                        <a class="image" href="{{asset($selfdiagnosis->main_image)}}" data-toggle="lightbox">
+                            <img class="img-fluid" style="filter: blur(0px);" src="{{asset($selfdiagnosis->main_image)}}">
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-12">
                     <div class="tuto-details-box">
-                        <p class="mt-0">Repair cafe intends to repair broken electronic appliances of the public, these appliances may range from phones, radios, television and solar pannels</p>
+                        <p class="mt-0">{{$selfdiagnosis->description}}</p>
                         <div class="tuto-items-container">
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-tachometer-alt"></i></span>
                                 <span class="alert-text">Difficulty</span>
-                                <span class="alert-text-right"><strong>Medium</strong></span>
+                                <span class="alert-text-right"><strong>{{$selfdiagnosis->difficulty}}</strong></span>
                             </div>
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-clock"></i></span>
                                 <span class="alert-text">Duration</span>
-                                <span class="alert-text-right"><strong>2 hour(s)</strong></span>
+                                <span class="alert-text-right"><strong>{{$selfdiagnosis->duration}}&nbsp;{{$selfdiagnosis->duration_type}}</strong></span>
                             </div>
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-tag"></i></span>
                                 <span class="alert-text">Categories</span>
-                                <span class="alert-text-right"><strong>Electronics, Machines & Tools, Science & Biology</strong></span>
+                                @php
+                                    $category_id = $selfdiagnosis->guide_category->pluck('category_id')->toArray();
+                                    $category_name = App\Category::whereIn('id',$category_id)->pluck('name')->toArray();
+                                @endphp
+                                <span class="alert-text-right"><strong>{{implode(', ',$category_name)}}</strong></span>
                             </div>
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-money-bill-alt"></i></span>
                                 <span class="alert-text">Cost</span>
-                                <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">50 USD ($)</div></strong></span>
+                                <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">{{$selfdiagnosis->cost}} USD ($)</div></strong></span>
                             </div>
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-language"></i></span>
                                 <span class="alert-text">Other languages</span>
                                 <span class="alert-text-right"><strong>English <i class="fas fa-check-circle"></i></strong></span>
                             </div>
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-list-ol"></i></span>
                                 <span class="alert-text">Contents</span>
                                 <span class="alert-text-right">&nbsp;[<a href="#content-sr" role="button" tabindex="0" class="togglelink">hide</a>]&nbsp;</span>
