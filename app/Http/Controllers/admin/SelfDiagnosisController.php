@@ -57,7 +57,8 @@ class SelfDiagnosisController extends Controller
      */
     public function create()
     { 
-        //
+        $category = Category::where('status','1')->get();
+        return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=>$category));
     }
 
     /**

@@ -18,6 +18,7 @@ class Admin
     public function handle($request, Closure $next, $guard = 'admin')
     {
         if (!Auth::guard($guard)->check()) {
+            dd('in');
             return redirect('/login');
         }
         return $next($request);
