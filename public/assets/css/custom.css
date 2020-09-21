@@ -92,3 +92,24 @@
     border: 0;
     border-bottom: 2px dotted #ddd;
 }
+
+.guide_step_list .btn-danger {
+    position: absolute;
+    right: 8px;
+    z-index: 999;
+    top: -10px;
+}
+.dropzone{
+	border: 0;
+	padding: 0;
+	display: block;
+}
+.dropzone.dz-started .dz-message{display: block;}
+
+.dropzone .dz-message{
+	margin: 0;
+}
+.dropzone .dz-preview .dz-remove{
+	margin-top: 10px;
+}
+

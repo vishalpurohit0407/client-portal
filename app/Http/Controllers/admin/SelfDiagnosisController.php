@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\admin;
 use Illuminate\Http\Request;
 use App\User;
 use App\Category;
+use App\GuideStepMedia;
 use App\Selfdiagnosis;
 use App\Guidecategory;
 use Response;
@@ -56,7 +57,8 @@ class SelfDiagnosisController extends Controller
      */
     public function create()
     { 
-        //
+        $category = Category::where('status','1')->get();
+        return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=>$category));
     }
 
     /**
@@ -67,14 +69,17 @@ class SelfDiagnosisController extends Controller
      */
     public function store(Request $request)
     {
+        //echo "<pre>";print_r($request->stepfilupload);exit;
 
         $messages = [
             'guide_step.*.step_title.required' => 'The title field is required.',
             'guide_step.*.step_description.required' => 'The points/description field is required.',
+            //'guide_step.*.stepfilupload.*' => 'Please upload jpg,jpeg,png,bmp image',
         ];
         $request->validate([
             'guide_step.*.step_title' => 'required',
-            'guide_step.*.step_description' => 'required'
+            'guide_step.*.step_description' => 'required',
+            //'guide_step.*.stepfilupload.*' => 'mimes:jpg,jpeg,png,bmp'
         ],$messages);
 
         try {            
@@ -120,6 +125,81 @@ class SelfDiagnosisController extends Controller
         //
     }
 
+    public function img_upload(Request $request)
+    {
+        //dd($request->all());
+        if($request->unique_id && $request->file('file_image')){
+            $file=$request->file('file_image');
+            
+            $request->validate([
+                'file_image' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+            
+            $file_name =$file->getClientOriginalName();
+            $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
+            $imageName = $request->unique_id;
+            $imgext =$file->getClientOriginalExtension();
+            $path = 'guide/step_media/'.$imageName.".".$imgext;
+            $fileAdded = Storage::disk('public')->putFileAs('guide/step_media/',$file,$imageName.".".$imgext);
+            
+            if($fileAdded){
+                $guidMediaArr = array();
+                $guidMediaArr['step_key'] = $request->unique_id;
+                $guidMediaArr['media'] =  $path;
+                $media = GuideStepMedia::create($guidMediaArr);
+                return Response::json(['status' => true, 'message' => 'Media uploaded.', 'id' => $media->id]);
+            }
+            return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+        }
+
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+    }
+
+    public function mainImgUpload(Request $request)
+    {
+        dd($request->all());
+        if($request->unique_id && $request->file('file_image')){
+            $file=$request->file('file_image');
+            
+            $request->validate([
+                'file_image' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+            
+            $file_name =$file->getClientOriginalName();
+            $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
+            $imageName = $request->unique_id;
+            $imgext =$file->getClientOriginalExtension();
+            $path = 'guide/step_media/'.$imageName.".".$imgext;
+            $fileAdded = Storage::disk('public')->putFileAs('guide/step_media/',$file,$imageName.".".$imgext);
+            
+            if($fileAdded){
+                $guidMediaArr = array();
+                $guidMediaArr['step_key'] = $request->unique_id;
+                $guidMediaArr['media'] =  $path;
+                $media = GuideStepMedia::create($guidMediaArr);
+                return Response::json(['status' => true, 'message' => 'Media uploaded.', 'id' => $media->id]);
+            }
+            return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+        }
+
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+    }
+
+    public function removeImage(Request $request)
+    {
+        $media = GuideStepMedia::find($request->imageId);
+        //dd($media);
+        if($media){
+
+            if(Storage::disk('public')->delete($media->media)){
+
+               $media->delete(); 
+               return Response::json(['status' => true, 'message' => 'Media deleted.']);
+            }
+            return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+        }
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -142,8 +222,4 @@ class SelfDiagnosisController extends Controller
             return redirect(route('admin.selfdiagnosis.list'));
         }
     }
-
-
-
-    
 }

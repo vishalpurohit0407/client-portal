@@ -30,7 +30,7 @@ class AdminController extends Controller {
      * @return void
      */
     public function __construct() {
-      $this->middleware(['web','admin']);
+      $this->middleware(['admin']);
     }
 
     public function index() {

@@ -40,6 +40,7 @@
                 <div class="col-md-5 main-img">
                   <div class="form-group">
                     <label class="form-control-label" for="guide_main_image">Main Image</label>
+                    
                     <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="http://">
                       <div class="fallback">
                         <div class="custom-file">
@@ -165,47 +166,94 @@
               <hr class="hr-dotted">
               <div class="guide_repeater">
                 <div data-repeater-list="guide_step">
-                  <div class="guide_step_list" data-repeater-item>
-                    <div class="row mb-6">
-                      <div class="col-sm-12">
-                        <h1 class="step">Step <span class="step_number">1</span></h1>
-                        <div class="dropzone dropzone-multiple" data-toggle="dropzone" data-dropzone-multiple data-dropzone-url="http://">
-                          <div class="fallback">
-                            <div class="custom-file">
-                              <input type="file" class="custom-file-input" name="stepfilupload" multiple>
-                              <label class="custom-file-label" for="customFileUploadMultiple">Choose file</label>
-                            </div>
-                          </div>
-                          <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush">
-                            <li class="list-group-item px-0">
-                              <img class="avatar-img rounded" src="" data-dz-thumbnail>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                      <div class="guide_step_list" data-repeater-item>
 
-                    <div class="row">
-                      <div class="col-sm-6">
-                          <div class="form-group @if($errors->has('guide_step.0.step_title')) has-danger @endif">
-                              <label class="form-control-label" for="step_title">Title</label>
-                              <input type="text" class="form-control @if($errors->has('guide_step.0.step_title')) is-invalid @endif" name="step_title" placeholder="Type">
-                                @if($errors->has('guide_step.0.step_title'))
-                                    <span class="form-text text-danger">{{ $errors->first('guide_step.0.step_title') }}</span>
-                                @endif
+                        <div class="row mb-6">
+                          <div class="col-sm-12">
+                            <h1 class="step">Step <span class="step_number">1</span></h1>
+                            <a href="javascript:;" data-repeater-delete="" class="btn btn-icon btn-danger"><i class="fas fa-trash"></i></a>
+                            <input type="hidden" class="step_key" name="step_key" value="{{ old('guide_step.0.step_key') }}">
+
+                            <div class="dropzone dropzone-init"></div>
+                            
+                            @if($errors->has('guide_step.0.stepfilupload'))
+                                <div class="invalid-feedback" >{{ $errors->first('guide_step.0.stepfilupload') }}</div>
+                            @elseif($errors->has('guide_step.0.stepfilupload.*'))
+                                <div class="invalid-feedback" >{{ $errors->first('guide_step.0.stepfilupload.*') }}</div>
+                            @endif
                           </div>
-                      </div>
-                      <div class="col-sm-6">
-                          <div class="form-group @if($errors->has('guide_step.0.step_description')) has-danger @endif">
-                              <label class="form-control-label" for="step_description">Points/Description</label>
-                              <textarea id="step_description" name="step_description" class="form-control @if($errors->has('guide_step.0.step_description')) is-invalid @endif" rows="10"></textarea>
-                                @if($errors->has('guide_step.0.step_description'))
-                                    <span class="form-text text-danger">{{ $errors->first('guide_step.0.step_description') }}</span>
-                                @endif
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-6">
+                              <div class="form-group @if($errors->has('guide_step.0.step_title')) has-danger @endif">
+                                  <label class="form-control-label" for="step_title">Title</label>
+                                  <input type="text" class="form-control @if($errors->has('guide_step.0.step_title')) is-invalid @endif" name="step_title" placeholder="Type" value="{{ old('guide_step.0.step_title') }}">
+                                    @if($errors->has('guide_step.0.step_title'))
+                                        <span class="form-text text-danger">{{ $errors->first('guide_step.0.step_title') }}</span>
+                                    @endif
+                              </div>
                           </div>
+                          <div class="col-sm-6">
+                              <div class="form-group @if($errors->has('guide_step.0.step_description')) has-danger @endif">
+                                  <label class="form-control-label">Points/Description</label>
+                                  <textarea name="step_description" id="step_description_1" class="form-control step_description @if($errors->has('guide_step.0.step_description')) is-invalid @endif" rows="10">{{ old('guide_step.0.step_description') }}</textarea>
+                                    @if($errors->has('guide_step.0.step_description'))
+                                        <span class="form-text text-danger">{{ $errors->first('guide_step.0.step_description') }}</span>
+                                    @endif
+                              </div>
+                          </div>
+                        </div>
+                        <hr>
                       </div>
-                    </div>
-                  </div>
+                        @if($step_count>=2)
+                            @for($e=1;$e<$step_count;$e++)
+                            <div class="guide_step_list" data-repeater-item>
+                                <div class="row mb-6">
+                                  <div class="col-sm-12">
+                                    <h1 class="step">Step <span class="step_number">{{ $e+1 }}</span></h1>
+                                    <a href="javascript:;" data-repeater-delete="" class="btn btn-icon btn-danger"><i class="fas fa-trash"></i></a>
+                                    <input type="hidden" class="step_key" name="step_key" value="{{ old('guide_step.'.$e.'.step_key') }}">
+                                    <div class="dropzone dropzone-multiple" data-toggle="dropzone" data-dropzone-multiple data-dropzone-url="http://">
+                                      <div class="fallback">
+                                        <div class="custom-file">
+                                          <input type="file" class="custom-file-input" name="stepfilupload" multiple>
+                                          <label class="custom-file-label" for="customFileUploadMultiple">Choose file</label>
+                                        </div>
+                                      </div>
+                                      <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush">
+                                        <li class="list-group-item px-0">
+                                          <img class="avatar-img rounded" src="" data-dz-thumbnail>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-sm-6">
+                                      <div class="form-group @if($errors->has('guide_step.'.$e.'.step_title')) has-danger @endif">
+                                          <label class="form-control-label" for="step_title">Title</label>
+                                          <input type="text" class="form-control @if($errors->has('guide_step.'.$e.'.step_title')) is-invalid @endif" name="step_title" placeholder="Type" value="{{ old('guide_step.'.$e.'.step_title') }}">
+                                            @if($errors->has('guide_step.'.$e.'.step_title'))
+                                                <span class="form-text text-danger">{{ $errors->first('guide_step.'.$e.'.step_title') }}</span>
+                                            @endif
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-6">
+                                      <div class="form-group @if($errors->has('guide_step.'.$e.'.step_description')) has-danger @endif">
+                                          <label class="form-control-label">Points/Description</label>
+                                          <textarea name="step_description" id="step_description_{{$e+1}}" class="form-control step_description @if($errors->has('guide_step.'.$e.'.step_description')) is-invalid @endif" rows="10">{{ old('guide_step.'.$e.'.step_description') }}</textarea>
+                                            @if($errors->has('guide_step.'.$e.'.step_description'))
+                                                <span class="form-text text-danger">{{ $errors->first('guide_step.'.$e.'.step_description') }}</span>
+                                            @endif
+                                      </div>
+                                  </div>
+                                </div>
+                                <hr>
+                              </div>
+                            @endfor
+                        @endif
                 </div>
                 <input class="btn btn-primary btn-sm" data-repeater-create type="button" value="Add Steps"/>
               </div>
@@ -247,6 +295,7 @@
 <script type="text/javascript">
 var stepCount = 1;
 $(document).ready(function() {
+
     $('.js-example-basic-single').select2();
 
     CKEDITOR.replace('introduction', {
@@ -257,14 +306,10 @@ $(document).ready(function() {
       filebrowserUploadMethod: 'form'
     });
 
-    /*CKEDITOR.replace('step_description1', {
-      extraPlugins:'justify,videodetector',
-      height : '300px',
-      allowedContent : true,
-      filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-      filebrowserUploadMethod: 'form'
-    });
-*/
+   
+    function addon_step_unique_id(){
+        return "key_"+Math.random().toString(16).slice(2);
+    }
     var step_count=<?php echo $step_count;?>;
     $(".guide_repeater").repeater({
         initEmpty:false,
@@ -274,9 +319,55 @@ $(document).ready(function() {
             step_count++;
             $("#step_count").val(step_count);
             $(this).find('.is-invalid').removeClass("is-invalid");
+            $(this).find('.has-danger').removeClass("has-danger");
+            $(this).find('.text-danger').remove();
             $(this).find('.step_number').text(step_count);
             $(this).show('fast',function(){
-                                       
+
+                var unique_id=addon_step_unique_id();
+                $(this).find(".step_key").val(unique_id);
+
+                $(this).find(".step_description").attr('id','step_description_'+step_count);
+                CKEDITOR.replace('step_description_'+step_count, {
+                  extraPlugins:'justify,videodetector',
+                  height : '300px',
+                  allowedContent : true,
+                  filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
+                  filebrowserUploadMethod: 'form'
+                });
+
+                Dropzone.options.myAwesomeDropzone = false;
+                Dropzone.autoDiscover = false;
+
+                $(this).find('.dropzone-init').each(function(){
+                    
+                    var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
+                    dropUrl+="&unique_id="+unique_id;
+                    var dropMaxFiles = 5;
+                    var dropParamName = 'file_image';
+                    var dropMaxFileSize = 1024;
+
+                    $(this).dropzone({
+                        url: dropUrl,
+                        maxFiles: dropMaxFiles,
+                        paramName: dropParamName,
+                        maxFilesSize: dropMaxFileSize,
+                        addRemoveLinks: true,
+                        init: function() {
+                            this.on("complete", function(file) {
+                                linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
+                            });
+                        },
+                        success: function(file, response){
+                            console.log(response);
+                            if(response.status){   
+                                linkObj.find(".dz-remove").attr("data-dz-media_id", response.id);
+                                callRemoveImg();
+                            }
+                        }
+                        // Rest of the configuration equal to all dropzones
+                    });
+                });
             })
         },
         hide:function(e){
@@ -298,7 +389,52 @@ $(document).ready(function() {
             });
         },
         ready: function (setIndexes) {
-            
+
+            Dropzone.options.myAwesomeDropzone = false;
+            Dropzone.autoDiscover = false;
+
+            $('.guide_step_list').each(function(){
+
+                if($(this).find(".step_key").val()==''){
+                    var unique_id=addon_step_unique_id();
+                    $(this).find(".step_key").val(unique_id);
+                }
+
+                CKEDITOR.replace($(this).find('.step_description').attr('id'), {
+                  extraPlugins:'justify,videodetector',
+                  height : '300px',
+                  allowedContent : true,
+                  filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
+                  filebrowserUploadMethod: 'form'
+                });
+
+                var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token() ]) }}";
+                dropUrl+="&unique_id="+unique_id;
+                var dropMaxFiles = 5;
+                var dropParamName = 'file_image';
+                var dropMaxFileSize = 1024;
+
+                var linkObj = $(this);
+                $(this).find('.dropzone-init').dropzone({
+                    url: dropUrl,
+                    maxFiles: dropMaxFiles,
+                    paramName: dropParamName,
+                    maxFilesSize: dropMaxFileSize,
+                    addRemoveLinks: true,
+                    init: function() {
+                        this.on("complete", function(file) {
+                            linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
+                        });
+                    },
+                    success: function(file, response){
+                        console.log(response);
+                        if(response.status){   
+                            linkObj.find(".dz-remove").attr("data-dz-media_id", response.id);
+                            callRemoveImg();
+                        }
+                    }
+                });
+            });
         },
     });
     function stepgenerateID(){
@@ -311,8 +447,36 @@ $(document).ready(function() {
 
 });
 
+
+function callRemoveImg(){
+
+    $(".dz-remove").on("click", function (e) {
+        
+        e.preventDefault();
+        e.stopPropagation();
+
+        var imageId = $(this).data('dz-media_id');
+        console.log(imageId);
+        if(imageId){
+
+            $.ajax({
+                url: "{{ route('admin.selfdiagnosis.remove.image',['_token' => csrf_token() ]) }}",
+                data: { imageId: imageId},
+                type: 'POST',
+                success: function (data) {
+                    
+                    console.log();
+                },
+                error: function (data) {
+                    
+                }
+            });     
+        }
+    });
+}
+
 function addMoreStep(){
-  console.log(stepCount);
+  
   stepCount++;
 
   var ids = 'step_description'+stepCount;
