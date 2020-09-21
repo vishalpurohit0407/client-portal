@@ -25,5 +25,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
+
+	// Self Diagnosis Module Routes
+	Route::get('/guide/search','GuideController@search')->name('user.selfdiagnosis.search');
+	Route::resource('/guide', 'GuideController', [
+	    'names' => [
+	        'index' => 'user.selfdiagnosis.list',
+	        'show' => 'user.selfdiagnosis.show'
+	    ]
+	]);
 });
 
