@@ -23,13 +23,18 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="{{route('home')}}">
+              <a class="nav-link {{ Request::routeIs('home') ? 'active' : '' }}" href="{{route('home')}}">
                 <i class="ni ni-shop text-primary"></i>
                 <span class="nav-link-text">Dashboards</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('user.selfdiagnosis.list') ? 'active' : '' }}" href="{{route('user.selfdiagnosis.list')}}">
+                <i class="ni ni-settings text-orange"></i>
+                <span class="nav-link-text">Self Diagnosis</span>
+              </a>
+            </li>
           </ul>
-          
         </div>
       </div>
     </div>

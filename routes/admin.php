@@ -71,7 +71,8 @@ Route::group(['middleware' => ['admin']],function(){
 	]);
 
 	// Self Diagnosis Module Routes
-	Route::resource('/selfdiagnosis', 'admin\SelfDiagnosisController', [
+	Route::get('/guide/search','admin\GuideController@search')->name('admin.selfdiagnosis.search');
+	Route::resource('/guide', 'admin\GuideController', [
 	    'names' => [
 	        'index' => 'admin.selfdiagnosis.list',
 	        'create' => 'admin.selfdiagnosis.create',

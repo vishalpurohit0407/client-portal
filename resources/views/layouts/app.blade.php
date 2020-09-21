@@ -15,6 +15,7 @@
   <!-- Page plugins -->
   <!-- Argon CSS -->
   <link rel="stylesheet" href="{{asset('assets/css/argon.css?v=1.1.0')}}" type="text/css">
+  @yield('pagewise_css')
 </head>
 
 <body>
@@ -46,6 +47,7 @@
   <script src="{{asset('assets/js/argon.js?v=1.1.0')}}"></script>
   <!-- Demo JS - remove this in your project -->
   <script src="{{asset('assets/js/demo.min.js')}}"></script>
+  @yield('pagewise_js')
 </body>
 
 </html>

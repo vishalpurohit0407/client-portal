@@ -27,13 +27,11 @@
       <!-- Table -->
       @foreach (['danger', 'warning', 'success', 'info'] as $msg)
           @if(Session::has('alert-' . $msg))
-              <div class="alert alert-custom alert-{{ $msg }} fade show mb-2" role="alert">                           
+              <div class="alert alert-custom alert-{{ $msg }} alert-dismissible fade show mb-2" role="alert">                           
                   <div class="alert-text">{{ Session::get('alert-' . $msg) }}</div>
                   <div class="alert-close">
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">
-                              <i class="ki ki-close"></i>
-                          </span>
+                          <span aria-hidden="true">×</span>
                       </button>
                   </div>
               </div>
@@ -55,8 +53,8 @@
               <table class="table table-flush" id="datatable-basic">
                 <thead class="thead-light">
                   <tr>
-                    <th>Sr,No.</th>
-                    <th>Name</th>
+                    <th class="w-10">No.</th>
+                    <th class="w-100">Name</th>
                     <th>Status</th>
                     <th>Created At</th>
                     <th>Options</th>
@@ -65,8 +63,8 @@
                 <tbody></tbody>
                 <tfoot>
                   <tr>
-                    <th>Sr,No.</th>
-                    <th>Name</th>
+                    <th class="w-10">No.</th>
+                    <th class="w-100">Name</th>
                     <th>Status</th>
                     <th>Created At</th>
                     <th>Options</th>
@@ -86,14 +84,24 @@
             "processing": true,
             "serverSide": true,
             "destroy": true,
+            language: {
+              paginate: {
+                previous: "<i class='fas fa-angle-left'>",
+                next: "<i class='fas fa-angle-right'>"
+              }
+            },
             "ajax":{
-                    "url": "{{ route('admin.category.listdata') }}",
-                    "dataType": "json",
-                    "type": "POST",
-                     data: {
-                    "_token": "{{ csrf_token() }}",
-                    }
-                   },
+              "url": "{{ route('admin.category.listdata') }}",
+              "dataType": "json",
+              "type": "POST",
+               data: {
+              "_token": "{{ csrf_token() }}",
+              }
+            },
+            'columnDefs': [{
+                "targets": -1,
+                "orderable": false
+            }],
             "columns": [
                 { "data": "srnumber" },
                 { "data": "name" },
@@ -104,5 +112,23 @@
 
         });
     });
+function deleteConfirm(event){
+  var id = $(event).attr('id');
+  console.log(id);
+  swal({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: !0,
+      buttonsStyling: !1,
+      confirmButtonClass: "btn btn-danger",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonClass: "btn btn-secondary"
+  }).then((result) => {
+    if (result.value) {
+      $("#frm_"+id).submit();
+    }
+  });
+}
 </script>
 @endsection

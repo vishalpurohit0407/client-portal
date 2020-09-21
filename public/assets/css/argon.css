@@ -19428,7 +19428,7 @@ a.btn-icon-only
     display: inherit;
     display: inline-block; 
 
-    width: 52px;
+    width: 75px;
     height: 1.5rem;
     margin: 0;
 }
@@ -19497,7 +19497,7 @@ a.btn-icon-only
 .custom-toggle input:checked + .custom-toggle-slider:after
 {
     right: auto;
-    left: 0; 
+    left: 5px; 
 
     content: attr(data-label-on);
 
@@ -19586,6 +19586,7 @@ a.btn-icon-only
 .custom-toggle-success input:checked + .custom-toggle-slider:before
 {
     background: #2dce89;
+    left: 25px;
 }
 .custom-toggle-success input:checked + .custom-toggle-slider:after
 {

@@ -1,4 +1,4 @@
-@extends('layouts.adminapp')
+@extends('layouts.app')
 
 @section('content')
     <div class="header bg-primary pb-6">
@@ -62,7 +62,7 @@
             @endif 
         @endforeach
         <div class="row">
-            @include('admin.selfdiagnosis.selfdiagnosis_data')
+            @include('selfdiagnosis.selfdiagnosis_data')
         </div>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
@@ -111,7 +111,7 @@ $(document).ready(function() {
 function getData(){
     $.ajax(
     {
-        url: '{{route("admin.selfdiagnosis.search")}}',
+        url: '{{route("user.selfdiagnosis.search")}}',
         type: "get",
         datatype: "html",
         data:{page:pageno,search:$('#search').val(),category_id:$('#category').val()},
@@ -120,24 +120,6 @@ function getData(){
         //location.hash = page;
     }).fail(function(jqXHR, ajaxOptions, thrownError){
           alert('No response from server');
-    });
-}
-
-function deleteConfirm(event){
-    var id = $(event).attr('id');
-    swal({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        type: "warning",
-        showCancelButton: !0,
-        buttonsStyling: !1,
-        confirmButtonClass: "btn btn-danger",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonClass: "btn btn-secondary"
-    }).then((result) => {
-      if (result.value) {
-        $("#frm_"+id).submit();
-      }
     });
 }
 </script>
