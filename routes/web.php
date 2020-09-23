@@ -26,13 +26,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
 
-	Route::resource('/category', 'CategoryController', [
+	// Self Diagnosis Module Routes
+	Route::get('/guide/pdf/{id}','GuideController@createPDF')->name('selfdiagnosis.pdf.export');
+	Route::get('/guide/complete/{id}','GuideController@completedGuide')->name('user.complete.guide');
+	Route::get('/guide/search','GuideController@search')->name('user.selfdiagnosis.search');
+	Route::resource('/guide', 'GuideController', [
 	    'names' => [
-	        'index' => 'category.list',
-	        'edit' => 'category.edit',
-	        'update' => 'category.update',
-	        'destroy' => 'category.destroy',
-	        'show' => 'category.show'
+	        'index' => 'user.selfdiagnosis.list',
+	        'show' => 'user.selfdiagnosis.show'
 	    ]
 	]);
 });

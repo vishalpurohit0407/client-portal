@@ -38,12 +38,12 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
+                            <div class="form-group {{ $errors->has('password') ? ' has-danger' : '' }}">
                                 <div class="input-group input-group-alternative">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                                     </div>
-                                    <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password">
+                                    <input class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password">
                                 </div>
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback" style="display: block;" role="alert">
@@ -51,13 +51,18 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group">
+                            <div class="form-group {{ $errors->has('password_confirmation') ? ' has-danger' : '' }}">
                                 <div class="input-group input-group-alternative">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                                     </div>
-                                    <input class="form-control" placeholder="{{ __('Confirm Password') }}" type="password" name="password_confirmation">
+                                    <input class="form-control {{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}" placeholder="{{ __('Confirm Password') }}" type="password" name="password_confirmation">
                                 </div>
+                                @if ($errors->has('password_confirmation'))
+                                    <span class="invalid-feedback" style="display: block;" role="alert">
+                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary my-4">{{ __('Reset Password') }}</button>

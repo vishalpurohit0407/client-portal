@@ -4,7 +4,7 @@
       <!-- Brand -->
       <div class="sidenav-header d-flex align-items-center">
         <a class="navbar-brand" href="{{route('home')}}">
-          <img src="assets/img/brand/blue.png" class="navbar-brand-img" alt="...">
+          <img src="{{asset('assets/img/brand/blue.png')}}" class="navbar-brand-img" alt="navbar-brand-img">
         </a>
         <div class="ml-auto">
           <!-- Sidenav toggler -->
@@ -23,13 +23,18 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="{{route('home')}}">
+              <a class="nav-link {{ Request::routeIs('home') ? 'active' : '' }}" href="{{route('home')}}">
                 <i class="ni ni-shop text-primary"></i>
                 <span class="nav-link-text">Dashboards</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('user.selfdiagnosis.*') ? 'active' : '' }}" href="{{route('user.selfdiagnosis.list')}}">
+                <i class="ni ni-settings text-orange"></i>
+                <span class="nav-link-text">Self Diagnosis</span>
+              </a>
+            </li>
           </ul>
-          
         </div>
       </div>
     </div>

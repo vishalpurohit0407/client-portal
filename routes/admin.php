@@ -16,7 +16,7 @@ Route::get('/login','Adminauth\LoginController@showLoginForm')->name('admin.logi
 Route::post('/login','Adminauth\LoginController@adminLogin')->name('admin.login');
 Route::get('/forgotpassword','Adminauth\ForgotPasswordController@showForgotPasswordForm')->name('admin.forgotpassword');
 Route::post('/password/email','Adminauth\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.eamil');
-Route::get('/password/reset/{token}', 'Adminauth\ResetPasswordController@showResetPasswordForm')->name('admin.password.token');
+Route::get('/password/reset/{token}/{email}', 'Adminauth\ResetPasswordController@showResetPasswordForm')->name('admin.password.token');
 Route::post('/password/reset', 'Adminauth\ResetPasswordController@reset')->name('admin.password.reset');
 
 // Add new route for 'admin' middleware
@@ -39,29 +39,16 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::get('/dashboard','admin\AdminController@index')->name('admin.dashboard');
 
 	// Category Module Routes
-	Route::post('/category/list/data','admin\CategoryController@listdata')->name('category.listdata');
-	Route::post('/category/deletebytag','admin\CategoryController@orgTagDelete')->name('category.tagdelete');
+	Route::post('/category/list/data','admin\CategoryController@listdata')->name('admin.category.listdata');
 	Route::resource('/category', 'admin\CategoryController', [
 	    'names' => [
-	        'index' => 'category.list',
-	        'edit' => 'category.edit',
-	        'update' => 'category.update',
-	        'destroy' => 'category.destroy',
-	        'show' => 'category.show'
-	    ]
-	]);
 
-	// Document Type Module Routes
-	Route::post('/typeofdocument/list/data','admin\TypeOfDocumentController@listdata')->name('documenttype.listdata');
-	Route::resource('/typeofdocument', 'admin\TypeOfDocumentController', [
-	    'names' => [
-	        'index' => 'documenttype.list',
-	        'create' => 'documenttype.create',
-	        'store' => 'documenttype.store',
-	        'edit' => 'documenttype.edit',
-	        'update' => 'documenttype.update',
-	        'destroy' => 'documenttype.destroy',
-	        'show' => 'documenttype.show'
+	        'index' => 'admin.category.list',
+	        'edit' => 'admin.category.edit',
+	        'create' => 'admin.category.create',
+	        'store' => 'admin.category.store',
+	        'update' => 'admin.category.update',
+	        'destroy' => 'admin.category.destroy',
 	    ]
 	]);
 
@@ -83,25 +70,23 @@ Route::group(['middleware' => ['admin']],function(){
 	    ]
 	]);
 
-	// Organization Module Routes
-	Route::get('/organization/pending','admin\OrganizationController@pendingUser')->name('organization.pending.list');
-	Route::post('/organization/pending/list/data','admin\OrganizationController@pendingUserlistdata')->name('organization.pending.listdata');
-	Route::get('/organization/approve/{id}/{status?}','admin\OrganizationController@approveOrDecline')->name('organization.approval');
-	Route::get('/organization/deleted','admin\OrganizationController@deletedUser')->name('organization.deleted.list');
-	Route::post('/organization/deleted/list/data','admin\OrganizationController@deletedUserlistdata')->name('organization.deleted.listdata');
-	Route::get('/organization/restore/{uuid?}','admin\OrganizationController@userRestore')->name('organization.restore');
-	Route::post('/organization/list/data','admin\OrganizationController@listdata')->name('organization.listdata');
-	Route::resource('/organization/user', 'admin\OrganizationController', [
+	// Self Diagnosis Module Routes
+	Route::get('/guide/search','admin\GuideController@search')->name('admin.selfdiagnosis.search');
+	Route::resource('/guide', 'admin\GuideController', [
 	    'names' => [
-	        'index' => 'organization.list',
-	        'create' => 'organization.create',
-	        'store' => 'organization.store',
-	        'edit' => 'organization.edit',
-	        'update' => 'organization.update',
-	        'destroy' => 'organization.destroy',
-	        'show' => 'organization.show'
+	        'index' => 'admin.selfdiagnosis.list',
+	        'create' => 'admin.selfdiagnosis.create',
+	        'store' => 'admin.selfdiagnosis.store',
+	        'edit' => 'admin.selfdiagnosis.edit',
+	        'update' => 'admin.selfdiagnosis.update',
+	        'destroy' => 'admin.selfdiagnosis.destroy',
+	        'show' => 'admin.selfdiagnosis.show'
 	    ]
 	]);
+	Route::post('/selfdiagnosis/img-upload','admin\GuideController@img_upload')->name('admin.selfdiagnosis.upload');
+	Route::post('/selfdiagnosis/main-img-upload/{id}','admin\GuideController@mainImgUpload')->name('admin.selfdiagnosis.mainupload');
+	Route::post('/selfdiagnosis/remove/img-upload','admin\GuideController@removeImage')->name('admin.selfdiagnosis.remove.image');
+	Route::post('/selfdiagnosis/remove/step','admin\GuideController@removeStep')->name('admin.selfdiagnosis.remove.step');
 
 	// Organization Module Routes
 	Route::post('/cms/pages/list/data','admin\CmspagsController@listdata')->name('cms.pages.listdata');
@@ -114,53 +99,10 @@ Route::group(['middleware' => ['admin']],function(){
 	        'show' => 'cms.pages.show'
 	    ]
 	]);
-
-	// Documentdetail Module Routes
-	Route::post('/document/list/data','admin\DocumentdetailController@listdata')->name('document.listdata');
-	Route::resource('/document', 'admin\DocumentdetailController', [
-	    'names' => [
-	        'index' => 'document.list',
-	        'create' => 'document.create',
-	        'store' => 'document.store',
-	        'edit' => 'document.edit',
-	        'update' => 'document.update',
-	        'destroy' => 'document.destroy',
-	        'show' => 'document.show'
-	    ]
-	]);
-
-	// Complain Module Routes
-	Route::post('/complain/list/data','admin\ComplainController@listdata')->name('complain.listdata');
-	Route::resource('/complain', 'admin\ComplainController', [
-	    'names' => [
-	        'index' => 'complain.list',
-	        'create' => 'complain.create',
-	        'store' => 'complain.store',
-	        'edit' => 'complain.edit',
-	        'update' => 'admin.complain.update',
-	        'destroy' => 'complain.destroy',
-	        'show' => 'complain.show'
-	    ]
-	]);
-
-	// Document Group Assigned Module Routes
-	Route::post('/document/group/assigned/list/data','admin\DocumentgroupassignController@listdata')->name('document.group.assigned.listdata');
-	Route::post('/documentgroupassign/deletebytag','admin\DocumentgroupassignController@typeTagDelete')->name('documentgrouptype.tagdelete');
-	Route::resource('/documentgroupassign', 'admin\DocumentgroupassignController', [
-	    'names' => [
-	        'index' => 'document.group.assigned.list',
-	        'create' => 'document.group.assigned.create',
-	        'store' => 'document.group.assigned.store',
-	        'edit' => 'document.group.assigned.edit',
-	        'update' => 'document.group.assigned.update',
-	        'destroy' => 'document.group.assigned.destroy',
-	        'show' => 'document.group.assigned.show'
-	    ]
-	]);
-
-
 });
 
+//ckeditor file upload
+Route::post('ckeditor/upload', 'CkeditorController@upload')->name('ckeditor.upload');
 
 //Clear Cache facade value:
 Route::get('/reset-app', function() {

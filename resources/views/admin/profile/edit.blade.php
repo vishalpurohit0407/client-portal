@@ -15,8 +15,8 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-3 order-lg-2">
                             <div class="card-profile-image">
-                                <a href="#">
-                                    <img src="@if(is_file(public_path(Auth::guard('admin')->user()->profile_img))) {{url(Auth::guard('admin')->user()->profile_img)}} @else {{ asset('argon') }}/img/theme/defualt-user.png @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
+                                <a href="javascript:void(0);">
+                                    <img src="@if(is_file(public_path(Auth::guard('admin')->user()->profile_img))) {{url(Auth::guard('admin')->user()->profile_img)}} @else {{ asset('assets/img/theme/defualt-user.png') }} @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
                                 </a>
                             </div>
                         </div>
@@ -37,6 +37,20 @@
                 </div>
             </div>
             <div class="col-xl-8 order-xl-1">
+            @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+                @if(Session::has('alert-' . $msg))
+                    <div class="alert alert-custom alert-{{ $msg }} fade show mb-2" role="alert">                           
+                        <div class="alert-text">{{ Session::get('alert-' . $msg) }}</div>
+                        <div class="alert-close">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">
+                                    <i class="ki ki-close"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                @endif 
+            @endforeach
                 <div class="card bg-secondary shadow">
                     <div class="card-header bg-white border-0">
                         <div class="row align-items-center">
@@ -46,7 +60,6 @@
                     <div class="card-body">
                         <form method="post" action="{{ route('admin.updateprofile') }}" autocomplete="off" enctype= "multipart/form-data">
                             @csrf
-                            @method('put')
 
                             <h6 class="heading-small text-muted mb-4">{{ __('User information') }}</h6>
                             
@@ -61,7 +74,7 @@
 
                             <div class="pl-lg-4">
                                 <div class="form-group">
-                                    <label class="form-control-label" for="input-name">{{ __('Name') }}</label>
+                                    <label class="form-control-label" for="input-name">{{ __('Name') }}&nbsp;<strong class="text-danger">*</strong></label>
                                     <div class="{{ $errors->has('name') ? ' has-danger' : '' }}">
                                         <input type="text" name="name" id="input-name" class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', Auth::guard('admin')->user()->name) }}"  autofocus>
 
@@ -73,7 +86,19 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-control-label" for="input-email">{{ __('Email') }}</label>
+                                    <label class="form-control-label" for="input-username">{{ __('User Name') }}&nbsp;<strong class="text-danger">*</strong></label>
+                                    <div class="{{ $errors->has('username') ? ' has-danger' : '' }}">
+                                        <input type="text" name="username" id="input-username" class="form-control {{ $errors->has('username') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('username', Auth::guard('admin')->user()->username) }}"  autofocus>
+
+                                        @if ($errors->has('username'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('username') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="input-email">{{ __('Email') }}&nbsp;<strong class="text-danger">*</strong></label>
                                     <div class="{{ $errors->has('email') ? ' has-danger' : '' }}">
                                         <input type="email" name="email" id="input-email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" value="{{ old('email', Auth::guard('admin')->user()->email) }}">
 
@@ -99,7 +124,7 @@
 
                                     <div class="col-6 col-md-4">
                                         <a href="#!">
-                                            <img id="output" src="@if(is_file(public_path(Auth::guard('admin')->user()->profile_img))) {{url(Auth::guard('admin')->user()->profile_img)}} @else {{ asset('argon') }}/img/theme/defualt-user.png @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
+                                            <img id="output" src="@if(is_file(public_path(Auth::guard('admin')->user()->profile_img))) {{url(Auth::guard('admin')->user()->profile_img)}} @else {{ asset('assets/img/theme/defualt-user.png') }} @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
                                         </a>
                                     </div>
                                 </div>
@@ -110,9 +135,8 @@
                             </div>
                         </form>
                         <hr class="my-4" />
-                        <form method="post" action="{{ route('profile.password') }}" autocomplete="off" >
+                        <form method="post" action="{{ route('admin.updatechangepass') }}" autocomplete="off" >
                             @csrf
-                            @method('put')
 
                             <h6 class="heading-small text-muted mb-4">{{ __('Password') }}</h6>
 
@@ -127,32 +151,39 @@
 
                             <div class="pl-lg-4">
                                 <div class="form-group">
-                                    <label class="form-control-label" for="input-current-password">{{ __('Current Password') }}</label>
-                                    <div class="{{ $errors->has('old_password') ? ' has-danger' : '' }}">
-                                        <input type="password" name="old_password" id="input-current-password" class="form-control {{ $errors->has('old_password') ? ' is-invalid' : '' }}" placeholder="{{ __('Current Password') }}" value="" >
+                                    <label class="form-control-label" for="input-current-password">{{ __('Current Password') }}&nbsp;<strong class="text-danger">*</strong></label>
+                                    <div class="{{ $errors->has('currentpass') ? ' has-danger' : '' }}">
+                                        <input type="password" name="currentpass" id="input-current-password" class="form-control {{ $errors->has('currentpass') ? ' is-invalid' : '' }}" placeholder="{{ __('Current Password') }}" >
                                         
-                                        @if ($errors->has('old_password'))
+                                        @if ($errors->has('currentpass'))
                                             <span class="invalid-feedback"  role="alert">
-                                                <strong>{{ $errors->first('old_password') }}</strong>
+                                                <strong>{{ $errors->first('currentpass') }}</strong>
                                             </span>
                                         @endif
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-control-label" for="input-password">{{ __('New Password') }}</label>
-                                    <div class="{{ $errors->has('password') ? ' has-danger' : '' }}">
-                                        <input type="password" name="password" id="input-password" class="form-control form-control-alternative{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('New Password') }}" value="" >
+                                    <label class="form-control-label" for="input-password">{{ __('New Password') }}&nbsp;<strong class="text-danger">*</strong></label>
+                                    <div class="{{ $errors->has('newpass') ? ' has-danger' : '' }}">
+                                        <input type="password" name="newpass" id="input-password" class="form-control {{ $errors->has('newpass') ? ' is-invalid' : '' }}" placeholder="{{ __('New Password') }}">
                                         
-                                        @if ($errors->has('password'))
+                                        @if ($errors->has('newpass'))
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $errors->first('password') }}</strong>
+                                                <strong>{{ $errors->first('newpass') }}</strong>
                                             </span>
                                         @endif
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-control-label" for="input-password-confirmation">{{ __('Confirm New Password') }}</label>
-                                    <input type="password" name="password_confirmation" id="input-password-confirmation" class="form-control form-control-alternative" placeholder="{{ __('Confirm New Password') }}" value="" >
+                                    <label class="form-control-label" for="input-password-confirmation">{{ __('Confirm New Password') }}&nbsp;<strong class="text-danger">*</strong></label>
+                                    <div class="{{ $errors->has('newpass_confirmation') ? ' has-danger' : '' }}">
+                                        <input type="password" name="newpass_confirmation" id="input-password-confirmation" class="form-control {{ $errors->has('newpass_confirmation') ? ' is-invalid' : '' }}" placeholder="{{ __('Confirm New Password') }}" >
+                                        @if ($errors->has('newpass_confirmation'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('newpass_confirmation') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <div class="text-center">

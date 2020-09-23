@@ -30,7 +30,7 @@ class AdminController extends Controller {
      * @return void
      */
     public function __construct() {
-      $this->middleware(['web','admin']);
+      $this->middleware(['admin']);
     }
 
     public function index() {
@@ -83,7 +83,6 @@ class AdminController extends Controller {
         'username' => 'required|max:255',
         'email' => 'required|email|max:255',
       ]);
-      //dd($request->all());
 
   		$userData = Admin::find(Auth::guard('admin')->user()->id);
   		$userData->name = $request->name;
@@ -95,8 +94,8 @@ class AdminController extends Controller {
           $request->validate([
               'profile_img' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
           ]);
+          // echo "<pre>";print_r($userData->profile_img);exit();
             if (is_file($userData->profile_img)) { 
-                // echo "<pre>";print_r(unlink($userData->profile_img));exit();
                 unlink($userData->profile_img);
             }
             $file_name =$file->getClientOriginalName();
@@ -107,7 +106,6 @@ class AdminController extends Controller {
             Storage::disk('public')->putFileAs('adminprofile/'.$userData->id,$file,$imageName.".".$imgext);
             
             $userData->profile_img = 'storage/'.$path;
-             // echo "<pre>";print_r($userData); exit();
         }else{
 
             if($request->profile_avatar_remove){

@@ -1,0 +1,10 @@
+[15-Sep-2020 10:41:40 UTC] PHP Warning:  require(/home/genioroa/public_html/public/../vendor/autoload.php): failed to open stream: No such file or directory in /home/genioroa/public_html/public/index.php on line 24
+[15-Sep-2020 10:41:40 UTC] PHP Warning:  require(/home/genioroa/public_html/public/../vendor/autoload.php): failed to open stream: No such file or directory in /home/genioroa/public_html/public/index.php on line 24
+[15-Sep-2020 10:41:40 UTC] PHP Fatal error:  require(): Failed opening required '/home/genioroa/public_html/public/../vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/genioroa/public_html/public/index.php on line 24
+[15-Sep-2020 10:52:57 UTC] PHP Fatal error:  Uncaught InvalidArgumentException: Please provide a valid cache path. in /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:36
+Stack trace:
+#0 /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(91): Illuminate\View\Compilers\Compiler->__construct(Object(Illuminate\Filesystem\Filesystem), false)
+#1 /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/Container/Container.php(805): Illuminate\View\ViewServiceProvider->Illuminate\View\{closure}(Object(Illuminate\Foundation\Application), Array)
+#2 /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/Container/Container.php(691): Illuminate\Container\Container->build(Object(Closure))
+#3 /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(796): Illuminate\Container\Container->resolve('blade.compiler', Array, true)
+#4 /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/Container/Container.php(637 in /home/genioroa/public_html/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php on line 36

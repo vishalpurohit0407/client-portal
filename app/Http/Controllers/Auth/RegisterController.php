@@ -46,7 +46,7 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
         event(new Registered($user = $this->create($request->all())));
-        $request->session()->flash('alert-success', 'Your account has beed successfully created. Please verify your accout from register email.'); 
+        $request->session()->flash('alert-success', 'Your account has been successfully created. Please verify your accout from register email.'); 
         return $this->registered($request, $user)
             ?: redirect(route('login'));
     }
