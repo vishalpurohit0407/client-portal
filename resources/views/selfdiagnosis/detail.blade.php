@@ -50,15 +50,9 @@
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="tuto-main-image noprint">
-                        @if($selfdiagnosis->main_image)
-                            <a class="image" href="" id="lightgallery" data-image="{{asset($selfdiagnosis->main_image)}}" data-maintitle="{{$selfdiagnosis->main_title}}" >
-                                <img class="img-fluid" style="filter: blur(0px);" src="{{asset($selfdiagnosis->main_image)}}">
-                            </a>
-                        @else
-                            <a class="image" href="" id="lightgallery" data-image="{{asset('assets/img/theme/no-image-available.png')}}" data-maintitle="{{$selfdiagnosis->main_title}}" >
-                                <img class="img-fluid" style="filter: blur(0px);" src="{{asset('assets/img/theme/no-image-available.png')}}">
-                            </a>
-                        @endif
+                        <a class="image" href="" id="lightgallery" data-image="{{asset($selfdiagnosis->main_image_url)}}" data-maintitle="{{$selfdiagnosis->main_title}}" >
+                            <img class="img-fluid" style="filter: blur(0px);" src="{{asset($selfdiagnosis->main_image_url)}}">
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-12">
@@ -205,10 +199,10 @@
                                 <div id="carousel-step{{$step}}" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
                                       <!--Slides-->
                                       <div class="carousel-inner lightgallery" style="cursor: pointer;" data-id="{{$stepdata->id}}" title="Show Image">
-                                        @if($stepdata->guide_step_media)
-                                            @foreach($stepdata->guide_step_media as $media)
+                                        @if($stepdata->media)
+                                            @foreach($stepdata->media as $media)
                                                 <div class="carousel-item @if($loop->first) active @endif">
-                                                  <img class="d-block" src="{{asset($media->media)}}" alt="First slide">
+                                                  <img class="d-block" src="{{asset($media->media_url)}}" alt="First slide">
                                                 </div>
                                             @endforeach
                                         @endif
@@ -217,11 +211,11 @@
 
                                       <!--/.Controls-->
                                       <ol class="carousel-indicators">
-                                        @if($stepdata->guide_step_media)
+                                        @if($stepdata->media)
                                         @php $dataslide = 0; @endphp
-                                            @foreach($stepdata->guide_step_media as $media)
+                                            @foreach($stepdata->media as $media)
                                                 <li data-target="#carousel-step{{$step}}" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
-                                                    <img class="d-block" src="{{asset($media->media)}}" class="img-fluid">
+                                                    <img class="d-block" src="{{asset($media->media_url)}}" class="img-fluid">
                                                 </li>
                                             @php $dataslide++; @endphp
                                             @endforeach
@@ -229,7 +223,7 @@
                                       </ol>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-md-{{count($stepdata->guide_step_media) > 0 ? '6' : '12'}} step-instructions">
+                            <div class="col-xs-12 col-md-{{count($stepdata->media) > 0 ? '6' : '12'}} step-instructions">
                                 <h3 class="display-4">Step {{$step}} - {{$stepdata->title}}</h3>
                                 <div>
                                     {{$stepdata->description}}
@@ -252,8 +246,8 @@
                 </h5>
                 <div class="mt-5 mb-4">
                     @php 
-                        $completed_guide = \App\CompletedGuide::where('guide_id',$selfdiagnosis->id)->where('user_id',\Auth::user()->id)->first();
-                        $completed_guide_count = \App\CompletedGuide::where('guide_id',$selfdiagnosis->id)->count();
+                        $completed_guide = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->where('user_id',\Auth::user()->id)->first();
+                        $completed_guide_count = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->count();
 
                     @endphp
                     @if($completed_guide)
@@ -281,13 +275,13 @@ var elementArr = new Array();
     @php
         if($selfdiagnosis->guide_step){
             foreach($selfdiagnosis->guide_step as $stepdata){
-                if($stepdata->guide_step_media){
+                if($stepdata->media){
     @endphp
                     var mediaArr = new Array();
     @php
-                    foreach ($stepdata->guide_step_media as $media){
+                    foreach ($stepdata->media as $media){
     @endphp            
-                        mediaArr.push({src: '{{asset($media->media)}}', thumb: '{{asset($media->media)}}', subHtml : '{{$stepdata->title}}'});
+                        mediaArr.push({src: '{{asset($media->media_url)}}', thumb: '{{asset($media->media_url)}}', subHtml : '{{$stepdata->title}}'});
     @php   
                     } 
                 }

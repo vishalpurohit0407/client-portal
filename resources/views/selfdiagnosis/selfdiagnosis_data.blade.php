@@ -5,11 +5,7 @@
             <a href="{{route('user.selfdiagnosis.show',$selfdiagnos->id)}}">
                 <div class="card">
                     <!-- Card image -->
-                    @if($selfdiagnos->main_image)
-                    <img class="card-img-top" src="{{asset($selfdiagnos->main_image)}}" alt="Image placeholder">
-                    @else
-                    <img class="card-img-top" src="{{asset('assets/img/theme/no-image-available.png')}}">
-                    @endif
+                    <img class="card-img-top" src="{{asset($selfdiagnos->main_image_url)}}" alt="Image placeholder">
                     <!-- Card body -->
                     <div class="card-body">
                         <h5 class="h2 card-title mb-0">{{ucfirst($selfdiagnos->main_title)}}</h5>
