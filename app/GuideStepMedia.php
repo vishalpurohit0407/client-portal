@@ -15,8 +15,6 @@ class GuideStepMedia extends Authenticatable
      * @var array
      */
 
-    protected $appends = [ 'medias'  ];
-
     public static function boot()
     {
         parent::boot();

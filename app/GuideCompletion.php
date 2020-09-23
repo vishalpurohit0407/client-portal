@@ -6,9 +6,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Uuid;
 use Storage;
 
-class GuideStep extends Authenticatable
+class GuideCompletion extends Authenticatable
 {
-    protected $table = 'guide_steps';
+    protected $table = 'guide_completion';
     /**protected $table = 'category';
      * The attributes that are mass assignable.
      *
@@ -27,13 +27,8 @@ class GuideStep extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'guide_id', 'title', 'description'
+        'guide_id', 'user_id',
     ];
-
-   public function guide_step_media()
-    {
-        return $this->hasMany('App\GuideStepMedia', 'step_id','id');
-    }
 
     
 }
