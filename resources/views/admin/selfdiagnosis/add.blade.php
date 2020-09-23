@@ -2,7 +2,11 @@
 @extends('layouts.adminapp')
 @section('content')
 @php
-    $step_count=old('step_count',1);
+    $stepcount=count($guide_step);
+    if($stepcount==0){
+        $stepcount=1;
+    }
+    $step_count=old('step_count',$stepcount);
 @endphp
 <div class="header bg-primary pb-6">
   <div class="container-fluid">
@@ -32,16 +36,18 @@
         <div class="card-header">
           <h3 class="mb-0">Add Self Diagnosis</h3>
         </div>
+
         <!-- Card body -->
         <div class="card-body">
-          <form action="{{ route('admin.selfdiagnosis.store') }}" method="post" enctype="multipart/form-data">
+          <form action="{{ route('admin.selfdiagnosis.update',$guide->id) }}" method="post" enctype="multipart/form-data">
           @csrf
+          {{ method_field('PUT') }}
               <div class="row">
                 <div class="col-md-5 main-img">
                   <div class="form-group">
                     <label class="form-control-label" for="guide_main_image">Main Image</label>
                     
-                    <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="http://">
+                    <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.selfdiagnosis.mainupload',['id' => $guide->id])}}">
                       <div class="fallback">
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" id="guide_main_image">
@@ -54,48 +60,64 @@
                         </div>
                       </div>
                     </div>
+                    <p class="text-info mb-0"><strong>Recommended Size: 800 X 600 px</strong></p>
+                   
                   </div>
                 </div>
                 <div class="col-md-7">
-                    <div class="form-group">
-                        <label class="form-control-label" for="example3cols2Input">Main Title</label>
-                        <input type="text" name="main_title" class="form-control" id="main_title">
+                    <div class="form-group ">
+                        <label class="form-control-label" for="example3cols2Input">Main Title <strong class="text-danger">*</strong></label>
+                        <input type="text" name="main_title" class="form-control @if($errors->has('main_title')) is-invalid @endif" id="main_title" value="{{old('main_title', $guide->main_title)}}">
+                        @if($errors->has('main_title'))
+                            <span class="form-text text-danger">{{ $errors->first('main_title') }}</span>
+                        @endif
                     </div>
                     <div class="form-group">
-                        <label class="form-control-label" for="description">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        <label class="form-control-label @if($errors->has('description')) has-danger @endif" for="description">Description <strong class="text-danger">*</strong></label>
+                        <textarea class="form-control @if($errors->has('description')) is-invalid @endif" id="description" name="description" rows="3">{{old('description', $guide->description)}}</textarea>
+                        @if($errors->has('description'))
+                            <span class="form-text text-danger">{{ $errors->first('description') }}</span>
+                        @endif
                     </div>
                     <div class="form-group">
-                        <label class="form-control-label" for="category">Category</label><br>
-                        <select class="js-example-basic-single" id="category" name="category[]" multiple="multiple">
+                        <label class="form-control-label" for="category">Category <strong class="text-danger">*</strong></label><br>
+                        <select class="js-example-basic-single form-control @if($errors->has('category')) is-invalid @endif" id="category" name="category[]" multiple="multiple">
                             @if($category)
                               @foreach($category as $cate)
-                                <option id="{{$cate->id}}">{{$cate->name}}</option>
+                                <option value="{{$cate->id}}" @if(in_array($cate->id,$selectedCategory)) selected @endif>{{$cate->name}}</option>
                               @endforeach
                             @endif
                         </select>
+                        @if($errors->has('category'))
+                            <span class="form-text text-danger">{{ $errors->first('category') }}</span>
+                        @endif
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="form-control-label" for="type">Type</label>
-                                <input type="text" class="form-control" id="type" name="type" placeholder="Type">
+                                <label class="form-control-label" for="type">Type <strong class="text-danger">*</strong></label>
+                                <input type="text" class="form-control @if($errors->has('type')) is-invalid @endif" id="type" name="type" placeholder="Type" value="{{old('type', $guide->type)}}">
+                                @if($errors->has('type'))
+                                    <span class="form-text text-danger">{{ $errors->first('type') }}</span>
+                                @endif
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="form-control-label" for="example4cols2Input">Duration</label>
-                                <!--  -->
+                                <label class="form-control-label" for="example4cols2Input">Duration <strong class="text-danger">*</strong></label>
                                 <div class="input-group mb-3">
                                   <div class="input-group-prepend">
-                                    <input type="text" class="form-control" id="duration" name="duration" placeholder="Duration">
+                                    <input type="number" class="form-control @if($errors->has('duration')) is-invalid @endif" id="duration" name="duration" placeholder="Duration" value="{{old('duration', $guide->duration)}}">
                                   </div>
                                   <select class="custom-select" id="duration_type" name="duration_type">
-                                    <option value="minute">minute(s)</option>
-                                    <option value="hour">hour(s)</option>
-                                    <option value="day">day(s)</option>
-                                    <option value="month">month(s)</option>
+                                    <option value="minute(s)" @if(old('duration_type', $guide->duration_type) == 'minute(s)') selected @endif>minute(s)</option>
+                                    <option value="hour(s)" @if(old('duration_type', $guide->duration_type) == 'hour(s)') selected @endif>hour(s)</option>
+                                    <option value="day(s)" @if(old('duration_type', $guide->duration_type) == 'day(s)') selected @endif>day(s)</option>
+                                    <option value="month(s)" @if(old('duration_type', $guide->duration_type) == 'month(s)') selected @endif>month(s)</option>
                                   </select>
+                                    @if($errors->has('duration'))
+                                        <span class="form-text text-danger">{{ $errors->first('duration') }}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -103,33 +125,36 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="form-control-label" for="difficulty">Difficulty</label>
+                                <label class="form-control-label" for="difficulty">Difficulty <strong class="text-danger">*</strong></label>
                                 <select class="form-control" name="difficulty" id="difficulty">
-                                    <option value="very_easy">Very easy</option>
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
-                                    <option value="very_hard">Very Hard</option>
+                                    <option value="Very easy" @if(old('difficulty', $guide->difficulty) == 'Very easy') selected @endif>Very easy</option>
+                                    <option value="Easy" @if(old('difficulty', $guide->difficulty) == 'Easy') selected @endif>Easy</option>
+                                    <option value="Medium" @if(old('difficulty', $guide->difficulty) == 'Medium') selected @endif>Medium</option>
+                                    <option value="Hard" @if(old('difficulty', $guide->difficulty) == 'Hard') selected @endif>Hard</option>
+                                    <option value="Very Hard" @if(old('difficulty', $guide->difficulty) == 'Very Hard') selected @endif>Very Hard</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="form-control-label" for="cost">Cost</label>
+                                <label class="form-control-label" for="cost">Cost <strong class="text-danger">*</strong></label>
                                 <!--  -->
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" name="cost" id="cost" placeholder="Cost">
+                                    <input type="text" class="form-control @if($errors->has('cost')) is-invalid @endif" name="cost" id="cost" placeholder="Cost" value="{{old('cost', $guide->cost)}}">
                                     <div class="input-group-append">
                                         <span class="input-group-text">$</span>
                                     </div>
                                 </div>
+                                @if($errors->has('cost'))
+                                    <span class="form-text text-danger">{{ $errors->first('cost') }}</span>
+                                @endif
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-control-label" for="tags">Tags</label><br>
-                        <input type="text" class="form-control" id="tags" name="tags" value="" data-toggle="tags" />
+                        <input type="text" class="form-control" id="tags" name="tags" value="{{old('tags', $guide->tags)}}" data-toggle="tags" />
                     </div>
 
                 </div>
@@ -141,7 +166,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label class="form-control-label" for="example4cols3Input">Introduction (optional)</label>
-                    <textarea name="introduction" id="introduction" class="form-control" rows="10"></textarea>
+                    <textarea name="introduction" id="introduction" class="form-control" rows="10">{{old('introduction', $guide->introduction)}}</textarea>
                   </div>
                 </div>
               </div>
@@ -153,11 +178,11 @@
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
                             <select class="custom-select" id="vid_link_type" name="vid_link_type" style="border-radius: 0;font-size:1rem;">
-                              <option value="youtube">Youtube</option>
-                              <option value="vimeo">Vimeo</option>
+                              <option value="youtube" @if(old('vid_link_type', $guide->introduction_video_type) == 'youtube') selected @endif>Youtube</option>
+                              <option value="vimeo" @if(old('vid_link_type', $guide->introduction_video_type) == 'vimeo') selected @endif>Vimeo</option>
                             </select>
                           </div>
-                          <input type="text" class="form-control" id="vid_link_url" name="vid_link_url" placeholder="Enter here the URL of a Youtube video">
+                          <input type="text" class="form-control" id="vid_link_url" name="vid_link_url" placeholder="Enter here the URL of a Youtube video" value="{{old('vid_link_url', $guide->introduction_video_link)}}">
                         </div>
                     </div>
                 </div>
@@ -166,6 +191,56 @@
               <hr class="hr-dotted">
               <div class="guide_repeater">
                 <div data-repeater-list="guide_step">
+                    <script type="text/javascript">let stepMediaArr = new Array();</script>
+
+                    @if(old('step_count') == '' && $guide_step)
+                        @foreach ($guide_step as $key => $guidestep)
+                           
+                            <div class="guide_step_list" data-repeater-item>
+                                <div class="row mb-6">
+                                  <div class="col-sm-12">
+                                    <h1 class="step">Step <span class="step_number">{{$key + 1}}</span></h1>
+                                    <a href="javascript:;" data-repeater-delete="" class="btn btn-icon btn-danger"><i class="fas fa-trash"></i></a>
+                                    <input type="hidden" class="step_key" name="step_key" value="{{ $guidestep->step_key }}">
+
+                                    <div class="dropzone dropzone-init">
+                                        
+                                        @if($guidestep->media)
+                                            
+                                            @foreach ($guidestep->media as $key => $substep)
+                                                <div class="dz-preview dz-processing dz-image-preview dz-complete">  
+                                                    <div class="dz-image">
+                                                        <img data-dz-thumbnail="{{$substep->media}}" alt="" src="{{$substep->media_url}}" class="dropzone-saved-img">
+                                                    </div>          
+                                                    <a class="dz-remove" href="javascript:void(0);" data-dz-remove="" data-dz-media_id="{{$substep->id}}"><span class="fa fa-trash text-danger" style="font-size: 1.5em"></span></a>
+                                                </div>
+                                            @endforeach
+                                        @endif 
+                                    </div>
+                                
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-sm-6">
+                                      <div class="form-group">
+                                          <label class="form-control-label" for="step_title">Title</label>
+                                          <input type="text" class="form-control" name="step_title" placeholder="Type" value="{{ $guidestep->title }}">
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-6">
+                                      <div class="form-group">
+                                          <label class="form-control-label">Points/Description</label>
+                                          <textarea name="step_description" id="step_description_1" class="form-control step_description" rows="10">{{ $guidestep->description }}</textarea>
+                                      </div>
+                                  </div>
+                                </div>
+                                <hr>
+                            </div>
+
+                             
+                        @endforeach
+                    @else
+
                       <div class="guide_step_list" data-repeater-item>
 
                         <div class="row mb-6">
@@ -254,6 +329,7 @@
                               </div>
                             @endfor
                         @endif
+                    @endif
                 </div>
                 <input class="btn btn-primary btn-sm" data-repeater-create type="button" value="Add Steps"/>
               </div>
@@ -262,7 +338,7 @@
 
               <div class="row">
                 <div class="col-6">
-                  <a href="#!" class="btn btn-info">Save As Draft</a>
+                  <input type="submit" class="btn btn-info" name="submit" value="Save As Draft">
                   <input type="submit" class="btn btn-success" name="submit" value="Submit">
                   <a href="#!" class="btn btn-primary">Cancel</a>
                   <input type="hidden" name="step_count" id="step_count" value="{{$step_count}}">
@@ -295,6 +371,32 @@
 <script type="text/javascript">
 var stepCount = 1;
 $(document).ready(function() {
+    //console.log(stepMediaArr);
+    @if($guide->main_image) 
+        $(".dz-preview.dz-preview-single").html('<div class="dz-preview-cover dz-processing dz-image-preview dz-success dz-complete"><img class="dz-preview-img" src="{{asset($guide->main_image_url)}}"></div>');
+        $(".dropzone.dropzone-single").addClass('dz-clickable dz-max-files-reached');
+    @endif
+    /*var mainImage = $(".dropzone-single-new").dropzone({
+        url: "{{route('admin.selfdiagnosis.mainupload',['id' => $guide->id])}}",
+        maxFiles: 5,
+        paramName: 'file',
+        maxFilesSize: 1024,
+        init: function() {
+
+            var thisDropzone = this;
+            var mockFile = { name: 'Name Image', size: 12345, type: 'image/jpeg' };
+            thisDropzone.emit("addedfile", mockFile);
+            thisDropzone.emit("success", mockFile);
+            thisDropzone.emit("thumbnail", mockFile, "https://admin.scanit.in/storage/adminprofile/1/b06edd21b7724c7d3c7333fb142fa65a.jpg")
+        },
+    });*/
+
+
+    /*var mockFile = { name: '{{$guide->main_image}}'};
+    mainImage.emit("addedfile", mockFile);
+    mainImage.emit("thumbnail", mockFile, '{{$guide->main_image_url}}');
+    mainImage.emit("complete", mockFile);
+    mainImage.files.push(mockFile);*/
 
     $('.js-example-basic-single').select2();
 
@@ -395,6 +497,7 @@ $(document).ready(function() {
 
             $('.guide_step_list').each(function(){
 
+                var unique_id = $(this).find(".step_key").val()
                 if($(this).find(".step_key").val()==''){
                     var unique_id=addon_step_unique_id();
                     $(this).find(".step_key").val(unique_id);
@@ -425,6 +528,28 @@ $(document).ready(function() {
                         this.on("complete", function(file) {
                             linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
                         });
+
+                        let myDropzone = this;
+
+                        // If you only have access to the original image sizes on your server,
+                        // and want to resize them in the browser:
+                        
+
+                        if(stepMediaArr[unique_id]){
+                            for (i = 0; i < stepMediaArr[unique_id].length; i++) {
+                                
+                                let mockFile = { name: stepMediaArr[unique_id][i].name };
+
+                                myDropzone.emit("addedfile", mockFile);
+                                myDropzone.emit("thumbnail", mockFile, stepMediaArr[unique_id][i].url);
+                                myDropzone.emit("complete", mockFile);
+
+                                $(myDropzone).find(".dz-remove").attr("data-dz-media_id", stepMediaArr[unique_id][i].id);
+                            }
+                        }
+
+                        callRemoveImg();
+
                     },
                     success: function(file, response){
                         console.log(response);
@@ -434,6 +559,10 @@ $(document).ready(function() {
                         }
                     }
                 });
+
+                
+
+
             });
         },
     });

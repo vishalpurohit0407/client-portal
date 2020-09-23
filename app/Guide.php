@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Uuid;
+use Config;
+use Storage;
 
 class Guide extends Authenticatable
 {
@@ -29,13 +31,15 @@ class Guide extends Authenticatable
         'main_title', 'main_image', 'description', 'type','duration','duration_type','difficulty','cost','tags','introduction','introduction_video_type','introduction_video_link','status'
     ];
 
-    protected $casts = [
-        "status" => "int"
-    ];
+    protected $appends = [ 'main_image_url' ];
 
     public function guide_category()
     {
         return $this->hasMany('App\Guidecategory', 'guide_id','id');
     }
 
+    public function getMainImageUrlAttribute()
+    {
+        return (isset($this->main_image) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->main_image) ? Config('filesystems.disks.public.url').'/'.$this->main_image : asset('assets/img/theme/no-image.jpg'));
+    }
 }

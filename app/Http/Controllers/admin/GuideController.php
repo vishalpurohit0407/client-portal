@@ -5,6 +5,11 @@ namespace App\Http\Controllers\admin;
 use App\Guide;
 use App\Category;
 use Illuminate\Http\Request;
+use Storage;
+use App\GuideStepMedia;
+use App\Guidecategory;
+use App\GuideSteps;
+use Response;
 
 class GuideController extends Controller
 {
@@ -56,8 +61,10 @@ class GuideController extends Controller
      */
     public function create()
     {
-        $category = Category::where('status','1')->get();
-        return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=>$category));
+        $guidArr = array();
+        $guidArr['status'] = '3';
+        $guide = Guide::create($guidArr);
+        return redirect(route('admin.selfdiagnosis.edit',['guide' => $guide->id ])); 
     }
 
     /**
@@ -119,29 +126,27 @@ class GuideController extends Controller
         return Response::json(['status' => false, 'message' => 'Something went wrong.']);
     }
 
-    public function mainImgUpload(Request $request)
+    public function mainImgUpload(Request $request, $id)
     {
-        dd($request->all());
-        if($request->unique_id && $request->file('file_image')){
-            $file=$request->file('file_image');
-            
+        $file = $request->file('file');
+        if($file && $id){
+        
             $request->validate([
-                'file_image' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'file' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
             ]);
             
             $file_name =$file->getClientOriginalName();
             $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
-            $imageName = $request->unique_id;
+            $imageName = md5($fileslug.time());
             $imgext =$file->getClientOriginalExtension();
-            $path = 'guide/step_media/'.$imageName.".".$imgext;
-            $fileAdded = Storage::disk('public')->putFileAs('guide/step_media/',$file,$imageName.".".$imgext);
+            $path = 'guide/'.$id.'/'.$imageName.".".$imgext;
+            $fileAdded = Storage::disk('public')->putFileAs('guide/'.$id.'/',$file,$imageName.".".$imgext);
             
             if($fileAdded){
-                $guidMediaArr = array();
-                $guidMediaArr['step_key'] = $request->unique_id;
-                $guidMediaArr['media'] =  $path;
-                $media = GuideStepMedia::create($guidMediaArr);
-                return Response::json(['status' => true, 'message' => 'Media uploaded.', 'id' => $media->id]);
+                $guideData = Guide::find($id);
+                Storage::disk('public')->delete($guideData->main_image);
+                $media = Guide::where('id',$id)->update(['main_image' => $path]);
+                return Response::json(['status' => true, 'message' => 'Media uploaded.']);
             }
             return Response::json(['status' => false, 'message' => 'Something went wrong.']);
         }
@@ -184,7 +189,10 @@ class GuideController extends Controller
      */
     public function edit(Guide $guide)
     {
-        echo "<pre>";print_r($guide);exit();
+        $category = Category::where('status','1')->get();
+        $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->get();
+        $selectedCategory = Guidecategory::where('guide_id',$guide->id)->pluck('category_id')->toArray();
+        return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
     }
 
     /**
@@ -196,7 +204,95 @@ class GuideController extends Controller
      */
     public function update(Request $request, Guide $guide)
     {
-        //
+        //dd($request->all());
+        if(!$guide){
+            abort(404);
+        }
+
+        $messages = [
+            'guide_step.*.step_title.required' => 'The title field is required.',
+            'guide_step.*.step_description.required' => 'The points/description field is required.',
+            //'guide_step.*.stepfilupload.*' => 'Please upload jpg,jpeg,png,bmp image',
+        ];
+
+        if($request->submit == 'Save As Draft'){
+            
+            $request->validate([
+                'main_title' => 'required'
+            ]);
+
+        }else{
+            
+            $request->validate([
+                'main_title' => 'required',
+                'description' => 'required',
+                'category' => 'required',
+                'type' => 'required',
+                'duration' => 'required|numeric',
+                'cost' => 'required|numeric|between:0,99999999.99',
+
+                //'guide_step.*.step_title' => 'required',
+                //'guide_step.*.step_description' => 'required',
+                //'guide_step.*.stepfilupload.*' => 'mimes:jpg,jpeg,png,bmp'
+            ]);
+        }
+ 
+        $guide->main_title = $request->main_title;  
+        $guide->description = $request->description; 
+        $guide->type = $request->type;    
+        $guide->duration = $request->duration;    
+        $guide->duration_type = $request->duration_type;   
+        $guide->difficulty = $request->difficulty;  
+        $guide->cost = $request->cost;    
+        $guide->tags = $request->tags;    
+        $guide->introduction = $request->introduction;    
+        $guide->introduction_video_type = $request->vid_link_type;
+        $guide->introduction_video_link = $request->vid_link_url;
+        $guide->status = ($request->submit == 'Save As Draft')? '3' : '1';
+
+        if(isset($request->category) && is_array($request->category)){
+            Guidecategory::where('guide_id', $guide->id)->whereNotIn('category_id', $request->category)->delete();
+            foreach ($request->category as $key => $cate) {
+                
+                $checkCat = Guidecategory::where('guide_id', $guide->id)->where('category_id', $cate)->count();
+                if($checkCat == 0){
+                    $cateArr = array();
+                    $cateArr['guide_id'] = $guide->id;
+                    $cateArr['category_id'] = $cate;
+                    Guidecategory::create($cateArr);
+                }
+            }
+        }
+
+        if(isset($request->guide_step) && is_array($request->guide_step)){
+            
+            foreach ($request->guide_step as $key1 => $step) {
+                
+                $stepArr = array();
+                $stepArr['title'] = $step['step_title'];
+                $stepArr['description'] = $step['step_description'];
+
+                $checkstep = GuideSteps::where('step_key', $step['step_key'])->where('guide_id',  $guide->id)->count();
+
+                if($checkstep > 0){
+                    
+                    $stepData = GuideSteps::where('step_key', $step['step_key'])->where('guide_id',  $guide->id)->update($stepArr);
+                }else{
+
+                    $stepArr['step_key'] = $step['step_key'];
+                    $stepArr['guide_id'] = $guide->id;
+                    //dd($stepArr);
+                    $stepData = GuideSteps::create($stepArr);
+                }
+
+                GuideStepMedia::where('step_key',$stepData->step_key)->update(['step_key' => $stepData->id]);
+            }
+        }
+
+        if ($guide->save()) {
+            $request->session()->flash('alert-success', 'Selfdiagnosis updated successfuly.');
+        }
+        return redirect(route('admin.selfdiagnosis.list'));
     }
 
     /**

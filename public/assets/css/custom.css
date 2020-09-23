@@ -113,3 +113,16 @@
 	margin-top: 10px;
 }
 
+.dropzone.dropzone-single{
+	display: flex;
+	margin: 0;
+}
+.dropzone.dropzone-single .dz-preview{
+	position: absolute;
+	margin: 0;
+}
+
+.dropzone-saved-img{
+	height: 120px;
+	width: 120px;
+}

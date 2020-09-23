@@ -83,9 +83,9 @@ Route::group(['middleware' => ['admin']],function(){
 	        'show' => 'admin.selfdiagnosis.show'
 	    ]
 	]);
-	Route::post('/selfdiagnosis/img-upload','admin\SelfDiagnosisController@img_upload')->name('admin.selfdiagnosis.upload');
-	Route::post('/selfdiagnosis/main-img-upload','admin\SelfDiagnosisController@mainImgUpload')->name('admin.selfdiagnosis.mainupload');
-	Route::post('/selfdiagnosis/remove/img-upload','admin\SelfDiagnosisController@removeImage')->name('admin.selfdiagnosis.remove.image');
+	Route::post('/selfdiagnosis/img-upload','admin\GuideController@img_upload')->name('admin.selfdiagnosis.upload');
+	Route::post('/selfdiagnosis/main-img-upload/{id}','admin\GuideController@mainImgUpload')->name('admin.selfdiagnosis.mainupload');
+	Route::post('/selfdiagnosis/remove/img-upload','admin\GuideController@removeImage')->name('admin.selfdiagnosis.remove.image');
 
 	// Organization Module Routes
 	Route::post('/cms/pages/list/data','admin\CmspagsController@listdata')->name('cms.pages.listdata');

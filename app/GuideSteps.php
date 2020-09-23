@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Uuid;
 use Storage;
+use App\GuideStepMedia;
 
-class GuideStepMedia extends Authenticatable
+class GuideSteps extends Authenticatable
 {
-    protected $table = 'guide_step_media';
+    protected $table = 'guide_steps';
     /**protected $table = 'category';
      * The attributes that are mass assignable.
      *
@@ -27,13 +28,11 @@ class GuideStepMedia extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'step_id', 'step_key', 'media'
+        'guide_id', 'title', 'description', 'step_key'
     ];
 
-    protected $appends = [ 'media_url' ];
-
-    public function getMediaUrlAttribute()
+    public function media()
     {
-        return (isset($this->media) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->media) ? Config('filesystems.disks.public.url').'/'.$this->media : asset('assets/img/theme/no-image.jpg'));
+        return $this->hasMany('App\GuideStepMedia', 'step_id','id');
     }
 }
