@@ -8,12 +8,12 @@
     </ul>
 </nav>
 @else
-<div class="card col-12">
-    <div class="card-body">
-        <div class="pt-4 text-center">
-            <h5 class="h3 title">
-                <span class="d-block mb-1">No matching records found</span>
-            </h5>
+<div class="col-lg-12">
+    <!-- Image-Text card -->
+    <div class="card">
+        <!-- Card body -->
+        <div class="card-body">
+            <h5 class="h3 card-title mb-0 text-center">No matching records found</h5>
         </div>
     </div>
 </div>

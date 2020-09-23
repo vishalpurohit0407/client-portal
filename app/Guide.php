@@ -42,4 +42,9 @@ class Guide extends Authenticatable
     {
         return (isset($this->main_image) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->main_image) ? Config('filesystems.disks.public.url').'/'.$this->main_image : asset('assets/img/theme/no-image.jpg'));
     }
+    public function guide_step()
+    {
+        return $this->hasMany('App\GuideStep', 'guide_id','id');
+    }
+
 }

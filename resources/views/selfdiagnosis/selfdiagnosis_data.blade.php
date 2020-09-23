@@ -1,11 +1,15 @@
-@if($selfdiagnosis)
+@if($selfdiagnosis && count($selfdiagnosis)>0)
     @foreach($selfdiagnosis as $selfdiagnos)
         <div class="col-lg-4">
             <!-- Image-Text card -->
             <a href="{{route('user.selfdiagnosis.show',$selfdiagnos->id)}}">
                 <div class="card">
                     <!-- Card image -->
+                    @if($selfdiagnos->main_image)
                     <img class="card-img-top" src="{{asset($selfdiagnos->main_image)}}" alt="Image placeholder">
+                    @else
+                    <img class="card-img-top" src="{{asset('assets/img/theme/no-image-available.png')}}">
+                    @endif
                     <!-- Card body -->
                     <div class="card-body">
                         <h5 class="h2 card-title mb-0">{{ucfirst($selfdiagnos->main_title)}}</h5>
@@ -21,4 +25,14 @@
             </a>
         </div>
     @endforeach
+@else
+<div class="col-lg-12">
+    <!-- Image-Text card -->
+    <div class="card">
+        <!-- Card body -->
+        <div class="card-body">
+            <h5 class="h3 card-title mb-0 text-center">No records available.</h5>
+        </div>
+    </div>
+</div>
 @endif

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Guide;
 use App\Category;
 use Illuminate\Http\Request;
+use Auth;
+use App\CompletedGuide;
+use PDF;
 
 class GuideController extends Controller
 {
@@ -53,6 +56,40 @@ class GuideController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function completedGuide(Request $request, $guide_id)
+    {
+        try {
+            if (!$guide_id) {
+              return abort(404);
+            }
+            $completed_guide = new CompletedGuide;
+            $completed_guide->guide_id = $guide_id;
+            $completed_guide->user_id = Auth::user()->id;
+            if($completed_guide->save())
+            {
+                $request->session()->flash('alert-success', 'Guide completed successfuly.');  
+            }
+            return redirect(route('user.selfdiagnosis.show',$guide_id));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('user.selfdiagnosis.show',$guide_id));
+        };
+    }
+
+    public function createPDF(Request $request ,$guide_id) {
+        // retreive all records from db
+        $selfdiagnosis = Guide::find($guide_id);
+        if (!$selfdiagnosis) {
+            return abort(404);
+        }
+        // share data to view
+        view()->share('selfdiagnosis',$selfdiagnosis);
+        // return view('selfdiagnosis.pdf_view', $selfdiagnosis);
+        $pdf = PDF::loadView('selfdiagnosis.pdf_view', $selfdiagnosis);
+        $pdf->setPaper('A4', 'landscape'); 
+        return $pdf->download('pdf_file.pdf');
+    }
+
     public function create()
     {
         //
@@ -77,7 +114,7 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('selfdiagnosis.detail',array('title'=>'Selfdiagnosis Detail','selfdiagnosis'=>$guide));
+        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Detail','selfdiagnosis'=>$guide));
     }
 
     /**

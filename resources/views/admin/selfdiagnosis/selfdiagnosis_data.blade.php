@@ -1,4 +1,4 @@
-@if($selfdiagnosis)
+@if($selfdiagnosis && count($selfdiagnosis)>0)
     @foreach($selfdiagnosis as $selfdiagnos)
         <div class="col-lg-4">
             <!-- Image-Text card -->
@@ -28,4 +28,14 @@
             </div>
         </div>
     @endforeach
+@else
+        <div class="col-lg-12">
+            <!-- Image-Text card -->
+            <div class="card">
+                <!-- Card body -->
+                <div class="card-body">
+                    <h5 class="h3 card-title mb-0 text-center">No records available.</h5>
+                </div>
+            </div>
+        </div>
 @endif
