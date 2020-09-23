@@ -38,4 +38,9 @@ class Guide extends Authenticatable
         return $this->hasMany('App\Guidecategory', 'guide_id','id');
     }
 
+    public function guide_step()
+    {
+        return $this->hasMany('App\GuideStep', 'guide_id','id');
+    }
+
 }

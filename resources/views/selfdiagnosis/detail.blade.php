@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="header-body">
             <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
+                <div class="col-lg-8 col-10">
                     <h6 class="h2 text-white d-inline-block mb-0">{{$title}}</h6>
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
@@ -14,7 +14,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-lg-6 col-5 text-right">
+                <div class="col-lg-3 col-2 text-right">
                     
                 </div>
             </div>
@@ -22,27 +22,54 @@
     </div>
 </div>
 <div class="container-fluid mt--6">
+    @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+        @if(Session::has('alert-' . $msg))
+             <div class="alert alert-custom alert-{{ $msg }} alert-dismissible alert-dismissible fade show mb-2" role="alert">                           
+                <div class="alert-text">{{ Session::get('alert-' . $msg) }}</div>
+                <div class="alert-close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            </div>
+        @endif 
+    @endforeach
     <!-- Card stats -->
     <div class="card">
         <div class="card-header">
             <div class="row align-items-center">
-                <div class="col-8"> <h5 class="h3 mb-0">{{$selfdiagnosis->main_title}}</h5>
+                <div class="col-8">
+                    <h5 class="h3 mb-0">{{$selfdiagnosis->main_title}}</h5>
                 </div>
+                <!-- <div class="col-4 text-right">
+                    <a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-sm btn-neutral">Export PDF</a>
+                </div> -->
             </div>
         </div>
         <div class="p-4">
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="tuto-main-image noprint">
-                        <a class="image" href="{{asset($selfdiagnosis->main_image)}}" data-toggle="lightbox">
-                            <img class="img-fluid" style="filter: blur(0px);" src="{{asset($selfdiagnosis->main_image)}}">
-                        </a>
+                        @if($selfdiagnosis->main_image)
+                            <a class="image" href="" id="lightgallery" data-image="{{asset($selfdiagnosis->main_image)}}" data-maintitle="{{$selfdiagnosis->main_title}}" >
+                                <img class="img-fluid" style="filter: blur(0px);" src="{{asset($selfdiagnosis->main_image)}}">
+                            </a>
+                        @else
+                            <a class="image" href="" id="lightgallery" data-image="{{asset('assets/img/theme/no-image-available.png')}}" data-maintitle="{{$selfdiagnosis->main_title}}" >
+                                <img class="img-fluid" style="filter: blur(0px);" src="{{asset('assets/img/theme/no-image-available.png')}}">
+                            </a>
+                        @endif
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-12">
                     <div class="tuto-details-box">
                         <p class="mt-0">{{$selfdiagnosis->description}}</p>
                         <div class="tuto-items-container">
+                            <div class="alert alert-secondary fade show" role="alert">
+                                <span class="alert-icon"><i class="ni ni-app"></i></span>
+                                <span class="alert-text">Type</span>
+                                <span class="alert-text-right"><strong>{{$selfdiagnosis->type}}</strong></span>
+                            </div>
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-tachometer-alt"></i></span>
                                 <span class="alert-text">Difficulty</span>
@@ -68,24 +95,32 @@
                                 <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">{{$selfdiagnosis->cost}} USD ($)</div></strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
-                                <span class="alert-icon"><i class="fas fa-language"></i></span>
-                                <span class="alert-text">Other languages</span>
-                                <span class="alert-text-right"><strong>English <i class="fas fa-check-circle"></i></strong></span>
-                            </div>
-                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-list-ol"></i></span>
                                 <span class="alert-text">Contents</span>
-                                <span class="alert-text-right">&nbsp;[<a href="#content-sr" role="button" tabindex="0" class="togglelink">hide</a>]&nbsp;</span>
+                                <span class="alert-text-right">&nbsp;[
+                                    <a href="#content-sr" role="button" tabindex="0" class="togglelink">hide</a>]&nbsp;
+                                </span>
                                 <ul id="content-sr">
-                                    <li class="toclevel-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_1_-_Team_setup"><span class="tocnumber">2</span> <span class="toctext">Step 1 - Team setup</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_2_-_Space_setup"><span class="tocnumber">3</span> <span class="toctext">Step 2 - Space setup(Repiar/maker space)</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_3_-_Registration_Process"><span class="tocnumber">4</span> <span class="toctext">Step 3 - Registration Process</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_4_-_repair_process"><span class="tocnumber">5</span> <span class="toctext">Step 4 - repair process</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_5_-_education"><span class="tocnumber">6</span> <span class="toctext">Step 5 - education</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_6_-_Documentation"><span class="tocnumber">7</span> <span class="toctext">Step 6 - Documentation</span></a></li>
-                                    <li class="toclevel-1"><a href="#Step_7_-_Social_Media"><span class="tocnumber">8</span> <span class="toctext">Step 7 - Social Media</span></a></li>
-                                    <li class="toclevel-1"><a href="#Comments"><span class="tocnumber">9</span> <span class="toctext">Comments</span></a></li>
+                                    @if($selfdiagnosis->guide_step)
+                                    @php $step = 1; @endphp
+                                    @php $srno = 2; @endphp
+                                        <li class="toclevel-1">
+                                            <a href="#Introduction">
+                                                <span class="tocnumber">1</span>
+                                                <span class="toctext">Introduction</span>
+                                            </a>
+                                        </li>
+                                        @foreach($selfdiagnosis->guide_step as $stepdata)
+                                            <li class="toclevel-1">
+                                                <a href="#Step_{{$step}}_-_{{\Str::slug($stepdata->title, '_')}}">
+                                                    <span class="tocnumber">{{$srno}}</span> 
+                                                    <span class="toctext">Step {{$step}} - {{$stepdata->title}}</span>
+                                                </a>
+                                            </li>
+                                            @php $step++; @endphp
+                                            @php $srno++; @endphp
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -93,9 +128,17 @@
                 </div>
             </div>
             <div id="Introduction" class="mt-4">
-                <h2 class="display-3 mb-0">Introduction</h2>
-                <p>This event shall involve hands on use of tools on repairing the broken appliances, the ASKotec materials and tools shall come handy in this event, the people who have their appliances broken shall see the repair process and this intended to teach them with the skill of self repairing their gadgets next time, and finally a documentation of the event on Wikifab.</p>
-                <div class="tabbing">
+                @if($selfdiagnosis->introduction)
+                    <h2 class="display-3 mb-0">Introduction</h2>
+                    <p>{{$selfdiagnosis->introduction}}</p>
+                @endif
+                @if($selfdiagnosis->introduction_video_link)
+                    <h2 class="display-3 mb-0">Video overview</h2>
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" class="text-center" src="{{$selfdiagnosis->introduction_video_link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                @endif
+                <div class="tabbing mt-4">
                     <ul class="tab-nav">
                         <li>Tools & Materials</li>
                     </ul>
@@ -152,264 +195,80 @@
                     </div>
                 </div>
             </div>
-            <div id="Step_1_-_Team_setup" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step1" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
 
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step1" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step1" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
+            @if($selfdiagnosis->guide_step)
+            @php $step = 1; @endphp
+                @foreach($selfdiagnosis->guide_step as $stepkey => $stepdata)
+                    <div id="Step_{{$step}}_-_{{\Str::slug($stepdata->title, '_')}}" class="mt-4">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <div id="carousel-step{{$step}}" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
+                                      <!--Slides-->
+                                      <div class="carousel-inner lightgallery" style="cursor: pointer;" data-id="{{$stepdata->id}}" title="Show Image">
+                                        @if($stepdata->guide_step_media)
+                                            @foreach($stepdata->guide_step_media as $media)
+                                                <div class="carousel-item @if($loop->first) active @endif">
+                                                  <img class="d-block" src="{{asset($media->media)}}" alt="First slide">
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                      </div>
+                                      <!--/.Slides-->
+
+                                      <!--/.Controls-->
+                                      <ol class="carousel-indicators">
+                                        @if($stepdata->guide_step_media)
+                                        @php $dataslide = 0; @endphp
+                                            @foreach($stepdata->guide_step_media as $media)
+                                                <li data-target="#carousel-step{{$step}}" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
+                                                    <img class="d-block" src="{{asset($media->media)}}" class="img-fluid">
+                                                </li>
+                                            @php $dataslide++; @endphp
+                                            @endforeach
+                                        @endif
+                                      </ol>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-{{count($stepdata->guide_step_media) > 0 ? '6' : '12'}} step-instructions">
+                                <h3 class="display-4">Step {{$step}} - {{$stepdata->title}}</h3>
+                                <div>
+                                    {{$stepdata->description}}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 1 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div id="Step_2_-_Space_setup" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step2" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
+                @php $step++; @endphp
+                @endforeach
+            @endif
+        </div>
+    </div>
+    <div class="card" style="background-color: #edf6ff;
+    border: 1px solid #bddcff;">
+        <!-- Card body -->
+        <div class="card-body">
+            <div class="text-center">
+                <h5 class="h1 title">
+                  <span class="d-block mb-1 text-muted"> <i class="fa fa-flag-checkered text-info"></i>&nbsp;FINISH LINE</span>
+                </h5>
+                <div class="mt-5 mb-4">
+                    @php 
+                        $completed_guide = \App\CompletedGuide::where('guide_id',$selfdiagnosis->id)->where('user_id',\Auth::user()->id)->first();
+                        $completed_guide_count = \App\CompletedGuide::where('guide_id',$selfdiagnosis->id)->count();
 
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step2" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step2" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 2 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
+                    @endphp
+                    @if($completed_guide)
+                        <a href="javascript:void(0);" class="btn btn-icon btn-primary">
+                            <span class="btn-inner--icon"><i class="fa fa-check"></i></span>
+                            <span class="btn-inner--text">Already Completed</span>
+                        </a>
+                    @else
+                        <a href="{{route('user.complete.guide',$selfdiagnosis->id)}}" class="btn btn-icon btn-primary">
+                            <span class="btn-inner--icon"><i class="fa fa-check"></i></span>
+                            <span class="btn-inner--text">Complete Guide</span>
+                        </a>
+                    @endif
                 </div>
-            </div>
-            <div id="Step_3_-_Registration_Process" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step3" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
-
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step3" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step3" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 3 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div id="Step_4_-_repair_process" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step4" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
-
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step4" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step4" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 4 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div id="Step_5_-_education" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step5" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
-
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step5" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step5" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 5 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div id="Step_6_-_Documentation" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step6" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
-
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step6" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step6" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 6 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div id="Step_7_-_Social_Media" class="mt-4">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div id="carousel-step6" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                              <!--Slides-->
-                              <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                  <img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg" alt="Second slide">
-                                </div>
-                              </div>
-                              <!--/.Slides-->
-
-                              <!--/.Controls-->
-                              <ol class="carousel-indicators">
-                                <li data-target="#carousel-step6" data-slide-to="0" class="active"> <img class="d-block" src="https://wikifab.org/images/thumb/3/3f/Repair_Cafe%27_IMG_20191031_142821_2.jpg/800px-Repair_Cafe%27_IMG_20191031_142821_2.jpg"
-                                    class="img-fluid"></li>
-                                <li data-target="#carousel-step6" data-slide-to="1"><img class="d-block" src="https://wikifab.org/images/thumb/6/6f/Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg/800px-Repair_Cafe%27_photo_2019-10-31_17-33-45.jpg"
-                                    class="img-fluid"></li>
-                              </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 step-instructions">
-                        <h3 class="display-4">Step 7 - Team setup</h3>
-                        <ul>
-                            <li>information/mobilization team</li>
-                            <li>reapir/experts team</li>
-                            <li>documentation team</li>
-                            <li>reception team</li>
-                            <li>tools and security</li>
-                            <li>social media team</li>
-                        </ul>
-                    </div>
-                </div>
+                <small class="h4 font-weight-light text-primary">{{$completed_guide_count}} other people completed this guide.</small>
             </div>
         </div>
     </div>
@@ -417,28 +276,82 @@
 @endsection
 
 @section('pagewise_js')
-<script type="text/javascript">
-    jQuery(document).ready(function($){
-        $(".togglelink").click(function(e){
-            e.preventDefault();
-            $($(this).attr('href')).slideToggle();
-            if ($(this).text() == "hide")
-               $(this).text("show")
-            else
-               $(this).text("hide");
-        });
-        $("#content-sr li a[href^='#']").on('click', function(e) {
-           e.preventDefault();
-           var hash = this.hash;
-           // animate
-           return $('html, body').animate({
-               scrollTop: $(hash).offset().top-20
-             }, 1000, function(){
-               // /window.location.hash = hash;
-               return window.history.pushState(null, null, hash)
-             });
+<script type="text/javascript"> 
+var elementArr = new Array();
+    @php
+        if($selfdiagnosis->guide_step){
+            foreach($selfdiagnosis->guide_step as $stepdata){
+                if($stepdata->guide_step_media){
+    @endphp
+                    var mediaArr = new Array();
+    @php
+                    foreach ($stepdata->guide_step_media as $media){
+    @endphp            
+                        mediaArr.push({src: '{{asset($media->media)}}', thumb: '{{asset($media->media)}}', subHtml : '{{$stepdata->title}}'});
+    @php   
+                    } 
+                }
+    @endphp
+                elementArr['{{$stepdata->id}}'] = mediaArr;
+    @php        
+            }
+        }
+    @endphp
+jQuery(document).ready(function($){
+    $('.lightgallery').on('click', function(e) {
+        e.preventDefault();
+        var ids = $(this).data('id');
 
-        });
+        $(this).lightGallery({
+            dynamic: true,
+            dynamicEl: elementArr[ids],
+            download:false,
+            fullScreen:false,
+            zoom:false,
+            share:false,
+            autoplay:false,
+            autoplayControls:false,
+        })
+    }); 
+
+    $('#lightgallery').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).data('image');
+        var title = $(this).data('maintitle');
+
+        $(this).lightGallery({
+            dynamic: true,
+            dynamicEl: [{src: url, thumb: url, subHtml : title}],
+            download:false,
+            fullScreen:false,
+            zoom:false,
+            share:false,
+            autoplay:false,
+            autoplayControls:false,
+        })
+    }); 
+
+    $(".togglelink").click(function(e){
+        e.preventDefault();
+        $($(this).attr('href')).slideToggle();
+        if ($(this).text() == "hide")
+           $(this).text("show")
+        else
+           $(this).text("hide");
     });
+
+    $("#content-sr li a[href^='#']").on('click', function(e) {
+       e.preventDefault();
+       var hash = this.hash;
+       // animate
+       return $('html, body').animate({
+           scrollTop: $(hash).offset().top-20
+         }, 1000, function(){
+           // /window.location.hash = hash;
+           return window.history.pushState(null, null, hash)
+         });
+
+    });
+});
 </script>
 @endsection
