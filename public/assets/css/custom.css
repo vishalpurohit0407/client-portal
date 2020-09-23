@@ -118,7 +118,7 @@
     overflow: hidden;
     position: absolute;
     top: -3px;
-    right: -3px
+    right: 12px
 }
 .ribbon {
     font-size: 12px;
@@ -192,4 +192,21 @@
 .ribbon.red:before,
 .ribbon.red:after {
     border-top: 3px solid #8f142c
+}
+.footer-button {
+    position: absolute;
+    bottom: 25px;
+    text-align: center;
+    left: 0;
+    width: 100%;
+}
+.card.custom_card {
+    height: 100%;
+}
+.custom_card .card-body{
+	padding-bottom: 2.5rem;
+}
+.custom_card .card-img-top{
+    height: 250px;
+    object-fit: cover;
 }

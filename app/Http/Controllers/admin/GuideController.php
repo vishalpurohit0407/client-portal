@@ -25,7 +25,7 @@ class GuideController extends Controller
      */
     public function index(Request $request)
     {
-        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
+        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
         
         if($request->ajax()){
             return view('admin.selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
@@ -38,7 +38,7 @@ class GuideController extends Controller
 
     public function search(Request $request){
 
-        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('status','!=','2');
+        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','!=','2');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
             $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
@@ -108,14 +108,16 @@ class GuideController extends Controller
             
             $file_name =$file->getClientOriginalName();
             $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
-            $imageName = $request->unique_id;
+            $imageName = md5($fileslug.time());
             $imgext =$file->getClientOriginalExtension();
-            $path = 'guide/step_media/'.$imageName.".".$imgext;
-            $fileAdded = Storage::disk('public')->putFileAs('guide/step_media/',$file,$imageName.".".$imgext);
+            $path = 'guide/'.$request->guide_id.'/step_media/'.$imageName.".".$imgext;
+            $fileAdded = Storage::disk('public')->putFileAs('guide/'.$request->guide_id.'/step_media/',$file,$imageName.".".$imgext);
             
             if($fileAdded){
+                $getStepId = GuideSteps::where('step_key',$request->unique_id)->first();
                 $guidMediaArr = array();
                 $guidMediaArr['step_key'] = $request->unique_id;
+                $guidMediaArr['step_id'] = ($getStepId)? $getStepId->id : NULL;
                 $guidMediaArr['media'] =  $path;
                 $media = GuideStepMedia::create($guidMediaArr);
                 return Response::json(['status' => true, 'message' => 'Media uploaded.', 'id' => $media->id]);
@@ -170,6 +172,24 @@ class GuideController extends Controller
         return Response::json(['status' => false, 'message' => 'Something went wrong.']);
     }
 
+    public function removeStep(Request $request)
+    {
+
+        $steps = GuideSteps::where('step_key',$request->step_key)->first();
+        
+        if($steps){
+
+            $medias = GuideStepMedia::where('step_id', $steps->id)->get();
+            foreach ($medias as $media) {
+                Storage::deleteDirectory($media->media);
+            }
+            GuideStepMedia::where('step_id', $steps->id)->delete();
+            $steps->delete();    
+            return Response::json(['status' => true, 'message' => 'Step deleted.']);
+        }
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -190,7 +210,8 @@ class GuideController extends Controller
     public function edit(Guide $guide)
     {
         $category = Category::where('status','1')->get();
-        $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->get();
+        $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->orderBy('created_at','asc')->get();
+        //dd($guide_step->count());
         $selectedCategory = Guidecategory::where('guide_id',$guide->id)->pluck('category_id')->toArray();
         return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
     }
@@ -272,20 +293,22 @@ class GuideController extends Controller
                 $stepArr['title'] = $step['step_title'];
                 $stepArr['description'] = $step['step_description'];
 
-                $checkstep = GuideSteps::where('step_key', $step['step_key'])->where('guide_id',  $guide->id)->count();
+                $checkstep = GuideSteps::where('step_key', $step['step_key'])->where('guide_id',  $guide->id)->first();
 
-                if($checkstep > 0){
+                if($checkstep){
                     
-                    $stepData = GuideSteps::where('step_key', $step['step_key'])->where('guide_id',  $guide->id)->update($stepArr);
+                    //$stepData = GuideSteps::where('step_key', $step['step_key'])->where('guide_id',  $guide->id)->update($stepArr);
+                    $checkstep->update($stepArr);
+                    GuideStepMedia::where('step_key',$checkstep->step_key)->update(['step_id' => $checkstep->id]);
                 }else{
 
                     $stepArr['step_key'] = $step['step_key'];
                     $stepArr['guide_id'] = $guide->id;
                     //dd($stepArr);
                     $stepData = GuideSteps::create($stepArr);
+                    GuideStepMedia::where('step_key',$step['step_key'])->update(['step_id' => $stepData->id]);
                 }
-
-                GuideStepMedia::where('step_key',$stepData->step_key)->update(['step_key' => $stepData->id]);
+                
             }
         }
 
