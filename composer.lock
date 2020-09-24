@@ -913,6 +913,18 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
+            "version": "v7.28.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "f7493ab717ca2a9598b1db2d6a3bae8ac8c755e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f7493ab717ca2a9598b1db2d6a3bae8ac8c755e8",
+                "reference": "f7493ab717ca2a9598b1db2d6a3bae8ac8c755e8",
+=======
             "version": "v7.28.3",
             "source": {
                 "type": "git",
@@ -923,6 +935,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/b0942c391975972b1a54b2dc983e33a239f169a9",
                 "reference": "b0942c391975972b1a54b2dc983e33a239f169a9",
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
                 "shasum": ""
             },
             "require": {
@@ -1067,7 +1080,11 @@
                 "framework",
                 "laravel"
             ],
+<<<<<<< HEAD
+            "time": "2020-09-09T15:02:46+00:00"
+=======
             "time": "2020-09-17T14:23:26+00:00"
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
         },
         {
             "name": "laravel/tinker",
@@ -1255,6 +1272,8 @@
                 "md",
                 "parser"
             ],
+<<<<<<< HEAD
+=======
             "funding": [
                 {
                     "url": "https://enjoy.gitstore.app/repositories/thephpleague/commonmark",
@@ -1281,6 +1300,7 @@
                     "type": "tidelift"
                 }
             ],
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
             "time": "2020-09-13T14:44:46+00:00"
         },
         {
@@ -1518,6 +1538,18 @@
         },
         {
             "name": "nesbot/carbon",
+<<<<<<< HEAD
+            "version": "2.39.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/briannesbitt/Carbon.git",
+                "reference": "326efde1bc09077a26cb77f6e2e32e13f06c27f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/326efde1bc09077a26cb77f6e2e32e13f06c27f2",
+                "reference": "326efde1bc09077a26cb77f6e2e32e13f06c27f2",
+=======
             "version": "2.40.0",
             "source": {
                 "type": "git",
@@ -1528,6 +1560,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/6c7646154181013ecd55e80c201b9fd873c6ee5d",
                 "reference": "6c7646154181013ecd55e80c201b9fd873c6ee5d",
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
                 "shasum": ""
             },
             "require": {
@@ -1593,6 +1626,9 @@
                 "datetime",
                 "time"
             ],
+<<<<<<< HEAD
+            "time": "2020-09-10T12:16:42+00:00"
+=======
             "funding": [
                 {
                     "url": "https://opencollective.com/Carbon",
@@ -1604,6 +1640,7 @@
                 }
             ],
             "time": "2020-09-11T19:00:58+00:00"
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
         },
         {
             "name": "nikic/php-parser",
@@ -2318,12 +2355,15 @@
                 "queue",
                 "set"
             ],
+<<<<<<< HEAD
+=======
             "funding": [
                 {
                     "url": "https://github.com/ramsey",
                     "type": "github"
                 }
             ],
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
             "time": "2020-09-10T20:58:17+00:00"
         },
         {
@@ -2728,6 +2768,8 @@
             ],
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
+=======
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -2742,6 +2784,7 @@
                     "type": "tidelift"
                 }
             ],
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
             "time": "2020-09-07T11:33:47+00:00"
         },
         {
@@ -2961,6 +3004,8 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< HEAD
+=======
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -2975,6 +3020,7 @@
                     "type": "tidelift"
                 }
             ],
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
             "time": "2020-09-07T11:33:47+00:00"
         },
         {
@@ -4301,6 +4347,8 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< HEAD
+=======
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -4315,6 +4363,7 @@
                     "type": "tidelift"
                 }
             ],
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
             "time": "2020-09-07T11:33:47+00:00"
         },
         {
@@ -4553,6 +4602,8 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< HEAD
+=======
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -4567,6 +4618,7 @@
                     "type": "tidelift"
                 }
             ],
+>>>>>>> 2a6f1e4a892b7618e457560a7317e5356ebd5e54
             "time": "2020-09-07T11:33:47+00:00"
         },
         {

@@ -193,7 +193,7 @@
                 <div data-repeater-list="guide_step">
                     <script type="text/javascript">let stepMediaArr = new Array();</script>
 
-                    @if(old('step_count') == '' && $guide_step)
+                    @if(old('step_count') == '' && $guide_step->count() > 0)
                         @foreach ($guide_step as $key => $guidestep)
                            
                             <div class="guide_step_list" data-repeater-item>
@@ -203,20 +203,7 @@
                                     <a href="javascript:;" data-repeater-delete="" class="btn btn-icon btn-danger"><i class="fas fa-trash"></i></a>
                                     <input type="hidden" class="step_key" name="step_key" value="{{ $guidestep->step_key }}">
 
-                                    <div class="dropzone dropzone-init">
-                                        
-                                        @if($guidestep->media)
-                                            
-                                            @foreach ($guidestep->media as $key => $substep)
-                                                <div class="dz-preview dz-processing dz-image-preview dz-complete">  
-                                                    <div class="dz-image">
-                                                        <img data-dz-thumbnail="{{$substep->media}}" alt="" src="{{$substep->media_url}}" class="dropzone-saved-img">
-                                                    </div>          
-                                                    <a class="dz-remove" href="javascript:void(0);" data-dz-remove="" data-dz-media_id="{{$substep->id}}"><span class="fa fa-trash text-danger" style="font-size: 1.5em"></span></a>
-                                                </div>
-                                            @endforeach
-                                        @endif 
-                                    </div>
+                                    <div class="dropzone dropzone-init"></div>
                                 
                                   </div>
                                 </div>
@@ -230,13 +217,23 @@
                                   <div class="col-sm-6">
                                       <div class="form-group">
                                           <label class="form-control-label">Points/Description</label>
-                                          <textarea name="step_description" id="step_description_1" class="form-control step_description" rows="10">{{ $guidestep->description }}</textarea>
+                                          <textarea name="step_description" id="step_description_{{$key}}" class="form-control step_description" rows="10">{{ $guidestep->description }}</textarea>
                                       </div>
                                   </div>
                                 </div>
                                 <hr>
                             </div>
-
+                            @if($guidestep->media)
+                                <script type="text/javascript">var subMediaArr = new Array();</script>
+                                @foreach ($guidestep->media as $key => $substep)
+                                    <script type="text/javascript">
+                                        subMediaArr.push({ name: '{{$substep->media}}', size: '', url: '{{$substep->media_url}}', id: '{{$substep->id}}'});
+                                    </script>
+                                @endforeach
+                                <script type="text/javascript">
+                                    stepMediaArr['{{$guidestep->step_key}}'] = subMediaArr;
+                                </script>
+                            @endif
                              
                         @endforeach
                     @else
@@ -338,10 +335,12 @@
 
               <div class="row">
                 <div class="col-6">
-                  <input type="submit" class="btn btn-info" name="submit" value="Save As Draft">
-                  <input type="submit" class="btn btn-success" name="submit" value="Submit">
-                  <a href="#!" class="btn btn-primary">Cancel</a>
-                  <input type="hidden" name="step_count" id="step_count" value="{{$step_count}}">
+                    @if($guide->status == '3')
+                        <input type="submit" class="btn btn-info" name="submit" value="Save As Draft">
+                    @endif
+                    <input type="submit" class="btn btn-success" name="submit" value="Published">
+                    <a href="{{route('admin.selfdiagnosis.list')}}" class="btn btn-primary">Cancel</a>
+                    <input type="hidden" name="step_count" id="step_count" value="{{$step_count}}">
                 </div>
               </div>
             </form>
@@ -362,6 +361,9 @@
   .dropzone-multiple .dz-message{
     padding-top: 4rem;
   }
+  .dz-size{
+    display: none;
+  }
 </style>
 
 @endsection
@@ -370,8 +372,9 @@
 <script src="{{asset('assets/vendor/jquery-repeater/jquery.repeater.min.js')}}"></script>
 <script type="text/javascript">
 var stepCount = 1;
+let guide_id= '{{$guide->id}}';
 $(document).ready(function() {
-    //console.log(stepMediaArr);
+    console.log(stepMediaArr);
     @if($guide->main_image) 
         $(".dz-preview.dz-preview-single").html('<div class="dz-preview-cover dz-processing dz-image-preview dz-success dz-complete"><img class="dz-preview-img" src="{{asset($guide->main_image_url)}}"></div>');
         $(".dropzone.dropzone-single").addClass('dz-clickable dz-max-files-reached');
@@ -427,6 +430,7 @@ $(document).ready(function() {
             $(this).show('fast',function(){
 
                 var unique_id=addon_step_unique_id();
+                
                 $(this).find(".step_key").val(unique_id);
 
                 $(this).find(".step_description").attr('id','step_description_'+step_count);
@@ -444,7 +448,7 @@ $(document).ready(function() {
                 $(this).find('.dropzone-init').each(function(){
                     
                     var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
-                    dropUrl+="&unique_id="+unique_id;
+                    dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
                     var dropMaxFiles = 5;
                     var dropParamName = 'file_image';
                     var dropMaxFileSize = 1024;
@@ -457,13 +461,15 @@ $(document).ready(function() {
                         addRemoveLinks: true,
                         init: function() {
                             this.on("complete", function(file) {
-                                linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
+                                //linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
+                                $(file._removeLink).html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
                             });
                         },
                         success: function(file, response){
-                            console.log(response);
+                            
                             if(response.status){   
-                                linkObj.find(".dz-remove").attr("data-dz-media_id", response.id);
+                                //linkObj.find(".dz-remove").attr("data-dz-media_id", response.id);
+                                $(file._removeLink).attr("data-dz-media_id", response.id);
                                 callRemoveImg();
                             }
                         }
@@ -473,6 +479,7 @@ $(document).ready(function() {
             })
         },
         hide:function(e){
+            var keyId = $(this).find('.step_key').val();
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -483,6 +490,19 @@ $(document).ready(function() {
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if(result.value){
+
+                    $.ajax({
+                        url: "{{ route('admin.selfdiagnosis.remove.step',['_token' => csrf_token() ]) }}",
+                        data: { step_key: keyId},
+                        type: 'POST',
+                        success: function (data) {
+                            
+                            console.log();
+                        },
+                        error: function (data) {
+                            
+                        }
+                    });
                     step_count--;
                     $("#step_count").val(step_count);
                     $(this).remove();
@@ -511,57 +531,59 @@ $(document).ready(function() {
                   filebrowserUploadMethod: 'form'
                 });
 
-                var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token() ]) }}";
-                dropUrl+="&unique_id="+unique_id;
-                var dropMaxFiles = 5;
-                var dropParamName = 'file_image';
-                var dropMaxFileSize = 1024;
+                $(this).find('.dropzone-init').each(function(){
+                    
+                    var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
+                    dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
+                    var dropMaxFiles = 5;
+                    var dropParamName = 'file_image';
+                    var dropMaxFileSize = 1024;
 
-                var linkObj = $(this);
-                $(this).find('.dropzone-init').dropzone({
-                    url: dropUrl,
-                    maxFiles: dropMaxFiles,
-                    paramName: dropParamName,
-                    maxFilesSize: dropMaxFileSize,
-                    addRemoveLinks: true,
-                    init: function() {
-                        this.on("complete", function(file) {
-                            linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
-                        });
+                    $(this).dropzone({
+                        url: dropUrl,
+                        maxFiles: dropMaxFiles,
+                        paramName: dropParamName,
+                        maxFilesSize: dropMaxFileSize,
+                        addRemoveLinks: true,
+                        init: function() {
+                            this.on("complete", function(file) {
+                                //linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
+                                $(file._removeLink).html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
+                            });
 
-                        let myDropzone = this;
+                            let myDropzone = this;
 
-                        // If you only have access to the original image sizes on your server,
-                        // and want to resize them in the browser:
-                        
+                            // If you only have access to the original image sizes on your server,
+                            // and want to resize them in the browser:
+                            
 
-                        if(stepMediaArr[unique_id]){
-                            for (i = 0; i < stepMediaArr[unique_id].length; i++) {
-                                
-                                let mockFile = { name: stepMediaArr[unique_id][i].name };
+                            if(stepMediaArr[unique_id]){
+                                for (i = 0; i < stepMediaArr[unique_id].length; i++) {
+                                    
+                                    let mockFile = { name: stepMediaArr[unique_id][i].name};
+                                    myDropzone.emit("addedfile", mockFile);
+                                    myDropzone.emit("thumbnail", mockFile, stepMediaArr[unique_id][i].url);
+                                    myDropzone.emit("complete", mockFile);
+                                    
+                                    $(mockFile._removeLink).attr("data-dz-media_id", stepMediaArr[unique_id][i].id);
+                                    $(mockFile.previewTemplate).find(".dz-image img").addClass("dropzone-saved-img");
+                                    //$(myDropzone).find(".dz-remove").attr("data-dz-media_id", stepMediaArr[unique_id][i].id);
+                                }
+                            }
 
-                                myDropzone.emit("addedfile", mockFile);
-                                myDropzone.emit("thumbnail", mockFile, stepMediaArr[unique_id][i].url);
-                                myDropzone.emit("complete", mockFile);
+                            callRemoveImg();
 
-                                $(myDropzone).find(".dz-remove").attr("data-dz-media_id", stepMediaArr[unique_id][i].id);
+                        },
+                        success: function(file, response){
+                            
+                            if(response.status){   
+                                //linkObj.find(".dz-remove").attr("data-dz-media_id", response.id);
+                                $(file._removeLink).attr("data-dz-media_id", response.id);
+                                callRemoveImg();
                             }
                         }
-
-                        callRemoveImg();
-
-                    },
-                    success: function(file, response){
-                        console.log(response);
-                        if(response.status){   
-                            linkObj.find(".dz-remove").attr("data-dz-media_id", response.id);
-                            callRemoveImg();
-                        }
-                    }
+                    });
                 });
-
-                
-
 
             });
         },
@@ -585,7 +607,7 @@ function callRemoveImg(){
         e.stopPropagation();
 
         var imageId = $(this).data('dz-media_id');
-        console.log(imageId);
+       
         if(imageId){
 
             $.ajax({
@@ -609,7 +631,6 @@ function addMoreStep(){
   stepCount++;
 
   var ids = 'step_description'+stepCount;
-  console.log(ids);
   var html = $("#step_hidden_html");
 
   var ele = html.find('.step_description_cl').attr('id',ids);

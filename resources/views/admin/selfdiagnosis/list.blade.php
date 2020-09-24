@@ -15,8 +15,9 @@
                         </nav>
                     </div>
                     <div class="col-lg-6 col-5 text-right">
-                        
+                        <a href="{{route('admin.selfdiagnosis.create')}}" class="btn btn-sm btn-neutral">Add New</a>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="col-sm-6 col-md-3">
