@@ -18,7 +18,9 @@
       </div>
       <!-- Card stats -->
       <div class="row">
-        <h1 style="color: #fff;">Comming Soon...</h1>
+        <div class="col-12">
+          <h1 style="color: #fff;">Coming Soon...</h1>
+        </div>
       </div>
     </div>
   </div>

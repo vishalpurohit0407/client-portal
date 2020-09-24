@@ -3,7 +3,7 @@
     <div class="scrollbar-inner">
       <!-- Brand -->
       <div class="sidenav-header d-flex align-items-center">
-        <a class="navbar-brand" href="{{route('admin.dashboard')}}">
+        <a class="navbar-brand main-logo" href="{{route('admin.dashboard')}}">
           <img src="{{asset('assets/img/brand/blue.png')}}" class="navbar-brand-img" alt="...">
         </a>
         <div class="ml-auto">
@@ -30,6 +30,13 @@
             </li>
 
             <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('admin.category.*') ? 'active' : '' }}" href="{{route('admin.category.list')}}">
+                <i class="ni ni-ungroup text-info"></i>
+                <span class="nav-link-text">Category</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('admin.selfdiagnosis.*') ? 'active' : '' }}" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms">
                 <i class="ni ni-settings text-orange"></i>
                 <span class="nav-link-text">Self Diagnosis</span>
@@ -46,12 +53,7 @@
               </div>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link {{ Request::routeIs('admin.category.*') ? 'active' : '' }}" href="{{route('admin.category.list')}}">
-                <i class="ni ni-ungroup text-info"></i>
-                <span class="nav-link-text">Category</span>
-              </a>
-            </li>
+            
           </ul>
           
         </div>
