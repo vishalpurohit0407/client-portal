@@ -21622,14 +21622,14 @@ textarea[resize='horizontal']
         margin-right: -1rem; 
         margin-left: -1rem;
     }
-    .navbar-vertical .navbar-collapse:before
+    /*.navbar-vertical .navbar-collapse:before
     {
         display: block;
 
         margin: .5rem; 
 
         content: '';
-    }
+    }*/
 }
 .navbar-vertical .navbar-nav
 {
@@ -22440,12 +22440,12 @@ textarea[resize='horizontal']
 {
     display: none; 
 
-    padding: 1.5rem;
+    padding: 0rem;
 }
 
 .sidenav-header
 {
-    height: 78px;
+    height: 100px;
 }
 
 .g-sidenav-show .sidenav .navbar-brand,

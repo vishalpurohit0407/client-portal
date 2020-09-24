@@ -3,7 +3,7 @@
     <div class="scrollbar-inner">
       <!-- Brand -->
       <div class="sidenav-header d-flex align-items-center">
-        <a class="navbar-brand" href="{{route('admin.dashboard')}}">
+        <a class="navbar-brand main-logo" href="{{route('admin.dashboard')}}">
           <img src="{{asset('assets/img/brand/blue.png')}}" class="navbar-brand-img" alt="...">
         </a>
         <div class="ml-auto">
@@ -30,11 +30,36 @@
             </li>
 
             <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('admin.category.*') ? 'active' : '' }}" href="{{route('admin.category.list')}}">
+                <i class="ni ni-ungroup text-info"></i>
+                <span class="nav-link-text">Category</span>
+              </a>
+            </li>
+
+            <!-- <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('admin.selfdiagnosis.*') ? 'active' : '' }}" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms">
+              <a class="nav-link {{ Request::routeIs('admin.user.*') ? 'active' : '' }}" href="#navbar-forms-user" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms-user">
+                <i class="ni ni-single-02 text-green"></i>
+                <span class="nav-link-text">Users</span>
+              </a>
+              <div class="collapse {{ Request::routeIs('admin.user.*') ? 'show' : '' }}" id="navbar-forms-user" style="">
+                <ul class="nav nav-sm flex-column">
+                  <li class="nav-item">
+                    <a href="{{route('admin.user.list')}}" class="nav-link {{ Request::routeIs('admin.user.list') ? 'active' : '' }}">Listing</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('admin.user.create')}}" class="nav-link {{ Request::routeIs('admin.user.create') ? 'active' : '' }}">Add New</a>
+                  </li>
+                </ul>
+              </div>
+            </li> -->
+
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('admin.selfdiagnosis.*') ? 'active' : '' }}" href="#navbar-forms-selfdiagnosis" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms-selfdiagnosis">
                 <i class="ni ni-settings text-orange"></i>
                 <span class="nav-link-text">Self Diagnosis</span>
               </a>
-              <div class="collapse {{ Request::routeIs('admin.selfdiagnosis.*') ? 'show' : '' }}" id="navbar-forms" style="">
+              <div class="collapse {{ Request::routeIs('admin.selfdiagnosis.*') ? 'show' : '' }}" id="navbar-forms-selfdiagnosis" style="">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
                     <a href="{{route('admin.selfdiagnosis.list')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.list') ? 'active' : '' }}">Listing</a>
@@ -46,12 +71,7 @@
               </div>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link {{ Request::routeIs('admin.category.*') ? 'active' : '' }}" href="{{route('admin.category.list')}}">
-                <i class="ni ni-ungroup text-info"></i>
-                <span class="nav-link-text">Category</span>
-              </a>
-            </li>
+            
           </ul>
           
         </div>

@@ -4,16 +4,10 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\User;
-use App\UserDetail;
-use App\Pushnotification;
-use App\Documentmedia;
-use App\Dibilrequest;
-use App\Document;
 use Response;
 use Hash;
 use Storage;
 use App\Common;
-use QrCode;
 
 class UserController extends Controller
 {
@@ -23,82 +17,92 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request){
-
-        //backgroundColor(255, 0, 0)->
-        /*$file = QrCode::margin(1)->format('png')->size(300)->generate('123456789');
-        $qrpath = Common::storeImage($file,'qrcode','test');*/
-       // echo "<pre>";print_r($request->status);exit();
         return view('admin.user.list',array('title' => 'User List','status'=>$request->status));
     }
 
-    public function listdata(Request $request, $status){
-        $result = array();
-        // echo "<pre>";print_r($status);exit();
-        $perpage= (isset($request->pagination['perpage']))? $request->pagination['perpage'] : 10;
-        $page= (isset($request->pagination['page']))? $request->pagination['page'] : 1;
-        $sort= (isset($request->sort['sort']))? $request->sort['sort'] : 'desc';
-        $field= (isset($request->sort['field']))? $request->sort['field'] : 'created_at';
+       public function listdata(Request $request)
+    {
+      // echo "<pre>"; print_r($request->session()->token()); exit();
+      $columns = array( 
+                        0 => 'id', 
+                        1 => 'name',
+                        2 => 'email',
+                        3 => 'status',
+                        4 => 'created_at',
+                    );
+  
+        $totalData = User::where('status','!=','3')->count();
+            
+        $totalFiltered = $totalData; 
 
-        $userdata = User::join('user_details', 'users.id', '=', 'user_details.user_id')->select('users.*','user_details.name','user_details.profile_img')->where('user_type','user');
-        if ($status == '1') {
-            $userdata = $userdata->where('status','1');
-        }else{
-            $userdata = $userdata->where('status','!=','3');
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+            
+        if(empty($request->input('search.value')))
+        {            
+            $posts = User::offset($start)
+                         ->limit($limit)
+                         ->orderBy($order,$dir)
+                         ->where('status','!=','3')
+                         ->get();
         }
-        if(isset($request['query']['generalSearch']) && !empty($request['query']['generalSearch'])){
-            $keyword=$request['query']['generalSearch'];
-            $userdata=$userdata->where(function ($query) use ($keyword) {
-                $query->where('user_details.name', 'like', '%'.$keyword.'%')
-                      ->orWhere('users.email', 'like', '%'.$keyword.'%')
-                      ->orWhere('users.mobile', 'like', '%'.$keyword.'%')
-                      ->orWhere('users.id', 'like', '%'.$keyword.'%');
-            });
-        }
-        if($field == 'full_name'  || $field == 'number'){
-            $field = 'user_details.name';
-        }
+        else {
+            $search = $request->input('search.value'); 
+            $posts =  User::where('email','LIKE',"%{$search}%")
+                            ->orWhere('name', 'LIKE',"%{$search}%")
+                            ->where('status','!=','3')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order,$dir)
+                            ->get();
 
-        $userdata=$userdata->orderBy($field, $sort)->paginate($perpage,['*'],'page',$page);
-        //echo "<pre>";print_r($userdata);exit;
-        $result['meta']=array(
-            'page' => $page,
-            'pages' => $userdata->lastPage(),
-            'perpage' => $perpage,
-            'total' => $userdata->total(),
-            'sort' => $sort,
-            'field' => $field
-        );
-        $result['data']=array();
-
-         $pageCal = '';
-        $countbase = 1;
-        $gePage = $page - 1;
-        if($gePage == 0){
-            $pageCal=$countbase;
-        }else{
-           $pageCal= $gePage.$countbase;
+            $totalFiltered = User::where('email','LIKE',"%{$search}%")
+                            ->orWhere('name', 'LIKE',"%{$search}%")
+                            ->where('status','!=','3')
+                            ->count();
         }
 
-        if($userdata){
-            $count = $pageCal;
-            foreach ($userdata as $key => $user) {
+        $data = array();
+        if(!empty($posts))
+        {   $srnumber = 1;
+            foreach ($posts as $post)
+            {
+                $destroy =  route('admin.user.destroy',$post->id);
+                $edit =  route('admin.user.edit',$post->id);
+                $token =  $request->session()->token();
 
-                $result['data'][] = array(
-                    "id" => $user->id,
-                    "number" => $count,
-                    "dibil_number"=>$user->dibil_number,
-                    "full_name" => $user->name,
-                    "profile_img" => $user->user_detail->image,
-                    "email"=> $user->email,
-                    "mobile"=> $user->mobile,
-                    "status"=> $user->status,
-                    "created_at"=> date('d-M-Y', strtotime( $user->created_at)),
-                    "Actions" => null        
-                );
-                $count++;
+                $nestedData['id'] = $post->id;
+                $nestedData['srnumber'] = $srnumber;
+                $nestedData['name'] = '<td class="table-user"> <img src="'.$post->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($post->name).'</b> </td>';
+                $nestedData['email'] = $post->email;
+                if($post->status == '0'){
+                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Inactive</span>';
+                }elseif($post->status == '1'){ 
+                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Active</span>';
+                }elseif($post->status == '2'){
+                  $nestedData['status'] = '<span class="badge badge-pill badge-info">Pending</span>';
+                }else{
+                  $nestedData['status'] = '<span class="badge badge-pill badge-danger">Deleted</span>';
+                };
+                $nestedData['created_at'] = date('d-M-Y',strtotime($post->created_at));
+                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-primary btn-sm mr-0' title='EDIT' >Edit</a> 
+                                          &emsp;<form action='{$destroy}' method='POST' style='display: contents;' id='frm_{$post->id}'> <input type='hidden' name='_method' value='DELETE'> <input type='hidden' name='_token' value='{$token}'> <a type='submit' class='btn btn-danger btn-sm' style='color: white;' onclick='return deleteConfirm(this);' id='{$post->id}'>Delete</a></form>";
+                
+                $srnumber++;
+                $data[] = $nestedData;
             }
         }
-        return Response::json($result);
+          
+        $json_data = array(
+                    "draw"            => intval($request->input('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    );
+            
+        echo json_encode($json_data);
     }
 
     /**
@@ -108,7 +112,7 @@ class UserController extends Controller
      */
     public function create()
     {   
-       //
+        return view('admin.user.add',array('title' => 'Create User'));
     }
 
     /**
@@ -119,7 +123,41 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,',
+            'password' => 'min:8|required_with:confirmpass|same:confirmpass', 
+            'confirmpass' => 'min:8',
+        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'status' => $request->status ? '1' : '0',
+                'password' => Hash::make($request->password),
+            ]); 
+            if($user){
+                $file=$request->file('profile_img');
+                if($file){
+                    $request->validate([
+                        'profile_img' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+                    ]);
+                    $file_name =$file->getClientOriginalName();
+                    $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
+                    $imageName = md5($fileslug.time());
+                    $imgext =$file->getClientOriginalExtension();
+                    $path = 'userprofile/'.$user->id.'/'.$imageName.".".$imgext;
+                    $fileAdded = Storage::disk('public')->putFileAs('userprofile/'.$user->id.'/',$file,$imageName.".".$imgext);
+                    $user->profile_img = $path;
+                    $user->save();
+                }
+                $request->session()->flash('alert-success', 'User Created successfuly.');  
+            }
+            return redirect(route('admin.user.list'));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('admin.user.list'));
+        }
     }
 
     /**
@@ -157,6 +195,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // echo "<pre>";print_r($user->user_image_url);exit();
         if (!$user) {
           return abort(404);
         }
@@ -176,41 +215,20 @@ class UserController extends Controller
         // echo "<pre>";print_r($user);exit();
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required|numeric|unique:users,mobile,'.$user->id,
-            'email' => 'required|email|unique:users,email,'.$user->id, 
+            'email' => 'required|email|unique:users,email,'.$user->id,
         ]);
         try {
             if (!$user) {
               return abort(404);
             }
-            $user_detail = UserDetail::where('user_id',$user->id)->first();
-            if (!$user_detail) {
-              return abort(404);
-            }
-            $user_detail->name = $request->name;
-
-            $user_detail->educational = $request->educational;
-            $user_detail->full_address = $request->full_address;
-            $user_detail->birth_date = $request->birth_date ? date("Y/m/d", strtotime($request->birth_date)) : NULL;
-            $user->mobile = $request->mobile;
+            $user->name = $request->name;
             $user->email = $request->email;
-            if ($request->gender != "" && $request->gender == 'male') {
-                $user_detail->gendar = $request->gender;
-            }else{
-                $user_detail->gendar = "female";
-            }
-            if ($request->status != "") {
-                $user->status = $request->status;
-            }else{
-                $user->status = "2";
-            }
+            $user->status = $request->status ? '1' : '0';
             if ($request->password) {
-                $messages = [
-                    'password.digits' => 'The MPIN must be only 4 digits.',
-                ];
                 $request->validate([
-                    'password' => 'digits:4'
-                ],$messages);
+                    'password' => 'min:8|required_with:confirmpass|same:confirmpass', 
+                    'confirmpass' => 'min:8'
+                ]);
                 $user->password = Hash::make($request->password);
             }
             $file=$request->file('profile_img');
@@ -218,40 +236,25 @@ class UserController extends Controller
                 $request->validate([
                     'profile_img' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
                 ]);
-                    if ($user->image) { 
-                        Common::deleteImage($fileurl = $user_detail->profile_img);
-                    }
-                $path = Common::storeImage($file=$file,$type='profile',$user_id=$user->id);
-                $user_detail->profile_img = $path;
-            }else{
-
-                if($request->profile_avatar_remove){
-                    if ($user->image) { 
-                        Common::deleteImage($fileurl = $user_detail->profile_img);
-                    }
-                  $user_detail->profile_img = NULL;
-                }else{
-                  unset($user_detail->profile_img);
+                if ($user->user_image_url) {
+                    Storage::disk('public')->delete($user->profile_img);
                 }
+                $file_name =$file->getClientOriginalName();
+                $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
+                $imageName = md5($fileslug.time());
+                $imgext =$file->getClientOriginalExtension();
+                $path = 'userprofile/'.$user->id.'/'.$imageName.".".$imgext;
+                $fileAdded = Storage::disk('public')->putFileAs('userprofile/'.$user->id.'/',$file,$imageName.".".$imgext);
+                $user->profile_img = $path;
             }
-            if($user->save() && $user_detail->save())
+            if($user->save())
             {
-                if ($user->status == '2') {
-                    // echo "<pre>";print_r($user->id);exit();
-                    $payload = array("conversation_id"=>0,"type"=>"6","badge"=>"1");
-                    $inpute = $request->all();
-                    $inpute['user_id'] = $user->id;
-                    $inpute['title'] = 'account inactive';
-                    $inpute['message'] = 'Dear user your account has been inactive by admin please contact administrator';
-                    $inpute['payload'] = $payload;
-                    $notification = Pushnotification::create($inpute);
-                }
                 $request->session()->flash('alert-success', 'User updated successfuly.');  
             }
-            return redirect(route('user.list'));
+            return redirect(route('admin.user.list'));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('user.list'));
+            return redirect(route('admin.user.list'));
         }
     }
 
@@ -269,19 +272,12 @@ class UserController extends Controller
             }
             $user->status = '3';
             if ($user->save()) {
-                $payload = array("conversation_id"=>0,"type"=>"6","badge"=>"1");
-                $inpute = $request->all();
-                $inpute['user_id'] = $user->id;
-                $inpute['title'] = 'Account Has Block';
-                $inpute['message'] = 'Dear user your account has been block by admin please contact administrator';
-                $inpute['payload'] = $payload;
-                $notification = Pushnotification::create($inpute);
                 $request->session()->flash('alert-success', 'User deleted successfuly.');
             }
-            return redirect(route('user.list'));
+            return redirect(route('admin.user.list'));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('user.list'));
+            return redirect(route('admin.user.list'));
         }
     }
 

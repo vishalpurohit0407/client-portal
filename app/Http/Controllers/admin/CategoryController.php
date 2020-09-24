@@ -63,16 +63,14 @@ class CategoryController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $posts =  Category::where('id','LIKE',"%{$search}%")
-                            ->orWhere('name', 'LIKE',"%{$search}%")
+            $posts =  Category::orWhere('name', 'LIKE',"%{$search}%")
                             ->where('status','!=','2')
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalFiltered = Category::where('id','LIKE',"%{$search}%")
-                            ->where('status','!=','2')
+            $totalFiltered = Category::where('status','!=','2')
                             ->orWhere('name', 'LIKE',"%{$search}%")
                             ->count();
         }

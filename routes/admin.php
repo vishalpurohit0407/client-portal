@@ -53,20 +53,17 @@ Route::group(['middleware' => ['admin']],function(){
 	]);
 
 	// User Module Routes
-	Route::get('/user/document/details/{document_id}','admin\UserController@userDocumentDetail')->name('user.document.details');
-	Route::get('/user/document/delete/{document_id}','admin\UserController@userDocumentDelete')->name('user.document.delete');
-	Route::get('/user/document/verify/{id}/{flag?}','admin\UserController@userDocumentVerify')->name('user.document.verify');
-	Route::get('/user/deleted','admin\UserController@deletedUser')->name('user.deleted.list');
-	Route::post('/user/deleted/list/data','admin\UserController@deletedUserlistdata')->name('user.deleted.listdata');
-	Route::get('/user/restore/{uuid?}','admin\UserController@userRestore')->name('user.restore');
-	Route::post('/user/list/data/{status?}','admin\UserController@listdata')->name('user.listdata');
+	Route::get('/user/restore/{uuid?}','admin\UserController@userRestore')->name('admin.user.restore');
+	Route::post('/user/list/data/{status?}','admin\UserController@listdata')->name('admin.user.listdata');
 	Route::resource('/user', 'admin\UserController', [
 	    'names' => [
-	        'index' => 'user.list',
-	        'edit' => 'user.edit',
-	        'update' => 'user.update',
-	        'destroy' => 'user.destroy',
-	        'show' => 'user.show'
+	        'index' => 'admin.user.list',
+	        'create' => 'admin.user.create',
+	        'store' => 'admin.user.store',
+	        'edit' => 'admin.user.edit',
+	        'update' => 'admin.user.update',
+	        'destroy' => 'admin.user.destroy',
+	        'show' => 'admin.user.show'
 	    ]
 	]);
 
@@ -89,14 +86,14 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/selfdiagnosis/remove/step','admin\GuideController@removeStep')->name('admin.selfdiagnosis.remove.step');
 
 	// Organization Module Routes
-	Route::post('/cms/pages/list/data','admin\CmspagsController@listdata')->name('cms.pages.listdata');
+	Route::post('/cms/pages/list/data','admin\CmspagsController@listdata')->name('admin.cms.pages.listdata');
 	Route::resource('/cmspags', 'admin\CmspagsController', [
 	    'names' => [
-	        'index' => 'cms.pages.list',
-	        'edit' => 'cms.pages.edit',
-	        'update' => 'cms.pages.update',
-	        'destroy' => 'cms.pages.destroy',
-	        'show' => 'cms.pages.show'
+	        'index' => 'admin.cms.pages.list',
+	        'edit' => 'admin.cms.pages.edit',
+	        'update' => 'admin.cms.pages.update',
+	        'destroy' => 'admin.cms.pages.destroy',
+	        'show' => 'admin.cms.pages.show'
 	    ]
 	]);
 });

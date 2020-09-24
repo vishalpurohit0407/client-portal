@@ -1,9 +1,9 @@
 @if($selfdiagnosis && count($selfdiagnosis)>0)
     @foreach($selfdiagnosis as $selfdiagnos)
-        <div class="col-lg-4">
+        <div class="col-lg-4 pb-5">
             <!-- Image-Text card -->
             <a href="{{route('user.selfdiagnosis.show',$selfdiagnos->id)}}">
-                <div class="card">
+                <div class="card custom_card_front">
                     <!-- Card image -->
                     <img class="card-img-top" src="{{asset($selfdiagnos->main_image_url)}}" alt="Image placeholder">
                     <!-- Card body -->

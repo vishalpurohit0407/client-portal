@@ -210,3 +210,24 @@
     height: 250px;
     object-fit: cover;
 }
+
+.main-logo{
+    width: 100%;
+    text-align: center;
+}
+.footer .container-fluid{
+    padding-right: 30px;
+    padding-left: 30px;
+}
+
+
+.card.custom_card_front {
+    height: 95%;
+}
+.custom_card_front .card-body{
+    padding-bottom: 1rem;
+}
+.custom_card_front .card-img-top{
+    height: 250px;
+    object-fit: cover;
+}
