@@ -47,6 +47,13 @@
                     </div>
                     
                 </div>
+                <div class="row">
+                    <div class="col-12 text-center pb-3">
+                        <div class="guide-listing-loader" style="display: none;">
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -112,6 +119,7 @@ $(document).ready(function() {
 });
 
 function getData(){
+    $(".guide-listing-loader").show();
     $.ajax(
     {
         url: '{{route("user.selfdiagnosis.search")}}',
@@ -120,9 +128,11 @@ function getData(){
         data:{page:pageno,search:$('#search').val(),category_id:$('#category').val()},
     }).done(function(data){
         $("#selfdiagnosis_data").html(data);
+        $(".guide-listing-loader").hide();
         //location.hash = page;
     }).fail(function(jqXHR, ajaxOptions, thrownError){
           alert('No response from server');
+          $(".guide-listing-loader").hide();
     });
 }
 

@@ -245,3 +245,9 @@
     margin: 0 auto;
     object-fit: cover;
 }
+
+.guide-listing-loader{
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 25px;
+}
