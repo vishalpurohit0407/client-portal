@@ -28,7 +28,7 @@ class GuideController extends Controller
         if($request->ajax()){
             return view('selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
         }else{
-            $categorys = Category::all();
+            $categorys = Category::where('status','1')->get();
             //print_r($categorys);
             return view('selfdiagnosis.list',array('title' => 'Self Diagnosis List','categorys'=>$categorys,'selfdiagnosis'=>$selfdiagnosis));
         }
