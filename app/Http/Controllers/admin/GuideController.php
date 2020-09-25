@@ -210,7 +210,7 @@ class GuideController extends Controller
     public function edit(Guide $guide)
     {
         $category = Category::where('status','1')->get();
-        $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->orderBy('created_at','asc')->get();
+        $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->orderBy('step_no','asc')->get();
         //dd($guide_step->count());
         $selectedCategory = Guidecategory::where('guide_id',$guide->id)->pluck('category_id')->toArray();
         return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
