@@ -236,3 +236,12 @@
     height: 250px;
     object-fit: cover;
 }
+
+.tuto-main-image{
+    text-align: center;
+}
+.tuto-main-image .img-fluid{
+    max-height: 470px;
+    margin: 0 auto;
+    object-fit: cover;
+}
