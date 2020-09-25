@@ -47,17 +47,13 @@
                     </div>
                     
                 </div>
-                <div class="row">
-                    <div class="col-12 text-center pb-3">
-                        <div class="guide-listing-loader" style="display: none;">
-                            <i class="fa fa-spinner fa-pulse"></i>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
     <!-- Page content -->
+    <div class="guide-listing-loader" style="display: none;">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
     <div class="container-fluid mt--6" id="selfdiagnosis_data">
         @foreach (['danger', 'warning', 'success', 'info'] as $msg)
             @if(Session::has('alert-' . $msg))
@@ -131,7 +127,7 @@ function getData(){
         $(".guide-listing-loader").hide();
         //location.hash = page;
     }).fail(function(jqXHR, ajaxOptions, thrownError){
-          alert('No response from server');
+          //alert('No response from server');
           $(".guide-listing-loader").hide();
     });
 }

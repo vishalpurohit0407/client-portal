@@ -246,8 +246,24 @@
     object-fit: cover;
 }
 
-.guide-listing-loader{
+/*.guide-listing-loader{
     margin-bottom: 10px;
     color: #fff;
     font-size: 25px;
+}*/
+
+.guide-listing-loader {
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #000;
+    width: 100%;
+    z-index: 9;
+    opacity: 0.6;
+    text-align: center;
+    padding-top: 30%;
 }

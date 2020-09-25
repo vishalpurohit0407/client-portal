@@ -134,7 +134,7 @@ function getData(){
         $(".guide-listing-loader").hide();
         //location.hash = page;
     }).fail(function(jqXHR, ajaxOptions, thrownError){
-          alert('No response from server');
+          //alert('No response from server');
           $(".guide-listing-loader").hide();
     });
 }
