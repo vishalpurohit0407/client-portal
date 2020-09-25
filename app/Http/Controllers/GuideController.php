@@ -6,7 +6,7 @@ use App\Guide;
 use App\Category;
 use Illuminate\Http\Request;
 use Auth;
-use App\CompletedGuide;
+use App\GuideCompletion;
 use PDF;
 
 class GuideController extends Controller
@@ -23,7 +23,7 @@ class GuideController extends Controller
      */
     public function index(Request $request)
     {
-        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
+        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','=','1')->orderBy('created_at', 'desc')->paginate($this->getrecord);
         
         if($request->ajax()){
             return view('selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
@@ -35,7 +35,7 @@ class GuideController extends Controller
     }
 
     public function search(Request $request){
-        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('status','!=','2');
+        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','=','1');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
             $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
@@ -62,7 +62,7 @@ class GuideController extends Controller
             if (!$guide_id) {
               return abort(404);
             }
-            $completed_guide = new CompletedGuide;
+            $completed_guide = new GuideCompletion;
             $completed_guide->guide_id = $guide_id;
             $completed_guide->user_id = Auth::user()->id;
             if($completed_guide->save())
@@ -114,7 +114,7 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Detail','selfdiagnosis'=>$guide));
+        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Details','selfdiagnosis'=>$guide));
     }
 
     /**

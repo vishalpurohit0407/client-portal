@@ -10,13 +10,13 @@
         <ul class="nav nav-footer justify-content-center justify-content-lg-end">
          
           <li class="nav-item">
-            <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
+            <a href="javascript:void(0);" class="nav-link">About Us</a>
           </li>
           <li class="nav-item">
-            <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+            <a href="javascript:void(0);" class="nav-link">Blog</a>
           </li>
           <li class="nav-item">
-            <a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>
+            <a href="javascript:void(0);" class="nav-link">License</a>
           </li>
         </ul>
       </div>

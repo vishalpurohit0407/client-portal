@@ -18,21 +18,21 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-5">
                         <div class="form-group">
                             <div class="input-group input-group-merge">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input class="form-control" placeholder="Search..." type="text" id="search">
+                                <input class="form-control" placeholder="Search..." type="text" id="search">   
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-9 d-flex flex-row-reverse">
+                    <div class="col-sm-2">
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <select class="form-control" id="category">
-                                    <option value="">All</option>
+                                    <option value="">All Category</option>
                                     @if($categorys)
                                         @foreach($categorys as $category)
                                             <option value="{{$category->id}}">{{$category->name}}</option>
@@ -42,6 +42,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-1">
+                        <a href="javascript:void(0);" class="btn btn-neutral" style="height: 45px;" onclick="return resetFilter();">Clear</a>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -120,6 +124,13 @@ function getData(){
     }).fail(function(jqXHR, ajaxOptions, thrownError){
           alert('No response from server');
     });
+}
+
+function resetFilter(){
+
+    $("#search").val('');
+    $("#category").val('');
+    $('#category').change();
 }
 </script>
 @endsection

@@ -10,7 +10,8 @@
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                             <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{$selfdiagnosis->main_title}}</li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.selfdiagnosis.list')}}">Self Diagnosis</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                         </ol>
                     </nav>
                 </div>
@@ -124,7 +125,7 @@
             <div id="Introduction" class="mt-4">
                 @if($selfdiagnosis->introduction)
                     <h2 class="display-3 mb-0">Introduction</h2>
-                    <p>{{$selfdiagnosis->introduction}}</p>
+                    <p>{!!$selfdiagnosis->introduction!!}</p>
                 @endif
                 @if($selfdiagnosis->introduction_video_link)
                     <h2 class="display-3 mb-0">Video overview</h2>
@@ -132,7 +133,7 @@
                         <iframe class="embed-responsive-item" class="text-center" src="{{$selfdiagnosis->introduction_video_link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 @endif
-                <div class="tabbing mt-4">
+                <!-- <div class="tabbing mt-4">
                     <ul class="tab-nav">
                         <li>Tools & Materials</li>
                     </ul>
@@ -140,7 +141,7 @@
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
                                 <div id="carousel-tools" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                                      <!--Slides-->
+                                      
                                       <div class="carousel-inner" role="listbox">
                                         <div class="carousel-item active">
                                           <img class="" src="https://wikifab.org/images/6/60/Repair_Cafe%27_IMG_20191031_142207_2.jpg" alt="First slide">
@@ -152,9 +153,9 @@
                                           <img class="" src="https://wikifab.org/images/5/5d/Repair_Cafe%27_IMG_20191031_155214_5.jpg" alt="Third slide">
                                         </div>
                                       </div>
-                                      <!--/.Slides-->
+                                      
 
-                                      <!--/.Controls-->
+                                      
                                       <ol class="carousel-indicators">
                                         <li data-target="#carousel-tools" data-slide-to="0" class="active"> <img class="" src="https://wikifab.org/images/6/60/Repair_Cafe%27_IMG_20191031_142207_2.jpg"
                                             class="img-fluid"></li>
@@ -187,9 +188,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
-
+            <br>
             @if($selfdiagnosis->guide_step)
             @php $step = 1; @endphp
                 @foreach($selfdiagnosis->guide_step as $stepkey => $stepdata)
@@ -226,7 +227,7 @@
                             <div class="col-xs-12 col-md-{{count($stepdata->media) > 0 ? '6' : '12'}} step-instructions">
                                 <h3 class="display-4">Step {{$step}} - {{$stepdata->title}}</h3>
                                 <div>
-                                    {{$stepdata->description}}
+                                    {!!$stepdata->description!!}
                                 </div>
                             </div>
                         </div>

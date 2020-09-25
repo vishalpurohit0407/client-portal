@@ -50,12 +50,17 @@
 	padding: 0;
 	margin: 10px 0 0 0;
 }
-.carousel-thumbnails-bottom .carousel-item{text-align: center;}
+.carousel-thumbnails-bottom .carousel-item{
+    border: 1px solid #ccc;
+    text-align: center;
+    background: #F9F9F9;
+}
 .carousel-thumbnails-bottom .carousel-item img{
 	height: 415px;
 	width: auto;
-	    border: 1px solid #ddd;
+	border: 1px solid #ddd;
     background: #f9f9f9;
+    margin: 0 auto;
 }
 .carousel-thumbnails-bottom .carousel-indicators li{
 	width: 15%;

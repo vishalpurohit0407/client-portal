@@ -20,7 +20,7 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-5">
                         <div class="form-group">
                             <div class="input-group input-group-merge">
                                 <div class="input-group-prepend">
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-9 d-flex flex-row-reverse">
+                    <div class="col-sm-2">
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <select class="form-control" id="category">
@@ -44,6 +44,11 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-sm-1">
+                        <a href="javascript:void(0);" class="btn btn-neutral" style="height: 45px;" onclick="return resetFilter();">Clear</a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -140,6 +145,13 @@ function deleteConfirm(event){
         $("#frm_"+id).submit();
       }
     });
+}
+
+function resetFilter(){
+
+    $("#search").val('');
+    $("#category").val('');
+    $('#category').change();
 }
 </script>
 @endsection
