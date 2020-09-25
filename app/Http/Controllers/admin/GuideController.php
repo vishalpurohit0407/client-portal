@@ -30,7 +30,7 @@ class GuideController extends Controller
         if($request->ajax()){
             return view('admin.selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
         }else{
-            $categorys = Category::where('status','1')->get();
+            $categorys = Category::where('status','1')->orderBy('name','asc')->get();
             //print_r($categorys);
             return view('admin.selfdiagnosis.list',array('title' => 'Self Diagnosis List','categorys'=>$categorys,'selfdiagnosis'=>$selfdiagnosis));
         }

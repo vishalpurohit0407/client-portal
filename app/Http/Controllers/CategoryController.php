@@ -33,8 +33,8 @@ class CategoryController extends Controller
         $result = array();
         $perpage= (isset($request->pagination['perpage']))? $request->pagination['perpage'] : 10;
         $page= (isset($request->pagination['page']))? $request->pagination['page'] : 1;
-        $sort= (isset($request->sort['sort']))? $request->sort['sort'] : 'desc';
-        $field= (isset($request->sort['field']))? $request->sort['field'] : 'created_at';
+        $sort= (isset($request->sort['sort']))? $request->sort['sort'] : 'asc';
+        $field= (isset($request->sort['field']))? $request->sort['field'] : 'name';
         
         $categories = Category::where('status','!=', '0')->orderBy($field,$sort);
         if(isset($request['query']['generalSearch']) && !empty(isset($request['query']['generalSearch']))){

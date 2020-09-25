@@ -80,7 +80,7 @@
 @section('pagewise_js')
 <script>
     $(document).ready(function () {
-        $('#datatable-basic').DataTable({
+        var table = $('#datatable-basic').DataTable({
             "processing": true,
             "serverSide": true,
             "destroy": true,
@@ -99,7 +99,7 @@
               }
             },
             'columnDefs': [{
-                "targets": -1,
+                "targets": 0,
                 "orderable": false
             }],
             "columns": [
@@ -111,6 +111,8 @@
             ]  
 
         });
+
+        table.order( [[ 1, 'asc' ]] ).draw();
     });
 function deleteConfirm(event){
   var id = $(event).attr('id');
