@@ -85,15 +85,17 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/selfdiagnosis/remove/img-upload','admin\GuideController@removeImage')->name('admin.selfdiagnosis.remove.image');
 	Route::post('/selfdiagnosis/remove/step','admin\GuideController@removeStep')->name('admin.selfdiagnosis.remove.step');
 
-	// Organization Module Routes
-	Route::post('/cms/pages/list/data','admin\CmspagsController@listdata')->name('admin.cms.pages.listdata');
-	Route::resource('/cmspags', 'admin\CmspagsController', [
+	// CMS Page Module Routes
+	Route::post('/cms_page/list/data','admin\CmsPageController@listdata')->name('admin.cms.page.listdata');
+	Route::resource('/cms_page', 'admin\CmsPageController', [
 	    'names' => [
-	        'index' => 'admin.cms.pages.list',
-	        'edit' => 'admin.cms.pages.edit',
-	        'update' => 'admin.cms.pages.update',
-	        'destroy' => 'admin.cms.pages.destroy',
-	        'show' => 'admin.cms.pages.show'
+	        'index' => 'admin.cms.page.list',
+	        'create'=>'admin.cms.page.create',
+	        'store'=>'admin.cms.page.store',
+	        'edit' => 'admin.cms.page.edit',
+	        'update' => 'admin.cms.page.update',
+	        'destroy' => 'admin.cms.page.destroy',
+	        'show' => 'admin.cms.page.show'
 	    ]
 	]);
 });
