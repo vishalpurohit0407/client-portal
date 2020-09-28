@@ -37,6 +37,13 @@
             </li>
 
             <!-- <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('admin.cms.page.*') ? 'active' : '' }}" href="{{route('admin.cms.page.list')}}">
+                <i class="ni ni-single-copy-04 text-pink"></i>
+                <span class="nav-link-text">CMS Pages</span>
+              </a>
+            </li> -->
+
+            <!-- <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('admin.selfdiagnosis.*') ? 'active' : '' }}" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms">
               <a class="nav-link {{ Request::routeIs('admin.user.*') ? 'active' : '' }}" href="#navbar-forms-user" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms-user">
                 <i class="ni ni-single-02 text-green"></i>
