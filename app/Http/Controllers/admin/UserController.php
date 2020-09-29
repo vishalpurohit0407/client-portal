@@ -230,8 +230,7 @@ class UserController extends Controller
             $user->status = $request->status ? '1' : '0';
             if ($request->password) {
                 $request->validate([
-                    'password' => 'min:8|required_with:confirmpass|same:confirmpass', 
-                    'confirmpass' => 'min:8'
+                    'password' => 'min:8', 
                 ]);
                 $user->password = Hash::make($request->password);
             }

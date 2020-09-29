@@ -74,24 +74,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group @if($errors->has('password')) has-danger @endif ">
                                 <label class="form-control-label" for="password">Password&nbsp;<strong class="text-danger">*</strong></label>
-                                <input type="text" class="form-control  @if($errors->has('password')) is-invalid @endif maxlength" name="password" id="password" placeholder="Password">
+                                <input type="password" class="form-control  @if($errors->has('password')) is-invalid @endif maxlength" name="password" id="password" placeholder="Password">
                                 @if($errors->has('password'))
                                     <span class="form-text text-danger">{{ $errors->first('password') }}</span>
                                 @endif
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group @if($errors->has('confirmpass')) has-danger @endif ">
-                                <label class="form-control-label" for="confirmpass">Confirm Password&nbsp;<strong class="text-danger">*</strong></label>
-                                <input type="text" class="form-control  @if($errors->has('confirmpass')) is-invalid @endif maxlength" name="confirmpass" id="confirmpass" placeholder="Confirm Password">
-                                @if($errors->has('confirmpass'))
-                                    <span class="form-text text-danger">{{ $errors->first('confirmpass') }}</span>
-                                @endif
-                            </div>
-                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-md-12">
