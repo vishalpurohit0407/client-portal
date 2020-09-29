@@ -83,6 +83,8 @@
 <script>
     $(document).ready(function () {
         $('#datatable-basic').DataTable({
+        	"responsive": true,
+        	"scrollCollapse": true,
             "processing": true,
             "serverSide": true,
             "destroy": true,

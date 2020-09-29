@@ -13,15 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth/login');
-});
+Route::get('/', 'HomeController@index');
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/{url_slug}','PagepreviewController@pagepreview')->name('cms.pagepreview');
+
 
 Route::group(['middleware' => 'auth'], function () {
+	Route::get('/home', 'HomeController@index')->name('home');
 	Route::resource('user', 'UserController', ['except' => ['show']]);
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
@@ -37,5 +35,14 @@ Route::group(['middleware' => 'auth'], function () {
 	        'show' => 'user.selfdiagnosis.show'
 	    ]
 	]);
-});
 
+	Route::get('/support-ticket/search','SupportTicketController@search')->name('user.selfdiagnosis.search');
+	Route::resource('/support-ticket', 'SupportTicketController', [
+	    'names' => [
+	        'index' => 'user.support.ticket.list',
+	        'store' => 'user.support.ticket.store',
+	        'show' => 'user.support.ticket.show'
+	    ]
+	]);
+});
+Route::get('/{url_slug}','PagepreviewController@pagepreview')->name('cms.pagepreview');
