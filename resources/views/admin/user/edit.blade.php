@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group @if($errors->has('confirmpass')) has-danger @endif ">
-                                <label class="form-control-label" for="confirmpass">Confirm Password</label>
+                                <label class="form-control-label" for="confirmpass">Confirm Password&nbsp;<strong class="text-danger">*</strong></label>
                                 <input type="text" class="form-control  @if($errors->has('confirmpass')) is-invalid @endif maxlength" name="confirmpass" id="confirmpass" placeholder="Confirm Password">
                                 @if($errors->has('confirmpass'))
                                     <span class="form-text text-danger">{{ $errors->first('confirmpass') }}</span>
