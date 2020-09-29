@@ -15,9 +15,6 @@
                   </ol>
                 </nav>
               </div>
-              <div class="col-lg-6 col-5 text-right">
-                <a href="{{route('admin.user.create')}}" class="btn btn-sm btn-neutral">Add New</a>
-              </div>
             </div>
           </div>
         </div>
@@ -54,8 +51,8 @@
                 <thead class="thead-light">
                   <tr>
                     <th class="w-10">No.</th>
-                    <th class="w-100">Name</th>
-                    <th class="w-30">Email</th>
+                    <th class="w-100">Title</th>
+                    <th>Slug</th>
                     <th>Status</th>
                     <th>Created At</th>
                     <th>Options</th>
@@ -65,8 +62,8 @@
                 <tfoot>
                   <tr>
                     <th class="w-10">No.</th>
-                    <th class="w-70">Name</th>
-                    <th class="w-30">Email</th>
+                    <th class="w-70">Title</th>
+                    <th>Slug</th>
                     <th>Status</th>
                     <th>Created At</th>
                     <th>Options</th>
@@ -83,8 +80,6 @@
 <script>
     $(document).ready(function () {
         $('#datatable-basic').DataTable({
-        	"responsive": true,
-        	"scrollCollapse": true,
             "processing": true,
             "serverSide": true,
             "destroy": true,
@@ -95,7 +90,7 @@
               }
             },
             "ajax":{
-              "url": "{{ route('admin.user.listdata') }}",
+              "url": "{{ route('admin.cms.page.listdata') }}",
               "dataType": "json",
               "type": "POST",
                data: {
@@ -108,8 +103,8 @@
             }],
             "columns": [
                 { "data": "srnumber" },
-                { "data": "name" },
-                { "data": "email" },
+                { "data": "title" },
+                { "data": "url_slug" },
                 { "data": "status" },
                 { "data": "created_at" },
                 { "data": "options" }
@@ -117,23 +112,5 @@
 
         });
     });
-function deleteConfirm(event){
-  var id = $(event).attr('id');
-  console.log(id);
-  swal({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      type: "warning",
-      showCancelButton: !0,
-      buttonsStyling: !1,
-      confirmButtonClass: "btn btn-danger",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonClass: "btn btn-secondary"
-  }).then((result) => {
-    if (result.value) {
-      $("#frm_"+id).submit();
-    }
-  });
-}
 </script>
 @endsection

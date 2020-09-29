@@ -267,3 +267,6 @@
     text-align: center;
     padding-top: 30%;
 }
+.dataTables_wrapper{
+    overflow: hidden;
+}
