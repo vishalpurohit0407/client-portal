@@ -32,7 +32,7 @@
             <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('admin.category.*') ? 'active' : '' }}" href="{{route('admin.category.list')}}">
                 <i class="ni ni-ungroup text-info"></i>
-                <span class="nav-link-text">Category</span>
+                <span class="nav-link-text">Categories</span>
               </a>
             </li>
 
@@ -52,10 +52,10 @@
               <div class="collapse {{ Request::routeIs('admin.user.*') ? 'show' : '' }}" id="navbar-forms-user" style="">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="{{route('admin.user.list')}}" class="nav-link {{ Request::routeIs('admin.user.list') ? 'active' : '' }}">Listing</a>
+                    <a href="{{route('admin.user.list')}}" class="nav-link {{ Request::routeIs('admin.user.list') ? 'active' : '' }}">All Users</a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{route('admin.user.create')}}" class="nav-link {{ Request::routeIs('admin.user.create') ? 'active' : '' }}">Add New</a>
+                    <a href="{{route('admin.user.create')}}" class="nav-link {{ Request::routeIs('admin.user.create') ? 'active' : '' }}">Add New User</a>
                   </li>
                 </ul>
               </div>
@@ -69,10 +69,10 @@
               <div class="collapse {{ Request::routeIs('admin.selfdiagnosis.*') ? 'show' : '' }}" id="navbar-forms-selfdiagnosis" style="">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="{{route('admin.selfdiagnosis.list')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.list') ? 'active' : '' }}">Listing</a>
+                    <a href="{{route('admin.selfdiagnosis.list')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.list') ? 'active' : '' }}">All Self Diagnosis</a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{route('admin.selfdiagnosis.create')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.create') ? 'active' : '' }}">Add New</a>
+                    <a href="{{route('admin.selfdiagnosis.create')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.create') ? 'active' : '' }}">Add New Self Diagnosis</a>
                   </li>
                 </ul>
               </div>
