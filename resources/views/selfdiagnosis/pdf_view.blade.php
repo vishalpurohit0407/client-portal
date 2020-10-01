@@ -56,7 +56,7 @@
                     <div class="col-xs-12">
 
                         <div class="alert alert-secondary fade show" style="clear: both !important;  margin-bottom: 15px;">
-                            <span class="alert-icon mt-3"><i class="fas fa-tag mt-3"></i></span>
+                            <span class="alert-icon mt-1"><i class="fas fa-tag mt-1"></i></span>
                             <span class="alert-text">Categories</span>
                             @php
                                 $category_id = $selfdiagnosis->guide_category->pluck('category_id')->toArray();
@@ -66,24 +66,24 @@
                         </div>
                         <div class="" style="width: 100%; position: relative; margin-top: 5px;">
                             <div class="alert d-inline-block  alert-secondary fade show"  style="width:42.90%;  display: inline-block; margin-bottom: 3px;">
-                                <span class="alert-icon"><i class="fas fa-cube pt-2"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-cube mt-1"></i></span>
                                 <span class="alert-text">Type</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->type}}</strong></span>
                             </div>
                             <div class="alert d-inline-block  alert-secondary fade show " style="width:42.90%;  display: inline-block; margin-bottom: 2px;">
-                                <span class="alert-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-tachometer-alt mt-1"></i></span>
                                 <span class="alert-text">Difficulty</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->difficulty}}</strong></span>
                             </div>
                         </div>
                         <div class="" style="width: 100%; position: relative; margin-top: 5px;">
                             <div class="alert d-inline-block  alert-secondary fade show" style="width:42.90%;  display: inline-block;margin-bottom: 3px;">
-                                <span class="alert-icon"><i class="fas fa-clock"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-clock mt-1"></i></span>
                                 <span class="alert-text">Duration</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->duration}}&nbsp;{{$selfdiagnosis->duration_type}}</strong></span>
                             </div>
                             <div class="alert d-inline-block  alert-secondary fade show" style="width:42.90%;  display: inline-block;margin-bottom: 2px;">
-                                <span class="alert-icon"><i class="fas fa-money-bill-alt"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-money-bill-alt mt-1"></i></span>
                                 <span class="alert-text">Cost</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->cost}} USD ($)</strong></span>
                             </div>
