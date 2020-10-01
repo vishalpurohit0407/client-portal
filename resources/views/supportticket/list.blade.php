@@ -303,7 +303,7 @@ function deleteConfirm(event){
 function format ( d ) {
     // `d` is the original data object for the row
 
-    var message_list='<table class="message_list" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    var message_list='<table class="message_list message_box_'+d.id+'" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
 
     $.each(d.comments, function( index, comment ) {
       
@@ -373,8 +373,7 @@ function sendComment(ticket_id, requester_id){
                 
                 if(data.status){
 
-                    //sender_name
-                    
+                    $(".message_box_"+ticket_id).append('<tr class="right-message"><td><div class="message-info"><strong>'+data.sender_name+'</strong><p>'+commentText+'</p></td></div></tr>');
                 }
                 $("#ticket_comment_input_"+ticket_id).val('')
             },
