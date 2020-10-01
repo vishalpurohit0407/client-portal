@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Auth;
 use App\GuideCompletion;
 use PDF;
+use Str;
+use Dompdf\Dompdf;
 
 class GuideController extends Controller
 {
@@ -86,8 +88,14 @@ class GuideController extends Controller
         view()->share('selfdiagnosis',$selfdiagnosis);
         // return view('selfdiagnosis.pdf_view', $selfdiagnosis);
         $pdf = PDF::loadView('selfdiagnosis.pdf_view', $selfdiagnosis);
-        $pdf->setPaper('A4', 'landscape'); 
-        return $pdf->download('pdf_file.pdf');
+        return $pdf->download(Str::slug($selfdiagnosis->main_title, '-').'.pdf');
+
+        // Load content from html file 
+        // $dompdf = new Dompdf();
+        // $dompdf->loadHtml(view('selfdiagnosis.pdf_view', compact('selfdiagnosis'))); 
+        // $dompdf->setPaper('A4', 'landscape'); 
+        // $dompdf->render(); 
+        // $dompdf->stream("codexworld", array("Attachment" => 1));
     }
 
     public function create()

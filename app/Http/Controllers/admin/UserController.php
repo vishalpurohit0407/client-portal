@@ -17,7 +17,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request){
-        return view('admin.user.list',array('title' => 'User List','status'=>$request->status));
+        return view('admin.user.list',array('title' => 'Users List','status'=>$request->status));
     }
 
     public function listdata(Request $request)
