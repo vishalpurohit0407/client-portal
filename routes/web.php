@@ -37,12 +37,11 @@ Route::group(['middleware' => 'auth'], function () {
 	]);
 
 	Route::post('/support-ticket/list/data','SupportTicketController@listdata')->name('user.support.ticket.listdata');
-	//Route::get('/support-ticket/search','SupportTicketController@search')->name('user.selfdiagnosis.search');
+	Route::post('/support-ticket/send-comment','SupportTicketController@sendComment')->name('user.support.ticket.sendcomment');
 	Route::resource('/support-ticket', 'SupportTicketController', [
 	    'names' => [
 	        'index' => 'user.support.ticket.list',
 	        'store' => 'user.support.ticket.store',
-	        'show' => 'user.support.ticket.show'
 	    ]
 	]);
 });

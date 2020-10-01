@@ -23,19 +23,22 @@ class SupportTicketController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {   
+    {  
         //$tickets = Zendesk::users(900868125783)->me();
         //$params = array('query' => 'testalax@gmail.com');
         //$tickets = Zendesk::users()->search($params);
-        /*$tickets = Zendesk::tickets()->update(8, [
-            //'priority' => 'urgent',
-            'comment'  => [
-                'body' => 'We have changed your ticket priority to Urgent and will keep you up-to-date asap.',
-                "author_id" => 900868125783
-            ],
-        ]);*/
-        /*$tickets = Zendesk::tickets(8)->comments()->sideload(['users'])->findAll();*/
-        //dd($tickets);
+        
+        $ticketComments = Zendesk::tickets(8)->comments()->sideload(['users'])->findAll();
+
+        $commentsArr = array();
+        if($ticketComments){
+            foreach ($ticketComments->comments as $key => $comment) {
+                
+                $key = array_search($comment->author_id, array_column($ticketComments->users, 'id'));
+                $commentsArr[] = ['comment' => $comment->body, 'created_at' => $comment->created_at, 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
+            }
+        }
+        //dd($commentsArr);
         return view('supportticket.list',array('title' => 'Support Ticket List'));
     }
 
@@ -52,6 +55,7 @@ class SupportTicketController extends Controller
         );
         
         $tickets = Zendesk::tickets()->findAll();
+        //dd($tickets);
         $totalData = $tickets->count;
             
         $totalFiltered = $totalData; 
@@ -67,18 +71,26 @@ class SupportTicketController extends Controller
         {   $srnumber = 1;
             foreach ($tickets->tickets as $ticket)
             {
-                //$ticketComments = Zendesk::tickets($ticket->id)->comments()->sideload(['users'])->findAll();
+                $ticketComments = Zendesk::tickets($ticket->id)->comments()->sideload(['users'])->findAll();
+                $commentsArr = array();
+                if($ticketComments){
+                    foreach ($ticketComments->comments as $key => $comment) {
+                        
+                        $key = array_search($comment->author_id, array_column($ticketComments->users, 'id'));
+                        $commentsArr[] = ['comment' => $comment->body, 'created_at' => $comment->created_at, 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
+                    }
+                }
+
                 $nestedData['id'] = $ticket->id;
                 $nestedData['srnumber'] = $srnumber;
+                $nestedData['requester_id'] = $ticket->requester_id;
                 $nestedData['subject'] = ucfirst($ticket->subject);
                 $nestedData['department'] = ucfirst($ticket->custom_fields[0]->value);
                 $nestedData['status'] = ucfirst($ticket->status);
                 $nestedData['priority'] = ucfirst($ticket->priority);
-                //$nestedData['comments'] =
+                $nestedData['comments'] = $commentsArr;
                 $nestedData['options'] = "";
 
-                
-                
                 $srnumber++;
                 $data[] = $nestedData;
             }
@@ -144,12 +156,31 @@ class SupportTicketController extends Controller
             'priority' => $request->priority,
             'custom_fields' => array("id" => 900006262866, "value" => $request->department)
         ]);
-        dd($newticker);
+        
         if($newticker){
             $request->session()->flash('alert-success','New support ticket created successfully.');
         }
 
         return redirect(route('user.support.ticket.list'));
+    }
+
+    public function sendComment(Request $request)
+    {
+        if($request->ticket_id != '' && $request->commentText != '' && $request->requester_id != ''){
+            $comment = Zendesk::tickets()->update($request->ticket_id, [
+                
+                'comment'  => [
+                    'body' => $request->commentText,
+                    "author_id" => $request->requester_id
+                ],
+            ]);
+            //dd($comment);
+            if($comment){
+
+                return Response::json(['status' => true, 'message' => 'Comment send successfully.', 'sender_name' => $comment->audit->via->source->to->name]);
+            }
+        }
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
     }
 
     /**

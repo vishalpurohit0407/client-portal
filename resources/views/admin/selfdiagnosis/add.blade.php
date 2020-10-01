@@ -449,9 +449,9 @@ $(document).ready(function() {
                     
                     var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
                     dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
-                    var dropMaxFiles = 5;
+                    var dropMaxFiles = 6;
                     var dropParamName = 'file_image';
-                    var dropMaxFileSize = 1024;
+                    var dropMaxFileSize = 2048;
 
                     $(this).dropzone({
                         url: dropUrl,
@@ -535,9 +535,9 @@ $(document).ready(function() {
                     
                     var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
                     dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
-                    var dropMaxFiles = 5;
+                    var dropMaxFiles = 6;
                     var dropParamName = 'file_image';
-                    var dropMaxFileSize = 1024;
+                    var dropMaxFileSize = 2048;
 
                     $(this).dropzone({
                         url: dropUrl,
