@@ -17,10 +17,10 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request){
-        return view('admin.user.list',array('title' => 'User List','status'=>$request->status));
+        return view('admin.user.list',array('title' => 'Users List','status'=>$request->status));
     }
 
-       public function listdata(Request $request)
+    public function listdata(Request $request)
     {
       // echo "<pre>"; print_r($request->session()->token()); exit();
       $columns = array( 
@@ -50,17 +50,21 @@ class UserController extends Controller
         }
         else {
             $search = $request->input('search.value'); 
-            $posts =  User::where('email','LIKE',"%{$search}%")
-                            ->orWhere('name', 'LIKE',"%{$search}%")
-                            ->where('status','!=','3')
+            $posts =  User::where('status','!=','3')
+                            ->where(function ($query)  use ($search) {
+                                $query->where('email','LIKE',"%{$search}%")
+                                    ->orWhere('name', 'LIKE',"%{$search}%");
+                            })
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalFiltered = User::where('email','LIKE',"%{$search}%")
-                            ->orWhere('name', 'LIKE',"%{$search}%")
-                            ->where('status','!=','3')
+            $totalFiltered = User::where('status','!=','3')
+                            ->where(function ($query) use ($search){
+                                $query->where('email','LIKE',"%{$search}%")
+                                    ->orWhere('name', 'LIKE',"%{$search}%");
+                            })
                             ->count();
         }
 
@@ -226,8 +230,7 @@ class UserController extends Controller
             $user->status = $request->status ? '1' : '0';
             if ($request->password) {
                 $request->validate([
-                    'password' => 'min:8|required_with:confirmpass|same:confirmpass', 
-                    'confirmpass' => 'min:8'
+                    'password' => 'min:8', 
                 ]);
                 $user->password = Hash::make($request->password);
             }

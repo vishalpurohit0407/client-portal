@@ -10,7 +10,7 @@
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="{{route('admin.user.list')}}">User List</a></li>
+                  <li class="breadcrumb-item"><a href="{{route('admin.user.list')}}">Users List</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                 </ol>
               </nav>
@@ -76,7 +76,7 @@
                         <div class="col-md-6">
                             <div class="form-group @if($errors->has('password')) has-danger @endif ">
                                 <label class="form-control-label" for="password">Password&nbsp;<strong class="text-danger">*</strong></label>
-                                <input type="text" class="form-control  @if($errors->has('password')) is-invalid @endif maxlength" name="password" id="password" placeholder="Password">
+                                <input type="password" class="form-control  @if($errors->has('password')) is-invalid @endif maxlength" name="password" id="password" placeholder="Password">
                                 @if($errors->has('password'))
                                     <span class="form-text text-danger">{{ $errors->first('password') }}</span>
                                 @endif
@@ -84,8 +84,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group @if($errors->has('confirmpass')) has-danger @endif ">
-                                <label class="form-control-label" for="confirmpass">Confirm Password</label>
-                                <input type="text" class="form-control  @if($errors->has('confirmpass')) is-invalid @endif maxlength" name="confirmpass" id="confirmpass" placeholder="Confirm Password">
+                                <label class="form-control-label" for="confirmpass">Confirm Password&nbsp;<strong class="text-danger">*</strong></label>
+                                <input type="password" class="form-control  @if($errors->has('confirmpass')) is-invalid @endif maxlength" name="confirmpass" id="confirmpass" placeholder="Confirm Password">
                                 @if($errors->has('confirmpass'))
                                     <span class="form-text text-danger">{{ $errors->first('confirmpass') }}</span>
                                 @endif

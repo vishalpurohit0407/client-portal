@@ -114,13 +114,14 @@
               </div>
             </div>
             <div class="table-responsive py-4">
-              <table class="table table-flush" id="datatable-basic">
+              <table class="table table-flush" id="datatable-ticket">
                 <thead class="thead-light">
                   <tr>
                     <th class="w-10">No.</th>
-                    <th class="w-100">Name</th>
+                    <th class="w-100">Subject</th>
+                    <th>Department</th>
                     <th>Status</th>
-                    <th>Created At</th>
+                    <th>Priority</th>
                     <th>Options</th>
                   </tr>
                 </thead>
@@ -128,9 +129,10 @@
                 <tfoot>
                   <tr>
                     <th class="w-10">No.</th>
-                    <th class="w-100">Name</th>
+                    <th class="w-100">Subject</th>
+                    <th>Department</th>
                     <th>Status</th>
-                    <th>Created At</th>
+                    <th>Priority</th>
                     <th>Options</th>
                   </tr>
                 </tfoot>
@@ -140,11 +142,88 @@
         </div>
       </div>
     </div>
+<style type="text/css">
+
+td.details-control {
+    /*background: url('assets/img/icons/details_open.png') no-repeat center center;*/
+    cursor: pointer;
+    text-align: center;
+}
+tr.shown td.details-control {
+    /*background: url('assets/img/icons/details_close.png') no-repeat center center;*/
+}
+.message_list{
+  width: 100%;
+  border: 1px solid #eee;
+}
+table.message_list td, table.message_list th{
+  word-wrap: break-word !important;
+    white-space: break-spaces !important;
+}
+table.message_list .left-message .message-info{
+  max-width: 85%;
+  float: left;
+  background: #ECECEC;
+  padding: 15px;
+  border-radius: 15px;
+  border-bottom-left-radius: 0;
+}
+table.message_list .right-message .message-info{
+  max-width: 85%;
+  float: right;
+  background: #579FFB;
+  color: #fff;
+  padding: 15px;
+  border-radius: 15px;
+  border-bottom-right-radius: 0;
+}
+table.message_list td{
+  border-top: none;
+}
+table.message_list .message-info p{
+  margin-bottom:0;
+}
+
+
+
+.msger-inputarea {
+    display: flex;
+    padding: 10px;
+    border-top: var(--border);
+    background: #eee;
+}
+.msger-input {
+    flex: 1;
+    background: #ddd;
+}
+.msger-inputarea * {
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 1em;
+}
+.msger-send-btn {
+    margin-left: 10px;
+    background: rgb(0, 196, 65);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.23s;
+}
+.message_list {
+
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #fcfcfe;
+    background-image: url('assets/img/theme/chat-bg.svg');
+}
+</style>
 @endsection
 @section('pagewise_js')
 <script>
     $(document).ready(function () {
-        /*var table = $('#datatable-basic').DataTable({
+        var table = $('#datatable-ticket').DataTable({
             "processing": true,
             "serverSide": true,
             "destroy": true,
@@ -155,7 +234,7 @@
               }
             },
             "ajax":{
-              "url": "{{ route('admin.category.listdata') }}",
+              "url": "{{ route('user.support.ticket.listdata') }}",
               "dataType": "json",
               "type": "POST",
                data: {
@@ -168,15 +247,39 @@
             }],
             "columns": [
                 { "data": "srnumber" },
-                { "data": "name" },
+                { "data": "subject" },
+                { "data": "department" },
                 { "data": "status" },
-                { "data": "created_at" },
-                { "data": "options" }
+                { "data": "priority" },
+                {
+                  "className":      'details-control',
+                  "orderable":      false,
+                  "data":           null,
+                  "defaultContent": '<i class="fas fa-angle-double-right" style="font-size: 20px;"></i>'
+                },
             ]  
 
         });
 
-        table.order( [[ 1, 'asc' ]] ).draw();*/
+        table.order( [[ 1, 'asc' ]] ).draw();
+
+        $('#datatable-ticket tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+     
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+                $(this).html('<i class="fas fa-angle-double-right" style="font-size: 20px;"></i>');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+                $(this).html('<i class="fas fa-angle-double-down" style="font-size: 20px;"></i>');
+            }
+        });
     });
 function deleteConfirm(event){
   var id = $(event).attr('id');
@@ -195,6 +298,50 @@ function deleteConfirm(event){
       $("#frm_"+id).submit();
     }
   });
+}
+
+function format ( d ) {
+    // `d` is the original data object for the row
+   
+    return '<table class="message_list" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr class="left-message">'+
+            '<td><div class="message-info"><strong>User</strong> <p>Hi this message from user</p></td></div>'+
+        '</tr>'+
+        '<tr class="right-message">'+
+            '<td><div class="message-info"><strong>Admin</strong><p>Hi this message from admin</p></td></div>'+
+        '</tr>'+
+        '<tr class="right-message">'+
+            '<td><div class="message-info"><strong>Admin</strong><p>Hi this message from admin</p></td></div>'+
+        '</tr>'+
+        '<tr class="left-message">'+
+            '<td><div class="message-info"><strong>User</strong><p>Hi this message from user</p></td></div>'+
+        '</tr>'+
+    '</table>'+
+    '<form class="msger-inputarea">'+
+      '<input type="text" class="msger-input" placeholder="Enter your message...">'+
+      '<button type="submit" class="msger-send-btn">Send</button>'+
+    '</form>';
+
+    /*var message_list='<div class="message_list">';
+
+    message_list+='<div class="left-message">';
+    message_list+='<strong>User</strong><p>Hi this message from user</p>';
+    message_list+='</div>';
+
+    message_list+='<div class="right-message">';
+    message_list+='<strong>Admin</strong><p>Hi this message from admin</p>';
+    message_list+='</div>';
+
+    message_list+='<div class="right-message">';
+    message_list+='<strong>User</strong><p>Hi this message from admin</p>';
+    message_list+='</div>';
+
+    message_list+='<div class="left-message">';
+    message_list+='<strong>User</strong><p>Hi this message from user</p>';
+    message_list+='</div>';
+
+    message_list+='</div>';*/
+    //return message_list;
 }
 </script>
 @endsection
