@@ -42,9 +42,9 @@
                 <div class="col-8">
                     <h5 class="h3 mb-0">{{$selfdiagnosis->main_title}}</h5>
                 </div>
-                <!-- <div class="col-4 text-right">
+                <div class="col-4 text-right">
                     <a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-sm btn-neutral">Export PDF</a>
-                </div> -->
+                </div>
             </div>
         </div>
         <div class="p-4">
