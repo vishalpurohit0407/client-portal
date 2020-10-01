@@ -302,9 +302,25 @@ function deleteConfirm(event){
 
 function format ( d ) {
     // `d` is the original data object for the row
-   
-    return '<table class="message_list" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-        '<tr class="left-message">'+
+
+    var message_list='<table class="message_list" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+
+    $.each(d.comments, function( index, comment ) {
+      
+      var className = '';
+      if(comment.author_type == 'admin'){
+        
+        message_list+= '<tr class="left-message"><td><div class="message-info"><strong>{{env("APP_NAME")}} Team</strong> <p>'+comment.comment+'</p></td></div></tr>';
+      }else{
+        message_list+= '<tr class="right-message"><td><div class="message-info"><strong>'+comment.author+'</strong> <p>'+comment.comment+'</p></td></div></tr>';
+      }
+      
+    });
+
+    message_list+= '</table><div class="msger-inputarea"><input type="text" class="msger-input" placeholder="Enter your message..." id="ticket_comment_input_'+d.id+'"><button class="msger-send-btn" onclick="return sendComment('+d.id+','+d.requester_id+');">Send</button></div>';
+
+    return message_list;
+        /*'<tr class="left-message">'+
             '<td><div class="message-info"><strong>User</strong> <p>Hi this message from user</p></td></div>'+
         '</tr>'+
         '<tr class="right-message">'+
@@ -320,7 +336,7 @@ function format ( d ) {
     '<form class="msger-inputarea">'+
       '<input type="text" class="msger-input" placeholder="Enter your message...">'+
       '<button type="submit" class="msger-send-btn">Send</button>'+
-    '</form>';
+    '</form>';*/
 
     /*var message_list='<div class="message_list">';
 
@@ -342,6 +358,31 @@ function format ( d ) {
 
     message_list+='</div>';*/
     //return message_list;
+}
+
+function sendComment(ticket_id, requester_id){
+
+    var commentText = $("#ticket_comment_input_"+ticket_id).val();
+    if(commentText != '' && ticket_id != ''){
+
+        $.ajax({
+            url: "{{ route('user.support.ticket.sendcomment',['_token' => csrf_token() ]) }}",
+            data: { ticket_id: ticket_id, commentText:commentText, requester_id:requester_id },
+            type: 'POST',
+            success: function (data) {
+                
+                if(data.status){
+
+                    //sender_name
+                    
+                }
+                $("#ticket_comment_input_"+ticket_id).val('')
+            },
+            error: function (data) {
+                
+            }
+        });
+    }
 }
 </script>
 @endsection
