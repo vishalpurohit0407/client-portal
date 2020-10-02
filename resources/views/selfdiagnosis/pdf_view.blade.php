@@ -8,8 +8,8 @@
   <!-- Favicon -->
   <!-- Fonts -->
   <!-- Icons -->
-  <link rel="stylesheet" href="{{public_path('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{public_path('assets/vendor/bootstrap/dist/css/bootstrap.min.css')}}" type="text/css"  media='screen,print'>
+  <link rel="stylesheet" href="{{asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css')}}" type="text/css"  media='screen,print'>
   <!-- Page plugins -->
   <!-- Argon CSS -->
 </head>
@@ -119,7 +119,13 @@
                         </div>
                         <hr>
                     @endif
-                    
+                    @if($selfdiagnosis->introduction_video_link)
+                        <h5 class="">Video overview</h5>
+                        <a href="{{$selfdiagnosis->introduction_video_link}}">
+                            {{$selfdiagnosis->introduction_video_link}}
+                        </a>
+                        <hr>
+                    @endif
                     @if($selfdiagnosis->guide_step)
                     @php $step = 1; @endphp
                         @foreach($selfdiagnosis->guide_step as $stepkey => $stepdata)
@@ -129,16 +135,16 @@
                                         {!!$stepdata->description!!}
                                     </div>
                                 </div>
-                                <div class="" style="width: 100%; position: relative; margin-top: 20px;">
+                                <div class="" style="width: 100%; position: relative; margin-top: 20px;  clear: both !important;">
                                     @if($stepdata->media)
                                         @php $counter = 1 @endphp
                                             @foreach($stepdata->media as $media)
-                                            <div class="custom-colum" style="width:32%;  display: inline-block ;margin-bottom: 5px; margin-top: 5px;">
+                                            <div class="custom-colum" style="width:32%;  display: inline-block ;margin-bottom: 5px; margin-top: 5px; ">
                                                 <img class="w-100" style="height: 190px;" src="{{asset($media->media_url)}}" alt="">
                                             </div>
                                             @if ($counter % 3 == 0)
                                             </div>
-                                            <div class="" style="width: 100%; position: relative; margin-top: 10px">
+                                            <div class="" style="width: 100%; position: relative; margin-top: 10px; clear: both !important;" >
                                             @endif
                                         @php $counter++; @endphp
                                         @endforeach

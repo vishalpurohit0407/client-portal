@@ -1,5 +1,16 @@
 @extends('layouts.app')
+@section('pagewise_css')
+        <style type="text/css">
 
+            #printable { display: none; }
+
+            @media print
+            {
+                #non-printable { display: none; }
+                #printable { display: block; }
+            }
+        </style>
+@endsection
 @section('content')
 <div class="header bg-primary pb-6">
     <div class="container-fluid">
@@ -44,10 +55,11 @@
                 </div>
                 <div class="col-4 text-right">
                     <a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-sm btn-neutral">Export PDF</a>
+                    <!-- <button class="btn btn-sm btn-neutral" onclick="printDiv('printableArea')">Print</button> -->
                 </div>
             </div>
         </div>
-        <div class="p-4">
+        <div class="p-4 " id="printableArea">
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="tuto-main-image noprint">
@@ -122,16 +134,19 @@
                     </div>
                 </div>
             </div>
+            <hr>
             <div id="Introduction" class="mt-4">
                 @if($selfdiagnosis->introduction)
                     <h2 class="display-3 mb-0">Introduction</h2>
                     <p>{!!$selfdiagnosis->introduction!!}</p>
+                    <hr>    
                 @endif
                 @if($selfdiagnosis->introduction_video_link)
                     <h2 class="display-3 mb-0">Video overview</h2>
-                    <div class="embed-responsive embed-responsive-16by9">
+                    <div class="embed-responsive embed-responsive-16by9" id="non-printable">
                         <iframe class="embed-responsive-item" class="text-center" src="{{$selfdiagnosis->introduction_video_link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
+                    <hr>
                 @endif
                 <!-- <div class="tabbing mt-4">
                     <ul class="tab-nav">
@@ -215,7 +230,7 @@
                                         @if($stepdata->media)
                                         @php $dataslide = 0; @endphp
                                             @foreach($stepdata->media as $media)
-                                                <li data-target="#carousel-step{{$step}}" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
+                                                <li data-target="#carousel-step{{$step}}" onmouseover="bigImg(this)" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
                                                     <img class="d-block" src="{{asset($media->media_url)}}" class="img-fluid">
                                                 </li>
                                             @php $dataslide++; @endphp
@@ -232,6 +247,7 @@
                             </div>
                         </div>
                     </div>
+                   @if($stepdata != $loop->last) <hr> @endif
                 @php $step++; @endphp
                 @endforeach
             @endif
@@ -252,7 +268,7 @@
 
                     @endphp
                     @if($completed_guide)
-                        <a href="javascript:void(0);" class="btn btn-icon btn-primary">
+                        <a class="btn btn-icon btn-primary text-white">
                             <span class="btn-inner--icon"><i class="fa fa-check"></i></span>
                             <span class="btn-inner--text">Already Completed</span>
                         </a>
@@ -348,5 +364,20 @@ jQuery(document).ready(function($){
 
     });
 });
+
+function bigImg(x) {
+    x.click();
+}
+
+function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+
+    window.print();
+
+    document.body.innerHTML = originalContents;
+}
 </script>
 @endsection
