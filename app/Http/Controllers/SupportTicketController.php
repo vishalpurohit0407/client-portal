@@ -26,19 +26,10 @@ class SupportTicketController extends Controller
     public function index(Request $request)
     {  
         //$tickets = Zendesk::users(900868125783)->me();
-        //$params = array('query' => 'testalax@gmail.com');
-        //$tickets = Zendesk::users()->search($params);
+        /*$params = array('query' => 'testalax@gmail.com');
+        $tickets = Zendesk::users('testalax@gmail.com')->tickets()->requested();
+        dd($tickets);*/
         
-        $ticketComments = Zendesk::tickets(8)->comments()->sideload(['users'])->findAll();
-
-        $commentsArr = array();
-        if($ticketComments){
-            foreach ($ticketComments->comments as $key => $comment) {
-                
-                $key = array_search($comment->author_id, array_column($ticketComments->users, 'id'));
-                $commentsArr[] = ['comment' => $comment->body, 'created_at' => date('d M Y H:i A',strtotime($comment->created_at)), 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
-            }
-        }
         //dd($commentsArr);
         return view('supportticket.list',array('title' => 'Support Ticket List'));
     }
@@ -57,7 +48,9 @@ class SupportTicketController extends Controller
 
         $pageNumber = $request->pageNumber + 1;
          
-        $tickets = Zendesk::tickets()->findAll(['page' => $pageNumber, 'per_page' => $request->length]);
+        $tickets = Zendesk::users(Auth::user()->zendesk_id)->tickets()->requested(['page' => $pageNumber, 'per_page' => $request->length, 'sort_by' => 'created_at', 'sort_order' => 'desc']);
+        //->findAll(['page' => $pageNumber, 'per_page' => $request->length])
+        //Zendesk::users('testalax@gmail.com')->tickets()->requested();
         //dd($tickets);
         $totalData = $tickets->count;
             
@@ -149,8 +142,13 @@ class SupportTicketController extends Controller
             'priority' => $request->priority,
             'custom_fields' => array("id" => 900006262866, "value" => $request->department)
         ]);
-        
+        //dd($newticker);
         if($newticker){
+            $user = Auth::user();
+            if($user->zendesk_id == NULL){
+                $user->zendesk_id = $newticker->ticket->requester_id;
+                $user->save();
+            }
             $request->session()->flash('alert-success','New support ticket created successfully.');
         }
 
