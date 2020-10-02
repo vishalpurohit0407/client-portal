@@ -8,8 +8,8 @@
   <!-- Favicon -->
   <!-- Fonts -->
   <!-- Icons -->
-  <link rel="stylesheet" href="{{public_path('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{public_path('assets/vendor/bootstrap/dist/css/bootstrap.min.css')}}" type="text/css"  media='screen,print'>
+  <link rel="stylesheet" href="{{asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css')}}" type="text/css"  media='screen,print'>
   <!-- Page plugins -->
   <!-- Argon CSS -->
 </head>
@@ -56,7 +56,7 @@
                     <div class="col-xs-12">
 
                         <div class="alert alert-secondary fade show" style="clear: both !important;  margin-bottom: 15px;">
-                            <span class="alert-icon mt-3"><i class="fas fa-tag mt-3"></i></span>
+                            <span class="alert-icon mt-1"><i class="fas fa-tag mt-1"></i></span>
                             <span class="alert-text">Categories</span>
                             @php
                                 $category_id = $selfdiagnosis->guide_category->pluck('category_id')->toArray();
@@ -66,24 +66,24 @@
                         </div>
                         <div class="" style="width: 100%; position: relative; margin-top: 5px;">
                             <div class="alert d-inline-block  alert-secondary fade show"  style="width:42.90%;  display: inline-block; margin-bottom: 3px;">
-                                <span class="alert-icon"><i class="fas fa-cube pt-2"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-cube mt-1"></i></span>
                                 <span class="alert-text">Type</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->type}}</strong></span>
                             </div>
                             <div class="alert d-inline-block  alert-secondary fade show " style="width:42.90%;  display: inline-block; margin-bottom: 2px;">
-                                <span class="alert-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-tachometer-alt mt-1"></i></span>
                                 <span class="alert-text">Difficulty</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->difficulty}}</strong></span>
                             </div>
                         </div>
                         <div class="" style="width: 100%; position: relative; margin-top: 5px;">
                             <div class="alert d-inline-block  alert-secondary fade show" style="width:42.90%;  display: inline-block;margin-bottom: 3px;">
-                                <span class="alert-icon"><i class="fas fa-clock"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-clock mt-1"></i></span>
                                 <span class="alert-text">Duration</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->duration}}&nbsp;{{$selfdiagnosis->duration_type}}</strong></span>
                             </div>
                             <div class="alert d-inline-block  alert-secondary fade show" style="width:42.90%;  display: inline-block;margin-bottom: 2px;">
-                                <span class="alert-icon"><i class="fas fa-money-bill-alt"></i></span>
+                                <span class="alert-icon mt-1"><i class="fas fa-money-bill-alt mt-1"></i></span>
                                 <span class="alert-text">Cost</span>
                                 <span class="alert-text-right"><strong>{{$selfdiagnosis->cost}} USD ($)</strong></span>
                             </div>
@@ -119,7 +119,13 @@
                         </div>
                         <hr>
                     @endif
-                    
+                    @if($selfdiagnosis->introduction_video_link)
+                        <h5 class="">Video overview</h5>
+                        <a href="{{$selfdiagnosis->introduction_video_link}}">
+                            {{$selfdiagnosis->introduction_video_link}}
+                        </a>
+                        <hr>
+                    @endif
                     @if($selfdiagnosis->guide_step)
                     @php $step = 1; @endphp
                         @foreach($selfdiagnosis->guide_step as $stepkey => $stepdata)
@@ -129,16 +135,16 @@
                                         {!!$stepdata->description!!}
                                     </div>
                                 </div>
-                                <div class="" style="width: 100%; position: relative; margin-top: 20px;">
+                                <div class="" style="width: 100%; position: relative; margin-top: 20px;  clear: both !important;">
                                     @if($stepdata->media)
                                         @php $counter = 1 @endphp
                                             @foreach($stepdata->media as $media)
-                                            <div class="custom-colum" style="width:32%;  display: inline-block ;margin-bottom: 5px; margin-top: 5px;">
+                                            <div class="custom-colum" style="width:32%;  display: inline-block ;margin-bottom: 5px; margin-top: 5px; ">
                                                 <img class="w-100" style="height: 190px;" src="{{asset($media->media_url)}}" alt="">
                                             </div>
                                             @if ($counter % 3 == 0)
                                             </div>
-                                            <div class="" style="width: 100%; position: relative; margin-top: 10px">
+                                            <div class="" style="width: 100%; position: relative; margin-top: 10px; clear: both !important;" >
                                             @endif
                                         @php $counter++; @endphp
                                         @endforeach
