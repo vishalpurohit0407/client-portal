@@ -270,3 +270,17 @@
 .dataTables_wrapper{
     overflow: hidden;
 }
+
+.comments-listing-loader {
+    color: #fff;
+    font-size: 25px;
+    height: 450px;
+    background-color: #000;
+    width: 100% !important;
+    z-index: 9;
+    opacity: 0.6;
+    text-align: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+}}

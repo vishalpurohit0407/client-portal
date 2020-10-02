@@ -38,11 +38,14 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::post('/support-ticket/list/data','SupportTicketController@listdata')->name('user.support.ticket.listdata');
 	Route::post('/support-ticket/send-comment','SupportTicketController@sendComment')->name('user.support.ticket.sendcomment');
+	Route::post('/support-ticket/getcomment','SupportTicketController@getComment')->name('user.support.ticket.getcomment');
 	Route::resource('/support-ticket', 'SupportTicketController', [
 	    'names' => [
 	        'index' => 'user.support.ticket.list',
 	        'store' => 'user.support.ticket.store',
 	    ]
 	]);
+
+	
 });
 Route::get('/{url_slug}','PagepreviewController@pagepreview')->name('cms.pagepreview');

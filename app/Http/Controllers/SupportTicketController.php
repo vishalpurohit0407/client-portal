@@ -9,6 +9,7 @@ use Auth;
 use App\GuideCompletion;
 use PDF;
 use Zendesk;
+use Response;
 
 class SupportTicketController extends Controller
 {
@@ -35,7 +36,7 @@ class SupportTicketController extends Controller
             foreach ($ticketComments->comments as $key => $comment) {
                 
                 $key = array_search($comment->author_id, array_column($ticketComments->users, 'id'));
-                $commentsArr[] = ['comment' => $comment->body, 'created_at' => $comment->created_at, 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
+                $commentsArr[] = ['comment' => $comment->body, 'created_at' => date('d M Y H:i A',strtotime($comment->created_at)), 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
             }
         }
         //dd($commentsArr);
@@ -53,8 +54,10 @@ class SupportTicketController extends Controller
             4=> 'priority',
             5=> 'action',
         );
-        
-        $tickets = Zendesk::tickets()->findAll();
+
+        $pageNumber = $request->pageNumber + 1;
+         
+        $tickets = Zendesk::tickets()->findAll(['page' => $pageNumber, 'per_page' => $request->length]);
         //dd($tickets);
         $totalData = $tickets->count;
             
@@ -71,16 +74,6 @@ class SupportTicketController extends Controller
         {   $srnumber = 1;
             foreach ($tickets->tickets as $ticket)
             {
-                $ticketComments = Zendesk::tickets($ticket->id)->comments()->sideload(['users'])->findAll();
-                $commentsArr = array();
-                if($ticketComments){
-                    foreach ($ticketComments->comments as $key => $comment) {
-                        
-                        $key = array_search($comment->author_id, array_column($ticketComments->users, 'id'));
-                        $commentsArr[] = ['comment' => $comment->body, 'created_at' => $comment->created_at, 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
-                    }
-                }
-
                 $nestedData['id'] = $ticket->id;
                 $nestedData['srnumber'] = $srnumber;
                 $nestedData['requester_id'] = $ticket->requester_id;
@@ -88,7 +81,7 @@ class SupportTicketController extends Controller
                 $nestedData['department'] = ucfirst($ticket->custom_fields[0]->value);
                 $nestedData['status'] = ucfirst($ticket->status);
                 $nestedData['priority'] = ucfirst($ticket->priority);
-                $nestedData['comments'] = $commentsArr;
+                //$nestedData['comments'] = $commentsArr;
                 $nestedData['options'] = "";
 
                 $srnumber++;
@@ -164,6 +157,27 @@ class SupportTicketController extends Controller
         return redirect(route('user.support.ticket.list'));
     }
 
+    public function getcomment(Request $request)
+    {
+        //dd($request->all());
+        if($request->ticket_id != ''){
+
+            $ticketComments = Zendesk::tickets($request->ticket_id)->comments()->sideload(['users'])->findAll();
+            $commentsArr = array();
+            if($ticketComments){
+                foreach ($ticketComments->comments as $key => $comment) {
+                    
+                    $key = array_search($comment->author_id, array_column($ticketComments->users, 'id'));
+                    $commentsArr[] = ['comment' => $comment->body, 'created_at' => date('d M Y H:i A',strtotime($comment->created_at)), 'author' => $ticketComments->users[$key]->name, 'author_type' => $ticketComments->users[$key]->role];
+                }
+            }
+
+            return Response::json(['status' => true, 'message' => 'Comment fetch successfully.', 'comments' => $commentsArr]);
+            
+        }
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+    }
+
     public function sendComment(Request $request)
     {
         if($request->ticket_id != '' && $request->commentText != '' && $request->requester_id != ''){
@@ -177,7 +191,7 @@ class SupportTicketController extends Controller
             //dd($comment);
             if($comment){
 
-                return Response::json(['status' => true, 'message' => 'Comment send successfully.', 'sender_name' => $comment->audit->via->source->to->name]);
+                return Response::json(['status' => true, 'message' => 'Comment send successfully.', 'sender_name' => $comment->audit->via->source->to->name, 'created_at' => date('d M Y H:i A',strtotime($comment->ticket->created_at))]);
             }
         }
         return Response::json(['status' => false, 'message' => 'Something went wrong.']);
