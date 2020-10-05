@@ -152,23 +152,21 @@ td.details-control {
 tr.shown td.details-control {
     /*background: url('assets/img/icons/details_close.png') no-repeat center center;*/
 }
-.message_list{
-  width: 100%;
-  border: 1px solid #eee;
-}
+
 table.message_list td, table.message_list th{
   word-wrap: break-word !important;
     white-space: break-spaces !important;
 }
-table.message_list .left-message .message-info{
+.message_list .left-message .message_content{
   max-width: 85%;
   float: left;
   background: #ECECEC;
   padding: 15px;
   border-radius: 15px;
   border-bottom-left-radius: 0;
+   position: relative;
 }
-table.message_list .right-message .message-info{
+.message_list .right-message .message_content{
   max-width: 85%;
   float: right;
   background: #579FFB;
@@ -176,11 +174,18 @@ table.message_list .right-message .message-info{
   padding: 15px;
   border-radius: 15px;
   border-bottom-right-radius: 0;
+  position: relative;
+  min-width: 170px;
 }
-table.message_list td{
-  border-top: none;
+.message_list .left-message,
+.message_list .right-message {
+    width: 100%;
+    display: inline;
+    position: relative;
+    float: left;
+    margin-top: 30px;
 }
-table.message_list .message-info p{
+.message_list .message_content p{
   margin-bottom:0;
 }
 
@@ -210,14 +215,52 @@ table.message_list .message-info p{
     cursor: pointer;
     transition: background 0.23s;
 }
+.scroll-wrapper > .message_list.scroll-content {
+    width: 100% !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    position: static !important;
+}
 .message_list {
-
+    width: 100%;
+    border: 1px solid #eee;
     flex: 1;
     overflow-y: auto;
     padding: 10px;
     background-color: #fcfcfe;
     background-image: url('assets/img/theme/chat-bg.svg');
+    height: 450px;
+    display: inline-block;
+    padding: 10px !important;
+    white-space: normal;
 }
+
+.message-info-time-left {
+    position: absolute;
+    left: 0px;
+    color: #000;
+    margin-top: 18px;
+}
+.message-info-time-right
+{
+    position: absolute;
+    bottom: -22px;
+    right: 0px;
+    color: #000;
+}
+.message_list tr:last-child > td {
+    padding-bottom: 30px !important;
+}
+
+.comments-listing-loader .fa.fa-spinner{
+
+    position: relative;
+    top: 50%;
+}
+.message_comment_content{
+    float: left;
+    width: 100%;
+} 
 </style>
 @endsection
 @section('pagewise_js')
@@ -227,6 +270,7 @@ table.message_list .message-info p{
             "processing": true,
             "serverSide": true,
             "destroy": true,
+            "searching": false,
             language: {
               paginate: {
                 previous: "<i class='fas fa-angle-left'>",
@@ -234,12 +278,20 @@ table.message_list .message-info p{
               }
             },
             "ajax":{
-              "url": "{{ route('user.support.ticket.listdata') }}",
-              "dataType": "json",
-              "type": "POST",
-               data: {
-              "_token": "{{ csrf_token() }}",
-              }
+                "url": "{{ route('user.support.ticket.listdata') }}",
+                "dataType": "json",
+                "type": "POST",
+                "data": function(d, settings){
+                    
+                    var api = new $.fn.dataTable.Api(settings);
+
+                     // Convert starting record into page number
+                    d.pageNumber = Math.min(
+                        Math.max(0, Math.round(d.start / api.page.len())),
+                        api.page.info().pages
+                    );
+                    d._token = "{{ csrf_token() }}";
+                }
             },
             'columnDefs': [{
                 "targets": 0,
@@ -275,9 +327,27 @@ table.message_list .message-info p{
             }
             else {
                 // Open this row
-                row.child( format(row.data()) ).show();
+                row.child(formatBlank()).show();
+                $('.scrollbar-inner').scrollbar().scrollLock();
+                $.ajax({
+                    url: "{{ route('user.support.ticket.getcomment',['_token' => csrf_token() ]) }}",
+                    data: { ticket_id: row.data().id },
+                    type: 'POST',
+                    success: function (data) {
+                        
+                        if(data.status){
+                            row.child( format(row.data(),data.comments) ).show();
+                            $('.scrollbar-inner').scrollbar().scrollLock();
+                        }
+                    },
+                    error: function (data) {
+                        
+                    }
+                });
+                //
                 tr.addClass('shown');
                 $(this).html('<i class="fas fa-angle-double-down" style="font-size: 20px;"></i>');
+                //
             }
         });
     });
@@ -300,71 +370,59 @@ function deleteConfirm(event){
   });
 }
 
-function format ( d ) {
-    // `d` is the original data object for the row
+function formatBlank () {
+    //return '<div class="comments-listing-loader"><i class="fa fa-spinner fa-pulse"></i></div><div class="message_list scrollbar-inner"></div>';
+    return '<div class="message_list scrollbar-inner" style="padding-left:50px;"><div class="comments-listing-loader"><i class="fa fa-spinner fa-pulse"></i></div>';
+}
 
-    var message_list='<table class="message_list message_box_'+d.id+'" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+function format (d, comments) {
 
-    $.each(d.comments, function( index, comment ) {
+    var message_list='<div class="message_list scrollbar-inner message_box_'+d.id+'" style="padding-left:50px;"><div class="comments-listing-loader loader_box_'+d.id+'" style="display:none;"><i class="fa fa-spinner fa-pulse"></i></div><div class="message_comment_content" id="comment_content_'+d.id+'">';
+
+    $.each(comments, function( index, comment ) {
       
       var className = '';
       if(comment.author_type == 'admin'){
         
-        message_list+= '<tr class="left-message"><td><div class="message-info"><strong>{{env("APP_NAME")}} Team</strong> <p>'+comment.comment+'</p></td></div></tr>';
+        message_list+= '<div class="left-message"><div class="message_content"><strong>{{env("APP_NAME")}} Team</strong> <p>'+comment.comment+'</p><span class="message-info-time-left">'+comment.created_at+'</span></div></div>';
       }else{
-        message_list+= '<tr class="right-message"><td><div class="message-info"><strong>'+comment.author+'</strong> <p>'+comment.comment+'</p></td></div></tr>';
+
+        message_list+= '<div class="right-message"><div class="message_content"><strong>'+comment.author+'</strong> <p>'+comment.comment+'</p><span class="message-info-time-right">'+comment.created_at+'</span></div></div>';
       }
       
     });
 
-    message_list+= '</table><div class="msger-inputarea"><input type="text" class="msger-input" placeholder="Enter your message..." id="ticket_comment_input_'+d.id+'"><button class="msger-send-btn" onclick="return sendComment('+d.id+','+d.requester_id+');">Send</button></div>';
+    message_list+= '</div></div><div class="msger-inputarea"><input type="text" class="msger-input" placeholder="Enter your message..." id="ticket_comment_input_'+d.id+'"><button class="msger-send-btn" onclick="return sendComment('+d.id+','+d.requester_id+');">Send</button></div>';
 
     return message_list;
-        /*'<tr class="left-message">'+
-            '<td><div class="message-info"><strong>User</strong> <p>Hi this message from user</p></td></div>'+
-        '</tr>'+
-        '<tr class="right-message">'+
-            '<td><div class="message-info"><strong>Admin</strong><p>Hi this message from admin</p></td></div>'+
-        '</tr>'+
-        '<tr class="right-message">'+
-            '<td><div class="message-info"><strong>Admin</strong><p>Hi this message from admin</p></td></div>'+
-        '</tr>'+
-        '<tr class="left-message">'+
-            '<td><div class="message-info"><strong>User</strong><p>Hi this message from user</p></td></div>'+
-        '</tr>'+
-    '</table>'+
-    '<form class="msger-inputarea">'+
-      '<input type="text" class="msger-input" placeholder="Enter your message...">'+
-      '<button type="submit" class="msger-send-btn">Send</button>'+
-    '</form>';*/
 
-    /*var message_list='<div class="message_list">';
+    /*var message_list='<div class="message_list scrollbar-inner message_box_'+d.id+'" style="padding-left:50px;">';
 
     message_list+='<div class="left-message">';
-    message_list+='<strong>User</strong><p>Hi this message from user</p>';
+    message_list+='<div class="message_content"><strong>User</strong><p>Hi this message from user</p></div>';
     message_list+='</div>';
 
     message_list+='<div class="right-message">';
-    message_list+='<strong>Admin</strong><p>Hi this message from admin</p>';
+    message_list+='<div class="message_content"><strong>Admin</strong><p>Hi this message from admin</p></div>';
     message_list+='</div>';
 
     message_list+='<div class="right-message">';
-    message_list+='<strong>User</strong><p>Hi this message from admin</p>';
+    message_list+='<div class="message_content"><strong>User</strong><p>Hi this message from admin</p></div>';
     message_list+='</div>';
 
     message_list+='<div class="left-message">';
-    message_list+='<strong>User</strong><p>Hi this message from user</p>';
+    message_list+='<div class="message_content"><strong>User</strong><p>Hi this message from user</p></div>';
     message_list+='</div>';
 
-    message_list+='</div>';*/
-    //return message_list;
+    message_list+='</div>';
+    return message_list;*/
 }
 
 function sendComment(ticket_id, requester_id){
 
     var commentText = $("#ticket_comment_input_"+ticket_id).val();
     if(commentText != '' && ticket_id != ''){
-
+        $(".loader_box_"+ticket_id).show();
         $.ajax({
             url: "{{ route('user.support.ticket.sendcomment',['_token' => csrf_token() ]) }}",
             data: { ticket_id: ticket_id, commentText:commentText, requester_id:requester_id },
@@ -373,9 +431,11 @@ function sendComment(ticket_id, requester_id){
                 
                 if(data.status){
 
-                    $(".message_box_"+ticket_id).append('<tr class="right-message"><td><div class="message-info"><strong>'+data.sender_name+'</strong><p>'+commentText+'</p></td></div></tr>');
+                    $(".message_box_"+ticket_id).append('<div class="right-message"><div class="message_content"><strong>'+data.sender_name+'</strong><p>'+commentText+'</p><span class="message-info-time-right">'+data.created_at+'</span></div></div>');
+                    $('.message_box_'+ticket_id).scrollTop($('#comment_content_'+ticket_id).outerHeight());
                 }
-                $("#ticket_comment_input_"+ticket_id).val('')
+                $("#ticket_comment_input_"+ticket_id).val('');
+                $(".loader_box_"+ticket_id).hide();
             },
             error: function (data) {
                 

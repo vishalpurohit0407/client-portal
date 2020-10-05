@@ -37,12 +37,12 @@
               </a>
             </li>
 
-            <!-- <li class="nav-item">
+            <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('user.support.ticket.*') ? 'active' : '' }}" href="{{route('user.support.ticket.list')}}">
                 <i class="fa fa-question-circle text-info" aria-hidden="true"></i>
-                <span class="nav-link-text">Support Ticket</span>
+                <span class="nav-link-text">Support Tickets</span>
               </a>
-            </li> -->
+            </li>
 
             
           </ul>
