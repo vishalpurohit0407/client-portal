@@ -36,6 +36,18 @@ class SupportTicketController extends Controller
 
     public function listdata(Request $request)
     {
+        
+        if(Auth::user()->zendesk_id == NULL){
+            
+            $json_data = array(
+                    "draw"            => intval($request->input('draw')),  
+                    "recordsTotal"    => 0,  
+                    "recordsFiltered" => 0, 
+                    "data"            => []   
+                    );
+            echo json_encode($json_data);die();    
+        }
+        
         // echo "<pre>"; print_r($request->session()->token()); exit();
         $columns = array( 
             0 =>'id', 
@@ -140,13 +152,13 @@ class SupportTicketController extends Controller
                 'email' => Auth::user()->email,
             ),
             'priority' => $request->priority,
-            'custom_fields' => array("id" => 900006262866, "value" => $request->department)
+            'custom_fields' => array("id" => env('ZENDESK_CUSTOM_FIELD_ID'), "value" => $request->department)
         ]);
-        //dd($newticker);
+        
         if($newticker){
             $user = Auth::user();
             if($user->zendesk_id == NULL){
-                $user->zendesk_id = $newticker->ticket->requester_id;
+                $user->zendesk_id = (string)$newticker->ticket->requester_id;
                 $user->save();
             }
             $request->session()->flash('alert-success','New support ticket created successfully.');
