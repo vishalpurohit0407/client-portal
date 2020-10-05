@@ -217,22 +217,43 @@
                                       <div class="carousel-inner lightgallery" style="cursor: pointer;" data-id="{{$stepdata->id}}" title="Show Image">
                                         @if($stepdata->media)
                                             @foreach($stepdata->media as $media)
+                                            @php 
+                                                $extensions = ["jpeg","png","jpg","gif","svg"];
+                                                $isImage = pathinfo(storage_path($media->media_url), PATHINFO_EXTENSION);
+                                            @endphp
+                                            @if(in_array($isImage , $extensions)) 
                                                 <div class="carousel-item @if($loop->first) active @endif">
                                                   <img class="d-block" src="{{asset($media->media_url)}}" alt="First slide">
                                                 </div>
+                                            @else
+                                                <div class="embed-responsive embed-responsive-21by9 carousel-item @if($loop->first) active @endif">
+                                                    <iframe id="iframe" class="embed-responsive-item" class="text-center" src="https://www.youtube.com/embed/OfIQW6s1-ew" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                </div>
+                                            @endif
                                             @endforeach
                                         @endif
                                       </div>
                                       <!--/.Slides-->
-
                                       <!--/.Controls-->
                                       <ol class="carousel-indicators">
                                         @if($stepdata->media)
                                         @php $dataslide = 0; @endphp
                                             @foreach($stepdata->media as $media)
-                                                <li data-target="#carousel-step{{$step}}" onmouseover="bigImg(this)" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
-                                                    <img class="d-block" src="{{asset($media->media_url)}}" class="img-fluid">
-                                                </li>
+                                            @php 
+                                                $extensions = ["jpeg","png","jpg","gif","svg"];
+                                                $isImage = pathinfo(storage_path($media->media_url), PATHINFO_EXTENSION);
+                                            @endphp
+                                                @if(in_array($isImage , $extensions)) 
+                                                    <li data-target="#carousel-step{{$step}}" onmouseover="bigImg(this)" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
+                                                        <img class="d-block" src="{{asset($media->media_url)}}" class="img-fluid">
+                                                    </li>
+                                                @else
+                                                    <li data-target="#carousel-step{{$step}}" onmouseover="bigImg(this,'video')" data-slide-to="{{$dataslide}}" > 
+                                                        <div class="embed-responsive embed-responsive-16by9">
+                                                            <iframe class="embed-responsive-item" class="text-center" src="https://www.youtube.com/embed/OfIQW6s1-ew" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                        </div>
+                                                    </li>
+                                                @endif
                                             @php $dataslide++; @endphp
                                             @endforeach
                                         @endif
@@ -365,8 +386,15 @@ jQuery(document).ready(function($){
     });
 });
 
-function bigImg(x) {
+function bigImg(x,video) {
     x.click();
+    // document.getElementById("iframe").play();
+    if (video) {
+        $("#iframe")[0].src += "?autoplay=1";
+    }else{
+        $("#iframe")[0].src += "";
+    }
+
 }
 
 function printDiv(divName) {
