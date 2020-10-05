@@ -36,6 +36,7 @@ class SupportTicketController extends Controller
 
     public function listdata(Request $request)
     {
+        
         if(Auth::user()->zendesk_id == NULL){
             
             $json_data = array(
@@ -46,6 +47,7 @@ class SupportTicketController extends Controller
                     );
             echo json_encode($json_data);die();    
         }
+        
         // echo "<pre>"; print_r($request->session()->token()); exit();
         $columns = array( 
             0 =>'id', 
@@ -150,9 +152,9 @@ class SupportTicketController extends Controller
                 'email' => Auth::user()->email,
             ),
             'priority' => $request->priority,
-            'custom_fields' => array("id" => 900006262866, "value" => $request->department)
+            'custom_fields' => array("id" => env('ZENDESK_CUSTOM_FIELD_ID'), "value" => $request->department)
         ]);
-        //dd($newticker);
+        
         if($newticker){
             $user = Auth::user();
             if($user->zendesk_id == NULL){
