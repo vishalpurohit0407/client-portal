@@ -38,19 +38,19 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link {{ Request::routeIs('user.support.ticket.*') ? 'active' : '' }}" href="{{route('user.support.ticket.list')}}">
-                <i class="fa fa-question-circle text-info" aria-hidden="true"></i>
-                <span class="nav-link-text">Support Tickets</span>
-              </a>
-            </li>
-
-            <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('user.maintenance.*') ? 'active' : '' }}" href="{{route('user.maintenance.list')}}">
                 <i class="fas fa-toolbox text-red" aria-hidden="true"></i>
                 <span class="nav-link-text">Maintenance Guides</span>
               </a>
             </li>
             
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('user.support.ticket.*') ? 'active' : '' }}" href="{{route('user.support.ticket.list')}}">
+                <i class="fa fa-question-circle text-info" aria-hidden="true"></i>
+                <span class="nav-link-text">Support Tickets</span>
+              </a>
+            </li>
+
           </ul>
         </div>
       </div>
