@@ -212,7 +212,7 @@
                                   <div class="col-sm-6">
                                       <div class="form-group">
                                           <label class="form-control-label" for="step_title">Title</label>
-                                          <input type="text" class="form-control" name="step_title" placeholder="Type" value="{{ $guidestep->title }}">
+                                          <input type="text" class="form-control" name="step_title" placeholder="Title" value="{{ $guidestep->title }}">
                                       </div>
                                       <div class="form-group">
                                           <label class="form-control-label" for="step_video">Video</label>

@@ -305,3 +305,11 @@
     background: #ededed !important;
     
 }
+
+.g-sidenav-pinned .sidenav{
+    max-width: 260px !important;
+}
+
+.g-sidenav-pinned .sidenav.fixed-left + .main-content{
+    margin-left: 260px !important;
+}

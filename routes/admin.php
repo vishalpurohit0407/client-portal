@@ -83,11 +83,12 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/selfdiagnosis/main-img-upload/{id}','admin\GuideController@mainImgUpload')->name('admin.selfdiagnosis.mainupload');
 	Route::post('/selfdiagnosis/remove/img-upload','admin\GuideController@removeImage')->name('admin.selfdiagnosis.remove.image');
 	Route::post('/selfdiagnosis/remove/step','admin\GuideController@removeStep')->name('admin.selfdiagnosis.remove.step');
+	Route::get('/selfdiagnosis/pdf/{id}','GuideController@createPDF')->name('selfdiagnosis.pdf.export');
 
 
 	//Maintenance Module Routes
 	Route::get('/maintenance/search','admin\MaintenanceController@search')->name('admin.maintenance.search');
-	Route::resource('/maintenance', 'admin\MaintenanceController', [
+	Route::resource('/maintenance/guide', 'admin\MaintenanceController', [
 	    'names' => [
 	        'index' => 'admin.maintenance.list',
 	        'create' => 'admin.maintenance.create',

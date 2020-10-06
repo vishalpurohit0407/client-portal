@@ -65,6 +65,7 @@ class MaintenanceController extends Controller
         $guidArr['status'] = '3';
         $guidArr['guide_type'] = 'maintenance';
         $guide = Guide::create($guidArr);
+
         return redirect(route('admin.maintenance.edit',['guide' => $guide->id ])); 
     }
 
@@ -182,7 +183,7 @@ class MaintenanceController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('admin.maintenancemaintenance.detail',array('title'=>'Self Diagnosis Details','maintenance'=>$guide));
+        return view('admin.maintenance.detail',array('title'=>'Maintenance Guide Details','maintenance'=>$guide));
     }
 
     /**
@@ -197,7 +198,7 @@ class MaintenanceController extends Controller
         $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->orderBy('step_no','asc')->get();
         //dd($guide_step);
         $selectedCategory = Guidecategory::where('guide_id',$guide->id)->pluck('category_id')->toArray();
-        return view('admin.maintenance.add',array('title' => 'Maintenance Guide Add','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
+        return view('admin.maintenance.add',array('title' => 'Add Maintenance Guide','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
     }
 
     /**
@@ -303,9 +304,9 @@ class MaintenanceController extends Controller
         }
 
         if ($guide->save()) {
-            $request->session()->flash('alert-success', 'Selfdiagnosis updated successfuly.');
+            $request->session()->flash('alert-success', 'Maintenance Guide updated successfuly.');
         }
-        return redirect(route('admin.selfdiagnosis.list'));
+        return redirect(route('admin.maintenance.list'));
     }
 
     /**
@@ -322,12 +323,12 @@ class MaintenanceController extends Controller
             }
             $guide->status = '2';
             if ($guide->save()) {
-                $request->session()->flash('alert-success', 'Selfdiagnosis deleted successfuly.');
+                $request->session()->flash('alert-success', 'Maintenance Guide deleted successfuly.');
             }
-            return redirect(route('admin.selfdiagnosis.list'));
+            return redirect(route('admin.maintenance.list'));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('admin.selfdiagnosis.list'));
+            return redirect(route('admin.maintenance.list'));
         }
     }
 }

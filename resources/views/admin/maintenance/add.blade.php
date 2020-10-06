@@ -12,13 +12,13 @@
   <div class="container-fluid">
     <div class="header-body">
       <div class="row align-items-center py-4">
-        <div class="col-lg-6 col-7">
-          <h6 class="h2 text-white d-inline-block mb-0">Add Self Diagnosis</h6>
+        <div class="col-lg-12 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">{{$title}}</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-                <li class="breadcrumb-item"><a href="#">Self Diagnosis</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add Self Diagnosis</li>
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="{{route('admin.maintenance.list')}}">Maintenance Guides</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
             </ol>
           </nav>
         </div>
@@ -34,12 +34,12 @@
       <div class="card mb-4">
         <!-- Card header -->
         <div class="card-header">
-          <h3 class="mb-0">Add Self Diagnosis</h3>
+          <h3 class="mb-0">{{$title}}</h3>
         </div>
 
         <!-- Card body -->
         <div class="card-body">
-          <form action="{{ route('admin.selfdiagnosis.update',$guide->id) }}" method="post" enctype="multipart/form-data">
+          <form action="{{ route('admin.maintenance.update',$guide->id) }}" method="post" enctype="multipart/form-data">
           @csrf
           {{ method_field('PUT') }}
               <div class="row">
@@ -47,7 +47,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="guide_main_image">Main Image</label>
                     
-                    <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.selfdiagnosis.mainupload',['id' => $guide->id])}}">
+                    <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.maintenance.mainupload',['id' => $guide->id])}}">
                       <div class="fallback">
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" id="guide_main_image">
@@ -212,7 +212,7 @@
                                   <div class="col-sm-6">
                                       <div class="form-group">
                                           <label class="form-control-label" for="step_title">Title</label>
-                                          <input type="text" class="form-control" name="step_title" placeholder="Type" value="{{ $guidestep->title }}">
+                                          <input type="text" class="form-control" name="step_title" placeholder="Title" value="{{ $guidestep->title }}">
                                       </div>
                                       <div class="form-group">
                                           <label class="form-control-label" for="step_video">Video</label>
@@ -381,7 +381,7 @@
                         <input type="submit" class="btn btn-info" name="submit" value="Save As Draft">
                     @endif
                     <input type="submit" class="btn btn-success" name="submit" value="Published">
-                    <a href="{{route('admin.selfdiagnosis.list')}}" class="btn btn-primary">Cancel</a>
+                    <a href="{{route('admin.maintenance.list')}}" class="btn btn-primary">Cancel</a>
                     <input type="hidden" name="step_count" id="step_count" value="{{$step_count}}">
                 </div>
               </div>
@@ -489,7 +489,7 @@ $(document).ready(function() {
 
                 $(this).find('.dropzone-init').each(function(){
                     
-                    var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
+                    var dropUrl = "{{ route('admin.maintenance.upload', ['_token' => csrf_token()]) }}";
                     dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
                     var dropMaxFiles = 6;
                     var dropParamName = 'file_image';
@@ -534,7 +534,7 @@ $(document).ready(function() {
                 if(result.value){
 
                     $.ajax({
-                        url: "{{ route('admin.selfdiagnosis.remove.step',['_token' => csrf_token() ]) }}",
+                        url: "{{ route('admin.maintenance.remove.step',['_token' => csrf_token() ]) }}",
                         data: { step_key: keyId},
                         type: 'POST',
                         success: function (data) {
@@ -575,7 +575,7 @@ $(document).ready(function() {
 
                 $(this).find('.dropzone-init').each(function(){
                     
-                    var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
+                    var dropUrl = "{{ route('admin.maintenance.upload', ['_token' => csrf_token()]) }}";
                     dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
                     var dropMaxFiles = 6;
                     var dropParamName = 'file_image';
@@ -653,7 +653,7 @@ function callRemoveImg(){
         if(imageId){
 
             $.ajax({
-                url: "{{ route('admin.selfdiagnosis.remove.image',['_token' => csrf_token() ]) }}",
+                url: "{{ route('admin.maintenance.remove.image',['_token' => csrf_token() ]) }}",
                 data: { imageId: imageId},
                 type: 'POST',
                 success: function (data) {
