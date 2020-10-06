@@ -28,7 +28,7 @@ class Guide extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'main_title', 'main_image', 'description', 'type','duration','duration_type','difficulty','cost','tags','introduction','introduction_video_type','introduction_video_link','status'
+        'main_title', 'main_image', 'description', 'type','duration','duration_type','difficulty','cost','tags','introduction','introduction_video_type','introduction_video_link', 'guide_type', 'status'
     ];
 
     protected $appends = [ 'main_image_url' ];

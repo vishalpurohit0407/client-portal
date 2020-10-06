@@ -17,9 +17,9 @@
                             {{implode(', ',$category_name)}}
                         </p>
                         <div class="footer-button">
-                            <a href="{{route('admin.selfdiagnosis.show',$mainten->id)}}" class="btn btn-success btn-sm">View</a>
-                            <a href="{{route('admin.selfdiagnosis.edit',$mainten->id)}}" class="btn btn-info btn-sm">Edit</a>
-                            <form action="{{route('admin.selfdiagnosis.destroy',$mainten->id)}}" method='POST' style='display: contents;' id="frm_{{$mainten->id}}">
+                            <a href="{{route('admin.maintenance.show',$mainten->id)}}" class="btn btn-success btn-sm">View</a>
+                            <a href="{{route('admin.maintenance.edit',$mainten->id)}}" class="btn btn-info btn-sm">Edit</a>
+                            <form action="{{route('admin.maintenance.destroy',$mainten->id)}}" method='POST' style='display: contents;' id="frm_{{$mainten->id}}">
                                 @csrf
                                 <input type='hidden' name='_method' value='DELETE'>
                                 <a type="submit" class="btn btn-danger btn-sm" style="color: white;" onclick="return deleteConfirm(this);" id="{{$mainten->id}}">Delete</a>
