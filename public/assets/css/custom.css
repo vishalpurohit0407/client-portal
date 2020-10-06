@@ -283,4 +283,25 @@
     position: absolute;
     right: 0;
     top: 0;
-}}
+}
+
+.carousel-item.step-item-video {
+    height: 415px !important;
+}
+
+.carousel-item.step-item-video iframe {
+    height: 100%;
+    width: 100%;
+}
+
+.step-video-icon{
+    width: auto !important;
+    float: none;
+    margin: 0 auto;
+    height: 88% !important;
+    padding-top: 6% !important;
+}
+.step-video-li{
+    background: #ededed !important;
+    
+}

@@ -16,6 +16,7 @@
                         {{implode(', ',$category_name)}}
                     </p>
                     <div class="footer-button">
+                        <a href="{{route('admin.selfdiagnosis.show',$selfdiagnos->id)}}" class="btn btn-success btn-sm">View</a>
                         <a href="{{route('admin.selfdiagnosis.edit',$selfdiagnos->id)}}" class="btn btn-info btn-sm">Edit</a>
                         <form action="{{route('admin.selfdiagnosis.destroy',$selfdiagnos->id)}}" method='POST' style='display: contents;' id="frm_{{$selfdiagnos->id}}">
                             @csrf

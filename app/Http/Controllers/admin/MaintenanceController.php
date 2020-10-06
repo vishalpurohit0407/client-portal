@@ -11,7 +11,7 @@ use App\Guidecategory;
 use App\GuideSteps;
 use Response;
 
-class GuideController extends Controller
+class MaintenanceController extends Controller
 {
 
     public function __construct()
@@ -25,33 +25,33 @@ class GuideController extends Controller
      */
     public function index(Request $request)
     {
-        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('guide_type','=','self-diagnosis')->where('main_title','!=','')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
+        $maintenance = Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
         
         if($request->ajax()){
-            return view('admin.selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
+            return view('admin.maintenance.ajaxlist',array('maintenance'=>$maintenance));
         }else{
             $categorys = Category::where('status','1')->orderBy('name','asc')->get();
-            //print_r($categorys);
-            return view('admin.selfdiagnosis.list',array('title' => 'Self Diagnosis List','categorys'=>$categorys,'selfdiagnosis'=>$selfdiagnosis));
+            
+            return view('admin.maintenance.list',array('title' => 'Maintenance Guide List','categorys'=>$categorys,'maintenance'=>$maintenance));
         }
     }
 
     public function search(Request $request){
 
-        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('guide_type','=','self-diagnosis')->where('main_title','!=','')->where('status','!=','2');
+        $maintenance=Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','!=','2');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
-            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
+            $maintenance=$maintenance->where('main_title','LIKE','%'.$request->search.'%');
         }
         if(isset($request->category_id) && !empty($request->category_id)){
             $category_id=$request->category_id;
-            $selfdiagnosis=$selfdiagnosis->whereHas('guide_category', function ($query) use ($category_id) {
+            $maintenance=$maintenance->whereHas('guide_category', function ($query) use ($category_id) {
                     $query->where('category_id', $category_id);
                 });
         }
-        $selfdiagnosis=$selfdiagnosis->orderBy('created_at', 'desc')->paginate($this->getrecord);
+        $maintenance=$maintenance->orderBy('created_at', 'desc')->paginate($this->getrecord);
 
-        return view('admin.selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
+        return view('admin.maintenance.ajaxlist',array('maintenance'=>$maintenance));
     }
 
     /**
@@ -63,9 +63,9 @@ class GuideController extends Controller
     {
         $guidArr = array();
         $guidArr['status'] = '3';
-        $guidArr['guide_type'] = 'self-diagnosis';
+        $guidArr['guide_type'] = 'maintenance';
         $guide = Guide::create($guidArr);
-        return redirect(route('admin.selfdiagnosis.edit',['guide' => $guide->id ])); 
+        return redirect(route('admin.maintenance.edit',['guide' => $guide->id ])); 
     }
 
     /**
@@ -74,27 +74,10 @@ class GuideController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-        //echo "<pre>";print_r($request->stepfilupload);exit;
 
-        $messages = [
-            'guide_step.*.step_title.required' => 'The title field is required.',
-            'guide_step.*.step_description.required' => 'The points/description field is required.',
-            //'guide_step.*.stepfilupload.*' => 'Please upload jpg,jpeg,png,bmp image',
-        ];
-        $request->validate([
-            'guide_step.*.step_title' => 'required',
-            'guide_step.*.step_description' => 'required',
-            //'guide_step.*.stepfilupload.*' => 'mimes:jpg,jpeg,png,bmp'
-        ],$messages);
-
-        try {            
-            return redirect(route('organization.list'));
-        }catch (ModelNotFoundException $exception) {
-            $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('organization.list'));
-        }
     }
 
     public function img_upload(Request $request)
@@ -199,7 +182,7 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('admin.selfdiagnosis.detail',array('title'=>'Self Diagnosis Details','selfdiagnosis'=>$guide));
+        return view('admin.maintenancemaintenance.detail',array('title'=>'Self Diagnosis Details','maintenance'=>$guide));
     }
 
     /**
@@ -214,7 +197,7 @@ class GuideController extends Controller
         $guide_step = GuideSteps::where('guide_id',$guide->id)->with('media')->orderBy('step_no','asc')->get();
         //dd($guide_step);
         $selectedCategory = Guidecategory::where('guide_id',$guide->id)->pluck('category_id')->toArray();
-        return view('admin.selfdiagnosis.add',array('title' => 'Self Diagnosis Add','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
+        return view('admin.maintenance.add',array('title' => 'Maintenance Guide Add','category'=> $category, 'guide' => $guide, 'selectedCategory' => $selectedCategory, 'guide_step' => $guide_step));
     }
 
     /**

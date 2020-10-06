@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.adminapp')
 @section('pagewise_css')
         <style type="text/css">
 
@@ -20,8 +20,8 @@
                     <h6 class="h2 text-white d-inline-block mb-0">{{$title}}</h6>
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.selfdiagnosis.list')}}">Self Diagnosis</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.selfdiagnosis.list')}}">Self Diagnosis</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                         </ol>
                     </nav>
@@ -290,17 +290,7 @@
                         $completed_guide_count = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->count();
 
                     @endphp
-                    @if($completed_guide)
-                        <a class="btn btn-icon btn-primary text-white">
-                            <span class="btn-inner--icon"><i class="fa fa-check"></i></span>
-                            <span class="btn-inner--text">Already Completed</span>
-                        </a>
-                    @else
-                        <a href="{{route('user.complete.guide',$selfdiagnosis->id)}}" class="btn btn-icon btn-primary">
-                            <span class="btn-inner--icon"><i class="fa fa-check"></i></span>
-                            <span class="btn-inner--text">Complete Guide</span>
-                        </a>
-                    @endif
+                    
                 </div>
                 <small class="h4 font-weight-light text-primary">{{$completed_guide_count}} other people completed this guide.</small>
             </div>

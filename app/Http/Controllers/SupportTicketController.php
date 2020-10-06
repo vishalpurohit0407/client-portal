@@ -25,12 +25,6 @@ class SupportTicketController extends Controller
      */
     public function index(Request $request)
     {  
-        //$tickets = Zendesk::users(900868125783)->me();
-        /*$params = array('query' => 'testalax@gmail.com');
-        $tickets = Zendesk::users('testalax@gmail.com')->tickets()->requested();
-        dd($tickets);*/
-        
-        //dd($commentsArr);
         return view('supportticket.list',array('title' => 'Support Ticket List'));
     }
 
@@ -61,9 +55,7 @@ class SupportTicketController extends Controller
         $pageNumber = $request->pageNumber + 1;
          
         $tickets = Zendesk::users(Auth::user()->zendesk_id)->tickets()->requested(['page' => $pageNumber, 'per_page' => $request->length, 'sort_by' => 'created_at', 'sort_order' => 'desc']);
-        //->findAll(['page' => $pageNumber, 'per_page' => $request->length])
-        //Zendesk::users('testalax@gmail.com')->tickets()->requested();
-        //dd($tickets);
+        
         $totalData = $tickets->count;
             
         $totalFiltered = $totalData; 
@@ -102,23 +94,6 @@ class SupportTicketController extends Controller
                     );
             
         echo json_encode($json_data);
-    }
-
-    public function search(Request $request){
-        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','=','1');
-        //->where('status','!=','2')
-        if(isset($request->search) && !empty($request->search)){
-            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
-        }
-        if(isset($request->category_id) && !empty($request->category_id)){
-            $category_id=$request->category_id;
-            $selfdiagnosis=$selfdiagnosis->whereHas('guide_category', function ($query) use ($category_id) {
-                    $query->where('category_id', $category_id);
-                });
-        }
-        $selfdiagnosis=$selfdiagnosis->orderBy('created_at', 'desc')->paginate($this->getrecord);
-
-        return view('selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
     }
 
     public function create()
@@ -215,7 +190,7 @@ class SupportTicketController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Details','selfdiagnosis'=>$guide));
+       
     }
 
     /**

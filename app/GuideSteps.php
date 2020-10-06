@@ -28,7 +28,7 @@ class GuideSteps extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'guide_id', 'title', 'description', 'step_key'
+        'guide_id', 'title', 'description', 'step_key', 'video_type', 'video_media'
     ];
 
     public function media()

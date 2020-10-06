@@ -42,7 +42,6 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/category/list/data','admin\CategoryController@listdata')->name('admin.category.listdata');
 	Route::resource('/category', 'admin\CategoryController', [
 	    'names' => [
-
 	        'index' => 'admin.category.list',
 	        'edit' => 'admin.category.edit',
 	        'create' => 'admin.category.create',
@@ -84,6 +83,25 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/selfdiagnosis/main-img-upload/{id}','admin\GuideController@mainImgUpload')->name('admin.selfdiagnosis.mainupload');
 	Route::post('/selfdiagnosis/remove/img-upload','admin\GuideController@removeImage')->name('admin.selfdiagnosis.remove.image');
 	Route::post('/selfdiagnosis/remove/step','admin\GuideController@removeStep')->name('admin.selfdiagnosis.remove.step');
+
+
+	//Maintenance Module Routes
+	Route::get('/maintenance/search','admin\MaintenanceController@search')->name('admin.maintenance.search');
+	Route::resource('/maintenance', 'admin\MaintenanceController', [
+	    'names' => [
+	        'index' => 'admin.maintenance.list',
+	        'create' => 'admin.maintenance.create',
+	        'store' => 'admin.maintenance.store',
+	        'edit' => 'admin.maintenance.edit',
+	        'update' => 'admin.maintenance.update',
+	        'destroy' => 'admin.maintenance.destroy',
+	        'show' => 'admin.maintenance.show'
+	    ]
+	]);
+	Route::post('/maintenance/img-upload','admin\MaintenanceController@img_upload')->name('admin.maintenance.upload');
+	Route::post('/maintenance/main-img-upload/{id}','admin\MaintenanceController@mainImgUpload')->name('admin.maintenance.mainupload');
+	Route::post('/maintenance/remove/img-upload','admin\MaintenanceController@removeImage')->name('admin.maintenance.remove.image');
+	Route::post('/maintenance/remove/step','admin\MaintenanceController@removeStep')->name('admin.maintenance.remove.step');
 
 	// CMS Page Module Routes
 	Route::post('/cms_page/list/data','admin\CmsPageController@listdata')->name('admin.cms.page.listdata');

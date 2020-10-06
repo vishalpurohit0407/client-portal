@@ -44,9 +44,8 @@
             </li> -->
 
             <li class="nav-item">
-              
               <a class="nav-link {{ Request::routeIs('admin.user.*') ? 'active' : '' }}" href="#navbar-forms-user" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms-user">
-                <i class="ni ni-single-02 text-green"></i>
+                <i class="fas fa-users text-green"></i>
                 <span class="nav-link-text">Users</span>
               </a>
               <div class="collapse {{ Request::routeIs('admin.user.*') ? 'show' : '' }}" id="navbar-forms-user" style="">
@@ -73,6 +72,23 @@
                   </li>
                   <li class="nav-item">
                     <a href="{{route('admin.selfdiagnosis.create')}}" class="nav-link {{ Request::routeIs('admin.selfdiagnosis.create') ? 'active' : '' }}">Add New Self Diagnosis</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('admin.maintenance.*') ? 'active' : '' }}" href="#navbar-forms-maintenance" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms-maintenance">
+                <i class="fas fa-toolbox text-red"></i>
+                <span class="nav-link-text">Maintenance</span>
+              </a>
+              <div class="collapse {{ Request::routeIs('admin.maintenance.*') ? 'show' : '' }}" id="navbar-forms-maintenance" style="">
+                <ul class="nav nav-sm flex-column">
+                  <li class="nav-item">
+                    <a href="{{route('admin.maintenance.list')}}" class="nav-link {{ Request::routeIs('admin.maintenance.list') ? 'active' : '' }}">All Maintenance Guides</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('admin.maintenance.create')}}" class="nav-link {{ Request::routeIs('admin.maintenance.create') ? 'active' : '' }}">Add New Maintenance Guide</a>
                   </li>
                 </ul>
               </div>
