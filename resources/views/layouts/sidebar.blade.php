@@ -47,7 +47,7 @@
             <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('user.maintenance.*') ? 'active' : '' }}" href="{{route('user.maintenance.list')}}">
                 <i class="fas fa-toolbox text-red" aria-hidden="true"></i>
-                <span class="nav-link-text">Maintenance</span>
+                <span class="nav-link-text">Maintenance Guides</span>
               </a>
             </li>
             

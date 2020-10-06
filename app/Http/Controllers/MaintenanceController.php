@@ -84,7 +84,7 @@ class MaintenanceController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('maintenance.detail',array('title'=>'Maintenance Details','maintenance'=>$guide));
+        return view('maintenance.detail',array('title'=>'Maintenance Guide Details','maintenance'=>$guide));
     }
 
     /**
