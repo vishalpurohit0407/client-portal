@@ -25,7 +25,7 @@ class GuideController extends Controller
      */
     public function index(Request $request)
     {
-        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','=','1')->orderBy('created_at', 'desc')->paginate($this->getrecord);
+        $selfdiagnosis = Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('guide_type','=','self-diagnosis')->where('status','=','1')->orderBy('created_at', 'desc')->paginate($this->getrecord);
         
         if($request->ajax()){
             return view('selfdiagnosis.ajaxlist',array('selfdiagnosis'=>$selfdiagnosis));
@@ -37,7 +37,7 @@ class GuideController extends Controller
     }
 
     public function search(Request $request){
-        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('status','=','1');
+        $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('guide_type','=','self-diagnosis')->where('status','=','1');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
             $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
@@ -58,23 +58,29 @@ class GuideController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function completedGuide(Request $request, $guide_id)
+    public function completedGuide(Request $request, $guide_id ,Guide $guide)
     {
+        $guide = Guide::find($guide_id);
         try {
-            if (!$guide_id) {
+            if (!$guide) {
               return abort(404);
             }
             $completed_guide = new GuideCompletion;
-            $completed_guide->guide_id = $guide_id;
+            $completed_guide->guide_id = $guide->id;
             $completed_guide->user_id = Auth::user()->id;
             if($completed_guide->save())
             {
-                $request->session()->flash('alert-success', 'Guide completed successfuly.');  
+                $request->session()->flash('alert-success', ($guide->guide_type == 'self-diagnosis' ? 'Self Diagnosis':'Maintenance').' Guide completed successfuly.');  
             }
-            return redirect(route('user.selfdiagnosis.show',$guide_id));
+            if ($guide->guide_type == 'self-diagnosis') {
+                $route = 'user.selfdiagnosis.show';
+            }else{
+                $route = 'user.maintenance.show';
+            }
+            return redirect(route($route,$guide->id));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('user.selfdiagnosis.show',$guide_id));
+            return redirect(route($route,$guide->id));
         };
     }
 

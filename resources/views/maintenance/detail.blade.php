@@ -1,15 +1,15 @@
 @extends('layouts.app')
 @section('pagewise_css')
-        <style type="text/css">
+<style type="text/css">
 
-            #printable { display: none; }
+    #printable { display: none; }
 
-            @media print
-            {
-                #non-printable { display: none; }
-                #printable { display: block; }
-            }
-        </style>
+    @media print
+    {
+        #non-printable { display: none; }
+        #printable { display: block; }
+    }
+</style>
 @endsection
 @section('content')
 <div class="header bg-primary pb-6">
@@ -21,7 +21,7 @@
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                             <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.selfdiagnosis.list')}}">Self Diagnosis</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.selfdiagnosis.list')}}">Maintenance</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                         </ol>
                     </nav>
@@ -51,10 +51,10 @@
         <div class="card-header">
             <div class="row align-items-center">
                 <div class="col-8">
-                    <h5 class="h3 mb-0">{{$selfdiagnosis->main_title}}</h5>
+                    <h5 class="h3 mb-0">{{$maintenance->main_title}}</h5>
                 </div>
                 <div class="col-4 text-right">
-                    <a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-sm btn-neutral">Export PDF</a>
+                    <a href="{{route('selfdiagnosis.pdf.export',$maintenance->id)}}" class="btn btn-sm btn-neutral">Export PDF</a>
                     <!-- <button class="btn btn-sm btn-neutral" onclick="printDiv('printableArea')">Print</button> -->
                 </div>
             </div>
@@ -63,35 +63,35 @@
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="tuto-main-image noprint">
-                        <a class="image" href="" id="lightgallery" data-image="{{asset($selfdiagnosis->main_image_url)}}" data-maintitle="{{$selfdiagnosis->main_title}}" >
-                            <img class="img-fluid" style="filter: blur(0px);" src="{{asset($selfdiagnosis->main_image_url)}}">
+                        <a class="image" href="" id="lightgallery" data-image="{{asset($maintenance->main_image_url)}}" data-maintitle="{{$maintenance->main_title}}" >
+                            <img class="img-fluid" style="filter: blur(0px);" src="{{asset($maintenance->main_image_url)}}">
                         </a>
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-12">
                     <div class="tuto-details-box">
-                        <p class="mt-0">{{$selfdiagnosis->description}}</p>
+                        <p class="mt-0">{{$maintenance->description}}</p>
                         <div class="tuto-items-container">
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="ni ni-app"></i></span>
                                 <span class="alert-text">Type</span>
-                                <span class="alert-text-right"><strong>{{$selfdiagnosis->type}}</strong></span>
+                                <span class="alert-text-right"><strong>{{$maintenance->type}}</strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-tachometer-alt"></i></span>
                                 <span class="alert-text">Difficulty</span>
-                                <span class="alert-text-right"><strong>{{$selfdiagnosis->difficulty}}</strong></span>
+                                <span class="alert-text-right"><strong>{{$maintenance->difficulty}}</strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-clock"></i></span>
                                 <span class="alert-text">Duration</span>
-                                <span class="alert-text-right"><strong>{{$selfdiagnosis->duration}}&nbsp;{{$selfdiagnosis->duration_type}}</strong></span>
+                                <span class="alert-text-right"><strong>{{$maintenance->duration}}&nbsp;{{$maintenance->duration_type}}</strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-tag"></i></span>
                                 <span class="alert-text">Categories</span>
                                 @php
-                                    $category_id = $selfdiagnosis->guide_category->pluck('category_id')->toArray();
+                                    $category_id = $maintenance->guide_category->pluck('category_id')->toArray();
                                     $category_name = App\Category::whereIn('id',$category_id)->pluck('name')->toArray();
                                 @endphp
                                 <span class="alert-text-right"><strong>{{implode(', ',$category_name)}}</strong></span>
@@ -99,7 +99,7 @@
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-money-bill-alt"></i></span>
                                 <span class="alert-text">Cost</span>
-                                <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">{{$selfdiagnosis->cost}} USD ($)</div></strong></span>
+                                <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">{{$maintenance->cost}} USD ($)</div></strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-list-ol"></i></span>
@@ -108,7 +108,7 @@
                                     <a href="#content-sr" role="button" tabindex="0" class="togglelink">hide</a>]&nbsp;
                                 </span>
                                 <ul id="content-sr">
-                                    @if($selfdiagnosis->guide_step)
+                                    @if($maintenance->guide_step)
                                     @php $step = 1; @endphp
                                     @php $srno = 2; @endphp
                                         <li class="toclevel-1">
@@ -117,7 +117,7 @@
                                                 <span class="toctext">Introduction</span>
                                             </a>
                                         </li>
-                                        @foreach($selfdiagnosis->guide_step as $stepdata)
+                                        @foreach($maintenance->guide_step as $stepdata)
                                             <li class="toclevel-1">
                                                 <a href="#Step_{{$step}}_-_{{\Str::slug($stepdata->title, '_')}}">
                                                     <span class="tocnumber">{{$srno}}</span> 
@@ -136,15 +136,15 @@
             </div>
             <hr>
             <div id="Introduction" class="mt-4">
-                @if($selfdiagnosis->introduction)
+                @if($maintenance->introduction)
                     <h2 class="display-3 mb-0">Introduction</h2>
-                    <p>{!!$selfdiagnosis->introduction!!}</p>
+                    <p>{!!$maintenance->introduction!!}</p>
                     <hr>    
                 @endif
-                @if($selfdiagnosis->introduction_video_link)
+                @if($maintenance->introduction_video_link)
                     <h2 class="display-3 mb-0">Video overview</h2>
                     <div class="embed-responsive embed-responsive-16by9" id="non-printable">
-                        <iframe class="embed-responsive-item" class="text-center" src="{{$selfdiagnosis->introduction_video_link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe class="embed-responsive-item" class="text-center" src="{{$maintenance->introduction_video_link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <hr>
                 @endif
@@ -206,9 +206,9 @@
                 </div> -->
             </div>
             <br>
-            @if($selfdiagnosis->guide_step)
+            @if($maintenance->guide_step)
             @php $step = 1; @endphp
-                @foreach($selfdiagnosis->guide_step as $stepkey => $stepdata)
+                @foreach($maintenance->guide_step as $stepkey => $stepdata)
                     <div id="Step_{{$step}}_-_{{\Str::slug($stepdata->title, '_')}}" class="mt-4">
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
@@ -217,9 +217,15 @@
                                       <div class="carousel-inner lightgallery" style="cursor: pointer;" data-id="{{$stepdata->id}}" title="Show Image">
                                         @if($stepdata->media)
                                             @foreach($stepdata->media as $media)
+                                            @php 
+                                                $extensions = ["jpeg","png","jpg","gif","svg"];
+                                                $isImage = pathinfo(storage_path($media->media_url), PATHINFO_EXTENSION);
+                                            @endphp
+                                             
                                                 <div class="carousel-item @if($loop->first) active @endif">
                                                   <img class="d-block" src="{{asset($media->media_url)}}" alt="First slide">
                                                 </div>
+                                            
                                             @endforeach
                                         @endif
 
@@ -235,9 +241,15 @@
                                         @if($stepdata->media)
                                         @php $dataslide = 0; @endphp
                                             @foreach($stepdata->media as $media)
-                                                <li data-target="#carousel-step{{$step}}" onmouseover="bigImg(this,'image')" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
-                                                    <img class="d-block" src="{{asset($media->media_url)}}" class="img-fluid">
-                                                </li>
+                                            @php 
+                                                $extensions = ["jpeg","png","jpg","gif","svg"];
+                                                $isImage = pathinfo(storage_path($media->media_url), PATHINFO_EXTENSION);
+                                            @endphp
+                                                
+                                                    <li data-target="#carousel-step{{$step}}" onmouseover="bigImg(this,'image')" data-slide-to="{{$dataslide}}" @if($loop->first) class="active" @endif > 
+                                                        <img class="d-block" src="{{asset($media->media_url)}}" class="img-fluid">
+                                                    </li>
+                                               
                                             @php $dataslide++; @endphp
                                             @endforeach
                                         @endif
@@ -274,8 +286,8 @@
                 </h5>
                 <div class="mt-5 mb-4">
                     @php 
-                        $completed_guide = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->where('user_id',\Auth::user()->id)->first();
-                        $completed_guide_count = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->count();
+                        $completed_guide = \App\GuideCompletion::where('guide_id',$maintenance->id)->where('user_id',\Auth::user()->id)->first();
+                        $completed_guide_count = \App\GuideCompletion::where('guide_id',$maintenance->id)->count();
 
                     @endphp
                     @if($completed_guide)
@@ -284,7 +296,7 @@
                             <span class="btn-inner--text">Already Completed</span>
                         </a>
                     @else
-                        <a href="{{route('user.complete.guide',$selfdiagnosis->id)}}" class="btn btn-icon btn-primary">
+                        <a href="{{route('user.complete.guide',$maintenance->id)}}" class="btn btn-icon btn-primary">
                             <span class="btn-inner--icon"><i class="fa fa-check"></i></span>
                             <span class="btn-inner--text">Complete Guide</span>
                         </a>
@@ -301,8 +313,8 @@
 <script type="text/javascript"> 
 var elementArr = new Array();
     @php
-        if($selfdiagnosis->guide_step){
-            foreach($selfdiagnosis->guide_step as $stepdata){
+        if($maintenance->guide_step){
+            foreach($maintenance->guide_step as $stepdata){
                 if($stepdata->media){
     @endphp
                     var mediaArr = new Array();
@@ -376,7 +388,7 @@ jQuery(document).ready(function($){
     });
 });
 
-function bigImg(x) {
+function bigImg(x,type) {
     x.click();
 
 }

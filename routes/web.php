@@ -46,6 +46,14 @@ Route::group(['middleware' => 'auth'], function () {
 	    ]
 	]);
 
-	
+	//Maintenance Module Routes
+	Route::get('/maintenance/search','MaintenanceController@search')->name('user.maintenance.search');
+	Route::resource('/maintenance/guide', 'MaintenanceController', [
+	    'names' => [
+	        'index' => 'user.maintenance.list',
+	        'show' => 'user.maintenance.show'
+	    ]
+	]);
+
 });
 Route::get('/{url_slug}','PagepreviewController@pagepreview')->name('cms.pagepreview');
