@@ -286,7 +286,7 @@
                 </h5>
                 <div class="mt-5 mb-4">
                     @php 
-                        $completed_guide = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->where('user_id',\Auth::user()->id)->first();
+                        
                         $completed_guide_count = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->count();
 
                     @endphp
