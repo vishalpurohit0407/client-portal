@@ -1,15 +1,18 @@
 @extends('layouts.app')
 @section('pagewise_css')
-        <style type="text/css">
+<style type="text/css">
 
-            #printable { display: none; }
+    #printable { display: none; }
 
-            @media print
-            {
-                #non-printable { display: none; }
-                #printable { display: block; }
-            }
-        </style>
+    @media print
+    {
+        #non-printable { display: none; }
+        #printable { display: block; }
+    }
+    .ckeditimg img{
+        float: none !important;
+    }
+</style>
 @endsection
 @section('content')
 <div class="header bg-primary pb-6">
@@ -135,76 +138,22 @@
                 </div>
             </div>
             <hr>
-            <div id="Introduction" class="mt-4">
-                @if($selfdiagnosis->introduction)
+            @if($selfdiagnosis->introduction)
+                <div id="Introduction" class="mt-4 ckeditimg" s>
                     <h2 class="display-3 mb-0">Introduction</h2>
                     <p>{!!$selfdiagnosis->introduction!!}</p>
-                    <hr>    
-                @endif
-                @if($selfdiagnosis->introduction_video_link)
+                    <hr> 
+                </div>   
+            @endif
+            @if($selfdiagnosis->introduction_video_link)
+                <div id="Introduction" class="mt-4">
                     <h2 class="display-3 mb-0">Video overview</h2>
                     <div class="embed-responsive embed-responsive-16by9" id="non-printable">
                         <iframe class="embed-responsive-item" class="text-center" src="{{$selfdiagnosis->introduction_video_link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <hr>
-                @endif
-                <!-- <div class="tabbing mt-4">
-                    <ul class="tab-nav">
-                        <li>Tools & Materials</li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="row">
-                            <div class="col-xs-12 col-md-6">
-                                <div id="carousel-tools" class="carousel slide carousel-fade carousel-thumbnails carousel-thumbnails-bottom" data-ride="carousel" data-interval="false">
-                                      
-                                      <div class="carousel-inner" role="listbox">
-                                        <div class="carousel-item active">
-                                          <img class="" src="https://wikifab.org/images/6/60/Repair_Cafe%27_IMG_20191031_142207_2.jpg" alt="First slide">
-                                        </div>
-                                        <div class="carousel-item">
-                                          <img class="" src="https://wikifab.org/images/2/28/Repair_Cafe%27_IMG_20191031_155208_6.jpg" alt="Second slide">
-                                        </div>
-                                        <div class="carousel-item">
-                                          <img class="" src="https://wikifab.org/images/5/5d/Repair_Cafe%27_IMG_20191031_155214_5.jpg" alt="Third slide">
-                                        </div>
-                                      </div>
-                                      
-
-                                      
-                                      <ol class="carousel-indicators">
-                                        <li data-target="#carousel-tools" data-slide-to="0" class="active"> <img class="" src="https://wikifab.org/images/6/60/Repair_Cafe%27_IMG_20191031_142207_2.jpg"
-                                            class="img-fluid"></li>
-                                        <li data-target="#carousel-tools" data-slide-to="1"><img class="" src="https://wikifab.org/images/2/28/Repair_Cafe%27_IMG_20191031_155208_6.jpg"
-                                            class="img-fluid"></li>
-                                        <li data-target="#carousel-tools" data-slide-to="2"><img class="" src="https://wikifab.org/images/5/5d/Repair_Cafe%27_IMG_20191031_155214_5.jpg"
-                                            class="img-fluid"></li>
-                                      </ol>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-md-6 step-instructions">
-                                <h3 class="display-4" id="Materials">Materials</h3>
-                                <ul>
-                                    <li>soldering wire</li>
-                                    <li>wires</li>
-                                    <li>soletape</li>
-                                    <li>masking tape</li>
-                                    <li>internet</li>
-                                    <li>pens and notebooks (Documentation)</li>
-                                </ul>
-                                <div class="hrContentMinor-2"></div>
-                                <h3 class="display-4" id="Tools">Tools</h3>
-                                <ul>
-                                    <li>soldering gun</li>
-                                    <li>Askotec kit</li>
-                                    <li>hands</li>
-                                    <li>camera</li>
-                                    <li>computer/laptop</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            </div>
+                </div>
+            @endif
             <br>
             @if($selfdiagnosis->guide_step)
             @php $step = 1; @endphp
