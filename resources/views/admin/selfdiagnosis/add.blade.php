@@ -274,7 +274,7 @@
                           <div class="col-sm-6">
                               <div class="form-group @if($errors->has('guide_step.0.step_title')) has-danger @endif">
                                   <label class="form-control-label" for="step_title">Title</label>
-                                  <input type="text" class="form-control @if($errors->has('guide_step.0.step_title')) is-invalid @endif" name="step_title" placeholder="Type" value="{{ old('guide_step.0.step_title') }}">
+                                  <input type="text" class="form-control @if($errors->has('guide_step.0.step_title')) is-invalid @endif" name="step_title" placeholder="Title" value="{{ old('guide_step.0.step_title') }}">
                                     @if($errors->has('guide_step.0.step_title'))
                                         <span class="form-text text-danger">{{ $errors->first('guide_step.0.step_title') }}</span>
                                     @endif
@@ -333,7 +333,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group @if($errors->has('guide_step.'.$e.'.step_title')) has-danger @endif">
                                               <label class="form-control-label" for="step_title">Title</label>
-                                              <input type="text" class="form-control @if($errors->has('guide_step.'.$e.'.step_title')) is-invalid @endif" name="step_title" placeholder="Type" value="{{ old('guide_step.'.$e.'.step_title') }}">
+                                              <input type="text" class="form-control @if($errors->has('guide_step.'.$e.'.step_title')) is-invalid @endif" name="step_title" placeholder="Title" value="{{ old('guide_step.'.$e.'.step_title') }}">
                                                 @if($errors->has('guide_step.'.$e.'.step_title'))
                                                     <span class="form-text text-danger">{{ $errors->first('guide_step.'.$e.'.step_title') }}</span>
                                                 @endif
