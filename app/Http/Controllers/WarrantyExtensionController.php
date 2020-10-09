@@ -59,7 +59,7 @@ class WarrantyExtensionController extends Controller
      */
     public function edit(WarrantyExtension $warrantyExtension)
     {
-        return view('warranty_extension.add',array('title' => 'Warranty Extension','warranty'=>$warrantyExtension));
+        return view('warranty_extension.edit',array('title' => 'Warranty Extension','warranty'=>$warrantyExtension));
     }
 
     public function userImgUpload(Request $request, $id)
