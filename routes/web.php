@@ -62,6 +62,8 @@ Route::group(['middleware' => 'auth'], function () {
 	        'index' => 'user.warranty_extension.list',
 	        'create' => 'user.warranty_extension.create',
 	        'store' => 'user.warranty_extension.store',
+	        'edit' => 'user.warranty_extension.edit',
+	        'update' => 'user.warranty_extension.update',
 	        'show' => 'user.warranty_extension.show'
 	    ]
 	]);

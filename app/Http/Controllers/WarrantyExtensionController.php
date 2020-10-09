@@ -99,7 +99,30 @@ class WarrantyExtensionController extends Controller
      */
     public function update(Request $request, WarrantyExtension $warrantyExtension)
     {
-        //
+        // echo "<pre>";print_r($request->all());exit();
+        $request->validate([
+            'voltage' => 'required',
+            'temperat' => 'required',
+            'thing_on' => 'required',
+        ]);
+        try {
+            if (!$warrantyExtension) {
+                return abort(404);
+            }
+            $warrantyExtension->voltage = $request->voltage;
+            $warrantyExtension->temperat = $request->temperat;
+            $warrantyExtension->thing_on = $request->thing_on;
+            $warrantyExtension->do_something = $request->do_something ? 'true' : 'false';
+            $warrantyExtension->status =  '2';
+            if($warrantyExtension->save())
+            {
+                $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
+            }
+            return redirect(route('user.warranty_extension.list'));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('user.warranty_extension.list'));
+        }
     }
 
     /**
