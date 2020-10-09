@@ -90,6 +90,9 @@
                   <li class="nav-item">
                     <a href="{{route('admin.maintenance.create')}}" class="nav-link {{ Request::routeIs('admin.maintenance.create') ? 'active' : '' }}">Add New Maintenance Guide</a>
                   </li>
+                  <li class="nav-item">
+                    <a href="{{route('admin.maintenance.warrantyextension.list')}}" class="nav-link {{ Request::routeIs('admin.maintenance.warrantyextension.list') ? 'active' : '' }}">Warranty Extensions</a>
+                  </li>
                 </ul>
               </div>
             </li>
