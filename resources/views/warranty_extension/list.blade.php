@@ -16,7 +16,7 @@
                 </nav>
               </div>
               <div class="col-lg-6 col-5 text-right">
-                <a href="{{route('admin.category.create')}}" class="btn btn-sm btn-neutral">Add New</a>
+                <a href="{{route('user.warranty_extension.create')}}" class="btn btn-sm btn-neutral">Add New</a>
               </div>
             </div>
           </div>

@@ -22,7 +22,7 @@
         <div class="header-body">
           <div class="row align-items-center py-4">
             <div class="col-lg-6 col-7">
-              <h6 class="h2 text-white d-inline-block mb-0">Maintenance</h6>
+              <h6 class="h2 text-white d-inline-block mb-0">Warranty Extensions</h6>
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
@@ -54,9 +54,9 @@
                     <h3 class="card-title">Stap 1</h3>
                     <small class="text-muted mb-3">Take a picture of exactly the same view as the picture on the left.</small>
                     <div class="row pt-3">
-                        <div class="col-md-6">
+                        <div class="col-md-6 main-img">
                             <div class="form-group">
-                                <img class="dz-preview-img" src="{{$warranty->image_by_admin}}">
+                                <img class="dz-preview-img"  style="height: 344px;" src="{{$warranty->image_by_admin}}">
                             </div>
                         </div>
                         <div class="col-md-6 tab main-img">
@@ -149,14 +149,12 @@
         $(".dz-preview.dz-preview-single").html('<div class="dz-preview-cover dz-processing dz-image-preview dz-success dz-complete"><img class="dz-preview-img" src="{{asset($warranty->image_by_user)}}"></div>');
         $(".dropzone.dropzone-single").addClass('dz-clickable dz-max-files-reached');
     @endif
-   var currentTab = 0; // Current tab is set to be the first tab (0)
-    showTab(currentTab); // Display the current tab
-
+    var currentTab = 0;
+    showTab(currentTab); 
     function showTab(n) {
-      // This function will display the specified tab of the form ...
       var x = document.getElementsByClassName("tab");
       x[n].style.display = "block";
-      // ... and fix the Previous/Next buttons:
+
       if (n == 0) {
         document.getElementById("prevBtn").style.display = "none";
       } else {
@@ -170,21 +168,28 @@
     }
 
     function nextPrev(n) {
-      // This function will figure out which tab to display
       var x = document.getElementsByClassName("tab");
-      // Exit the function if any field in the current tab is invalid:
-      // Hide the current tab:
+      if (n == 1 && !validateForm()) return false;
       x[currentTab].style.display = "none";
-      // Increase or decrease the current tab by 1:
       currentTab = currentTab + n;
-      // if you have reached the end of the form... :
       if (currentTab >= x.length) {
-        //...the form gets submitted:
         document.getElementById("regForm").submit();
         return false;
       }
-      // Otherwise, display the correct tab:
       showTab(currentTab);
+    }
+
+    function validateForm() {
+      var x, y, i, valid = true;
+      x = document.getElementsByClassName("tab");
+      y = x[currentTab].getElementsByClassName("dz-preview dz-preview-single");
+      for (i = 0; i < y.length; i++) {
+        if (y[i].innerHTML == "") {
+          alert('please Image Uplode first');
+          valid = false;
+        }
+      }
+      return valid;
     }
 </script>
 @endsection

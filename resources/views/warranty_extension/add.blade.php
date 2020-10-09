@@ -5,17 +5,17 @@
       <div class="container-fluid">
         <div class="header-body">
           <div class="row align-items-center py-4">
-            <div class="col-lg-6 col-7">
+            <div class="col-lg-9 col-9">
               <h6 class="h2 text-white d-inline-block mb-0">Warranty Extensions</h6>
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="{{route('user.warranty_extension.list')}}">Warranty Extensions List</a></li>
+                  <li class="breadcrumb-item"><a href="{{route('user.warranty_extension.list')}}">Warranty Extension List</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                 </ol>
               </nav>
             </div>
-            <div class="col-lg-6 col-5 text-right">
+            <div class="col-lg-3 col-3 text-right">
               <a href="{{route('user.warranty_extension.list')}}" class="btn btn-sm btn-neutral">Back</a>
             </div>
           </div>
@@ -32,27 +32,16 @@
             <!-- Card body -->
             <div class="card-body">
                 <!-- Form groups used in grid -->
-                <form method="post" action="{{route('admin.category.store')}}"> 
+                <form method="post" action="{{route('user.warranty_extension.store')}}"> 
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group @if($errors->has('name')) has-danger @endif ">
-                                <label class="form-control-label" for="name">Name&nbsp;<strong class="text-danger">*</strong></label>
-                                <input type="text" class="form-control  @if($errors->has('name')) is-invalid @endif maxlength" name="name" id="name" placeholder="Name">
-                                @if($errors->has('name'))
-                                    <span class="form-text text-danger">{{ $errors->first('name') }}</span>
+                            <div class="form-group @if($errors->has('unique_key')) has-danger @endif ">
+                                <label class="form-control-label" for="unique_key">Unique Key&nbsp;<strong class="text-danger">*</strong></label>
+                                <input type="text" class="form-control  @if($errors->has('unique_key')) is-invalid @endif maxlength" name="unique_key" id="unique_key" placeholder="Unique Key">
+                                @if($errors->has('unique_key'))
+                                    <span class="form-text text-danger">{{ $errors->first('unique_key') }}</span>
                                 @endif
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-control-label" for="name">Status</label>
-                            <div class="form-group">
-                                <label class="custom-toggle custom-toggle-success">
-                                    <input type="checkbox" checked value="1" name="status">
-                                    <span class="custom-toggle-slider rounded-circle" data-label-off="Inactive" data-label-on="Active"></span>
-                                </label>
                             </div>
                         </div>
                     </div>

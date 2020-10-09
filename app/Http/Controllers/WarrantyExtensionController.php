@@ -68,7 +68,7 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                $edit =  route('admin.maintenance.warrantyextension.edit',$extension->id);
+                $edit =  route('user.warranty_extension.edit',$extension->id);
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;
@@ -113,7 +113,7 @@ class WarrantyExtensionController extends Controller
      */
     public function create()
     {
-        return view('warranty_extension.add',array('title' => 'Warranty Extension'));
+        return view('warranty_extension.add',array('title' => 'Add Warranty Extension'));
     }
 
     /**
@@ -124,7 +124,23 @@ class WarrantyExtensionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // echo "<pre>";print_r($request->all());exit();  
+        $request->validate([
+            'unique_key' => 'required',
+        ]);
+        try {
+            $warrantyExtension = new WarrantyExtension;
+            $warrantyExtension->unique_key = $request->unique_key;
+            $warrantyExtension->user_id = Auth::user()->id;
+            if($warrantyExtension->save())
+            {
+                $request->session()->flash('alert-success', 'Warranty Extension added successfuly.');  
+            }
+            return redirect(route('user.warranty_extension.list'));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('user.warranty_extension.list'));
+        }
     }
 
     /**
