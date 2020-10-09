@@ -15,6 +15,7 @@ class WarrantyExtension extends Model
             $model->id = (string) Uuid::generate(4);
         });
     }
+
 	protected $table = 'warranty_extension';
     protected $keyType = 'string';
 
@@ -44,5 +45,10 @@ class WarrantyExtension extends Model
     public function getImageByUserAttribute()
     {
         return (isset($this->picture_by_user) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->picture_by_user) ? Config('filesystems.disks.public.url').'/'.$this->picture_by_user : asset('assets/img/no_img.png'));
+    }
+
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id','user_id');
     }
 }

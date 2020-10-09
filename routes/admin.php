@@ -104,6 +104,21 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/maintenance/remove/img-upload','admin\MaintenanceController@removeImage')->name('admin.maintenance.remove.image');
 	Route::post('/maintenance/remove/step','admin\MaintenanceController@removeStep')->name('admin.maintenance.remove.step');
 
+
+	//Warranty Extension
+	Route::post('/maintenance/warranty-extension/list/data','admin\WarrantyExtensionController@listdata')->name('admin.maintenance.warrantyextension.listdata');
+	Route::post('/maintenance/warranty-extension/img-upload/{id}','admin\WarrantyExtensionController@machineImgUpload')->name('admin.maintenance.warrantyextension.imgupload');
+	Route::resource('/maintenance/warranty-extension', 'admin\WarrantyExtensionController', [
+	    'names' => [
+	        'index' => 'admin.maintenance.warrantyextension.list',
+	        'edit' => 'admin.maintenance.warrantyextension.edit',
+	        'update' => 'admin.maintenance.warrantyextension.update',
+	        'destroy' => 'admin.maintenance.destroy',
+	        'show' => 'admin.maintenance.show'
+	    ]
+	]);
+
+
 	// CMS Page Module Routes
 	Route::post('/cms_page/list/data','admin\CmsPageController@listdata')->name('admin.cms.page.listdata');
 	Route::resource('/cms_page', 'admin\CmsPageController', [
