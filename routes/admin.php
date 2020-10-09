@@ -107,13 +107,12 @@ Route::group(['middleware' => ['admin']],function(){
 
 	//Warranty Extension
 	Route::post('/maintenance/warranty-extension/list/data','admin\WarrantyExtensionController@listdata')->name('admin.maintenance.warrantyextension.listdata');
+	Route::post('/maintenance/warranty-extension/img-upload/{id}','admin\WarrantyExtensionController@machineImgUpload')->name('admin.maintenance.warrantyextension.imgupload');
 	Route::resource('/maintenance/warranty-extension', 'admin\WarrantyExtensionController', [
 	    'names' => [
 	        'index' => 'admin.maintenance.warrantyextension.list',
-	        'create' => 'admin.maintenance.create',
-	        'store' => 'admin.maintenance.store',
 	        'edit' => 'admin.maintenance.warrantyextension.edit',
-	        'update' => 'admin.maintenance.update',
+	        'update' => 'admin.maintenance.warrantyextension.update',
 	        'destroy' => 'admin.maintenance.destroy',
 	        'show' => 'admin.maintenance.show'
 	    ]

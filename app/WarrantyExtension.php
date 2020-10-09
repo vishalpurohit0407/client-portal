@@ -42,7 +42,7 @@ class WarrantyExtension extends Model
         return (isset($this->picture_by_admin) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->picture_by_admin) ? Config('filesystems.disks.public.url').'/'.$this->picture_by_admin : asset('assets/img/theme/defualt-user.png'));
     }
 
-    public function getImageByUserUrlAttribute()
+    public function getImageByUserAttribute()
     {
         return (isset($this->picture_by_user) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->picture_by_user) ? Config('filesystems.disks.public.url').'/'.$this->picture_by_user : asset('assets/img/theme/defualt-user.png'));
     }

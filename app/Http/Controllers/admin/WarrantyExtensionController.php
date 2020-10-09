@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\WarrantyExtension;
 use Illuminate\Http\Request;
+use Storage;
+use Response;
 
 class WarrantyExtensionController extends Controller
 {
@@ -77,12 +79,14 @@ class WarrantyExtensionController extends Controller
                 $nestedData['key'] = $extension->unique_key;
 
                 if($extension->status == '0'){ 
-                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Request</span>';
+                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
                 }else if($extension->status == '1'){ 
-                  $nestedData['status'] = '<span class="badge badge-pill badge-primary">Submit For Approval</span>';
+                  $nestedData['status'] = '<span class="badge badge-pill badge-primary">Admin Reply</span>';
                 }elseif($extension->status == '2'){
-                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
+                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Request</span>';
                 }elseif($extension->status == '3'){
+                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
+                }elseif($extension->status == '4'){
                   $nestedData['status'] = '<span class="badge badge-pill badge-danger">Declined</span>';
                 }
                 
@@ -157,7 +161,45 @@ class WarrantyExtensionController extends Controller
      */
     public function update(Request $request, WarrantyExtension $warrantyExtension)
     {
-        //
+        $request->validate([
+            'warranty_valid_date' => 'required',
+            'warranty_main_image' => [function ($attribute, $value, $fail) {
+                if ($warrantyExtension->picture_by_admin == '') {
+                    $fail(':Picture is required.');
+                }
+            }],
+        ]);
+
+        if(isset($request->approve) || isset($request->decline)){
+            
+            if(isset($request->approve)){
+                $warrantyExtension->status = '3';
+            }else{
+                $warrantyExtension->status = '4';
+            }
+
+            if($warrantyExtension->save())
+            {
+                $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
+            }
+            return redirect(route('admin.maintenance.warrantyextension.list'));
+        }
+
+        $input = $request->all();
+        $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
+        $warrantyExtension->status = $request->status;
+        $warrantyExtension->voltage = $request->voltage;
+        $warrantyExtension->temperat = $request->temperat;
+
+        $warrantyExtension->thing_on = (isset($request->thing_on) && $request->thing_on == 'on')? 'yes' : 'no';;
+        $warrantyExtension->do_something = (isset($request->do_something))? 'true' : 'false';
+          
+        if($warrantyExtension->save())
+        {
+            $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
+        }
+        return redirect(route('admin.maintenance.warrantyextension.list'));
+
     }
 
     /**
@@ -169,5 +211,33 @@ class WarrantyExtensionController extends Controller
     public function destroy(WarrantyExtension $warrantyExtension)
     {
         //
+    }
+
+    public function machineImgUpload(Request $request, $id)
+    {
+        $file = $request->file('file');
+        if($file && $id){
+        
+            $request->validate([
+                'file' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+            
+            $file_name =$file->getClientOriginalName();
+            $fileslug= pathinfo($file_name, PATHINFO_FILENAME);
+            $imageName = md5($fileslug.time());
+            $imgext =$file->getClientOriginalExtension();
+            $path = 'warranty_extension/'.$id.'/'.$imageName.".".$imgext;
+            $fileAdded = Storage::disk('public')->putFileAs('warranty_extension/'.$id.'/',$file,$imageName.".".$imgext);
+            
+            if($fileAdded){
+                $guideData = WarrantyExtension::find($id);
+                Storage::disk('public')->delete($guideData->picture_by_admin);
+                $media = WarrantyExtension::where('id',$id)->update(['picture_by_admin' => $path]);
+                return Response::json(['status' => true, 'message' => 'Media uploaded.']);
+            }
+            return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+        }
+
+        return Response::json(['status' => false, 'message' => 'Something went wrong.']);
     }
 }
