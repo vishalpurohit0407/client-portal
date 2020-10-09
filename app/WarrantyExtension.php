@@ -15,7 +15,8 @@ class WarrantyExtension extends Model
             $model->id = (string) Uuid::generate(4);
         });
     }
-    protected $table = 'warranty_extension';
+
+	protected $table = 'warranty_extension';
     protected $keyType = 'string';
 
     public $incrementing = false;

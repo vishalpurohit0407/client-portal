@@ -150,6 +150,11 @@
                                         @endforeach
                                     @endif
                                 </div>
+                                @if($stepdata->video_media)
+                                    <div class="col-xs-12 step-instructions mb-1">
+                                        Video Media : <a href="{{$stepdata->video_media}}" target="_blank">{{$stepdata->video_media}}</a>
+                                    </div>
+                                @endif
                                 <hr>
                         @php $step++; @endphp
                         @endforeach

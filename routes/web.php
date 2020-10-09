@@ -55,5 +55,16 @@ Route::group(['middleware' => 'auth'], function () {
 	    ]
 	]);
 
+	//Warranty Extension Module Routes
+	Route::post('/warranty_extension/user-img-upload/{id}','WarrantyExtensionController@userImgUpload')->name('user.warranty_extension.imgupload');
+	Route::resource('/warranty_extension', 'WarrantyExtensionController', [
+	    'names' => [
+	        'index' => 'user.warranty_extension.list',
+	        'create' => 'user.warranty_extension.create',
+	        'store' => 'user.warranty_extension.store',
+	        'show' => 'user.warranty_extension.show'
+	    ]
+	]);
+
 });
 Route::get('/{url_slug}','PagepreviewController@pagepreview')->name('cms.pagepreview');
