@@ -186,13 +186,20 @@ class WarrantyExtensionController extends Controller
         }
 
         $input = $request->all();
-        $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
-        $warrantyExtension->status = $request->status;
-        $warrantyExtension->voltage = $request->voltage;
-        $warrantyExtension->temperat = $request->temperat;
+        
+        if($warrantyExtension->status == '0'){
 
-        $warrantyExtension->thing_on = (isset($request->thing_on) && $request->thing_on == 'on')? 'yes' : 'no';;
-        $warrantyExtension->do_something = (isset($request->do_something))? 'true' : 'false';
+            $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
+            $warrantyExtension->status = '1';
+        }else{
+
+            $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
+            $warrantyExtension->voltage = $request->voltage;
+            $warrantyExtension->temperat = $request->temperat;
+
+            $warrantyExtension->thing_on = (isset($request->thing_on) && $request->thing_on == 'on')? 'yes' : 'no';;
+            $warrantyExtension->do_something = (isset($request->do_something))? 'true' : 'false';
+        }
           
         if($warrantyExtension->save())
         {
