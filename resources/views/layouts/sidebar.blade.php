@@ -55,14 +55,14 @@
 
             <li class="nav-item">
               <a class="nav-link {{Request::routeIs('user.warranty_extension.*') ? 'active' : '' }}" href="#warranty_extension" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples">
-                <i class="fas fa-toolbox text-red"></i>
-                <span class="nav-link-text">Warranty Extension</span>
+                <i class="ni ni-collection text-default"></i>
+                <span class="nav-link-text">Warranty Extensions</span>
               </a>
               <div class="collapse {{Request::routeIs('user.warranty_extension.*') ? 'show' : '' }}" id="warranty_extension">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
                     <a href="{{route('user.warranty_extension.list')}}" class="nav-link {{ Request::routeIs('user.warranty_extension.list') ? 'active' : '' }}">
-                      <span class="sidenav-normal">Warranty Extension List</span>
+                      <span class="sidenav-normal">All Warranty Extensions</span>
                     </a>
                   </li>
                   <li class="nav-item">

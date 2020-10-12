@@ -210,7 +210,7 @@ class WarrantyExtensionController extends Controller
         {
             $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
         }
-        return redirect(route('admin.maintenance.warrantyextension.list'));
+        return redirect(route('admin.warrantyextension.list'));
 
     }
 
