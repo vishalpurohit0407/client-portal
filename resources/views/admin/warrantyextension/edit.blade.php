@@ -52,6 +52,17 @@
                                 @endif
                             </div>
                         </div>
+                        @if($warrantyExtension->status != '0' && $warrantyExtension->status != '1')
+                        <div class="col-md-6">
+                            <div class="form-group @if($errors->has('next_warranty_valid_date')) has-danger @endif ">
+                                <label class="form-control-label" for="next_warranty_valid_date">Next Warranty Valid Until&nbsp;<strong class="text-danger">*</strong></label>
+                                <input class="form-control" type="date" name="next_warranty_valid_date" value="{{old('next_warranty_valid_date',$warrantyExtension->next_warranty_valid_date)}}">
+                                @if($errors->has('next_warranty_valid_date'))
+                                    <span class="form-text text-danger">{{ $errors->first('next_warranty_valid_date') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                     </div>
 
                     <div class="row">
@@ -168,7 +179,7 @@
                     </div>
                     <hr>
                     <button class="btn btn-primary" type="submit">Save</button>
-                    @if($warrantyExtension->status == '3')
+                    @if($warrantyExtension->status == '2')
                         <button class="btn btn-success" type="submit" name="approve" value="approve">Approve</button>
                         <button class="btn btn-danger" type="submit" name="decline" value="decline">Decline</button>
                     @endif
