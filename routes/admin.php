@@ -109,6 +109,7 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::post('/warranty-extension/list/data','admin\WarrantyExtensionController@listdata')->name('admin.warrantyextension.listdata');
 	Route::post('/warranty-extension/img-upload/{id}','admin\WarrantyExtensionController@machineImgUpload')->name('admin.warrantyextension.imgupload');
 	Route::post('/warranty-extension/list/request','admin\WarrantyExtensionController@requestListData')->name('admin.warrantyextension.listreqest');
+	Route::get('/warranty-extension/history/{unique_key}','admin\WarrantyExtensionController@warrantyExtensionHistory')->name('admin.warrantyextension.history');
 	Route::resource('/warranty-extension', 'admin\WarrantyExtensionController', [
 	    'names' => [
 	        'index' => 'admin.warrantyextension.list',

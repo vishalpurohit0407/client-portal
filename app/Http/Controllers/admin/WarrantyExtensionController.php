@@ -145,6 +145,16 @@ class WarrantyExtensionController extends Controller
         //
     }
 
+    public function warrantyExtensionHistory(Request $request,$unique_key)
+    {
+        $warrantyExtension = WarrantyExtension::where('unique_key',$unique_key)->orderBy('next_warranty_valid_date','asc')->get();
+        if (!$warrantyExtension) {
+            abort('404');
+        }
+        // echo "<pre>";print_r($warrantyExtension);exit();
+        return view('warranty_extension.history',array('title' => 'Warranty Extension History','warrantyExtension'=>$warrantyExtension));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
