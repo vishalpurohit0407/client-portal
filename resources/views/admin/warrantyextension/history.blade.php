@@ -31,13 +31,7 @@
                 <div class="col">
                   <h3 class="mb-0">Warranty Valid Until : {{$warrantyExtension->last()->next_warranty_valid_date ? date("d/m/Y", strtotime($warrantyExtension->last()->next_warranty_valid_date)) : 'N/A'}} </h3>
                 </div>
-                <div class="col text-right">
-                    <form method="post" id="frmaddnew" action="{{route('user.warranty_extension.store')}}"> 
-                    @csrf
-                        <input type="hidden" name="unique_key" value="{{$warrantyExtension->first()->unique_key}}">
-                        <a href="javascript:void(0);"  onclick="deleteConfirm(this);" type="submint" class="btn btn-sm btn-primary">Submit a new warranty extension</a>
-                    </form>
-                </div>
+                
               </div>
             </div>
             <!-- Card body -->
@@ -52,7 +46,7 @@
                             <li class="checklist-entry list-group-item flex-column align-items-start py-4 px-4">
                                 <div class="checklist-item checklist-item-{{$color[$warranty->status]}}">
                                     <div class="checklist-info">
-                                        <h4 class="checklist-title mb-0">{{$warranty->next_warranty_valid_date ? date("d/m/Y", strtotime($warranty->next_warranty_valid_date)) : 'N/A'}}</h4>
+                                        <h4 class="checklist-title mb-0">{{$warranty->warranty_valid_date ? date("d/m/Y", strtotime($warranty->warranty_valid_date)) : 'N/A'}}</h4>
                                         <small>
                                             @if($warranty->status == '0') 
                                                 <span class="badge badge-pill badge-warning">Initial</span>

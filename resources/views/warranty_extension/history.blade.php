@@ -52,7 +52,7 @@
                             <li class="checklist-entry list-group-item flex-column align-items-start py-4 px-4">
                                 <div class="checklist-item checklist-item-{{$color[$warranty->status]}}">
                                     <div class="checklist-info">
-                                        <h4 class="checklist-title mb-0">{{$warranty->next_warranty_valid_date ? date("d/m/Y", strtotime($warranty->next_warranty_valid_date)) : 'N/A'}}</h4>
+                                        <h4 class="checklist-title mb-0">{{$warranty->warranty_valid_date ? date("d/m/Y", strtotime($warranty->warranty_valid_date)) : 'N/A'}}</h4>
                                         <small>
                                             @if($warranty->status == '0') 
                                                 <span class="badge badge-pill badge-warning">Initial</span>

@@ -74,7 +74,7 @@
                           </div>
                         @endif
                         <div class="col-md-6 tab main-img">
-                            <div class="row" id="radiodiv">
+                            <div class=" row form-group" id="radiodiv">
                               <div class="custom-control custom-radio mb-1 text-right ml-3 mr-2">
                                   <input name="imgorvideo" class="custom-control-input" checked id="image" value="img" type="radio">
                                   <label class="custom-control-label" for="image">Image</label>

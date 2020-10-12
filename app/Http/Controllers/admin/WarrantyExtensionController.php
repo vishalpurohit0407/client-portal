@@ -90,6 +90,8 @@ class WarrantyExtensionController extends Controller
                 $nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                 $nestedData['key'] = $extension->unique_key;
 
+                $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
+
                 if($extension->status == '0'){ 
                   $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
                 }else if($extension->status == '1'){ 
@@ -187,6 +189,8 @@ class WarrantyExtensionController extends Controller
                     $nestedData['srnumber'] = $srnumber;
                     $nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                     $nestedData['key'] = $extension->unique_key;
+
+                    $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
 
                     if($extension->status == '0'){ 
                       $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';

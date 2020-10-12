@@ -46,7 +46,7 @@ class WarrantyExtensionController extends Controller
                          ->offset($start)
                          ->limit($limit)
                          ->groupBy('unique_key')
-                         ->orderBy($order,$dir)
+                         ->orderBy($order,'asc')
                          ->get();
         }
         else {
@@ -82,7 +82,7 @@ class WarrantyExtensionController extends Controller
                 $nestedData['srnumber'] = $srnumber;
                 //$nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                 $nestedData['key'] = $extension->unique_key;
-
+                $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
                 if($extension->status == '0'){ 
                   $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
                 }else if($extension->status == '1'){ 
@@ -179,6 +179,8 @@ class WarrantyExtensionController extends Controller
                   //$nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                   $nestedData['key'] = $extension->unique_key;
 
+                  $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
+
                   if($extension->status == '0'){ 
                     $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
                   }else if($extension->status == '1'){ 
@@ -192,7 +194,7 @@ class WarrantyExtensionController extends Controller
                   }
                   
                   $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
-                  $nestedData['options'] = "&emsp;<a href='{$show}' class='btn btn-success btn-sm mr-0' title='View' >View</a>";
+                  $nestedData['options'] = ($extension->status != '0')? "&emsp;<a href='{$show}' class='btn btn-success btn-sm mr-0' title='View' >View</a>" : "";
                   
                   $srnumber++;
                   $data[] = $nestedData;
@@ -299,7 +301,7 @@ class WarrantyExtensionController extends Controller
         if (!$warrantyExtension) {
             abort('404');
         }
-        // echo "<pre>";print_r($warrantyExtension);exit();
+        //dd($warrantyExtension);
         return view('warranty_extension.history',array('title' => 'Warranty Extension History','warrantyExtension'=>$warrantyExtension));
     }
 
@@ -374,7 +376,7 @@ class WarrantyExtensionController extends Controller
             $warrantyExtension->status =  '2';
             if($warrantyExtension->save())
             {
-                WarrantyExtension::sendWarrantyNotification(env('ADMIN_EMAIL'), env('MAIL_FROM_NAME')." Admin", Auth::user()->name.' send new warranty extension request', route('admin.warrantyextension.listreqest.'));
+                WarrantyExtension::sendWarrantyNotification(env('ADMIN_EMAIL'), env('MAIL_FROM_NAME')." Admin", Auth::user()->name.' send new warranty extension request.', route('admin.warrantyextension.listreqest'));
                 $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
             }
             return redirect(route('user.warranty_extension.list'));
