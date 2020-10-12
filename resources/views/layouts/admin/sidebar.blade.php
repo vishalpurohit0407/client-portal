@@ -90,6 +90,24 @@
                   <li class="nav-item">
                     <a href="{{route('admin.maintenance.create')}}" class="nav-link {{ Request::routeIs('admin.maintenance.create') ? 'active' : '' }}">Add New Maintenance Guide</a>
                   </li>
+                  
+                </ul>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('admin.warrantyextension.*') ? 'active' : '' }}" href="#navbar-forms-warrantyextension" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms-warrantyextension">
+                <i class="ni ni-collection text-default"></i>
+                <span class="nav-link-text">Warranty Extensions</span>
+              </a>
+              <div class="collapse {{ Request::routeIs('admin.warrantyextension.*') ? 'show' : '' }}" id="navbar-forms-warrantyextension" style="">
+                <ul class="nav nav-sm flex-column">
+                  <li class="nav-item">
+                    <a href="{{route('admin.warrantyextension.list')}}" class="nav-link {{ Request::routeIs('admin.warrantyextension.list') ? 'active' : '' }}">All Warranty Extensions</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('admin.warrantyextension.listreqest')}}" class="nav-link {{ Request::routeIs('admin.warrantyextension.listreqest') ? 'active' : '' }}"> Warranty Extension Request</a>
+                  </li>
                 </ul>
               </div>
             </li>

@@ -416,7 +416,7 @@
 var stepCount = 1;
 let guide_id= '{{$guide->id}}';
 $(document).ready(function() {
-    console.log(stepMediaArr);
+    // console.log(stepMediaArr);
     @if($guide->main_image) 
         $(".dz-preview.dz-preview-single").html('<div class="dz-preview-cover dz-processing dz-image-preview dz-success dz-complete"><img class="dz-preview-img" src="{{asset($guide->main_image_url)}}"></div>');
         $(".dropzone.dropzone-single").addClass('dz-clickable dz-max-files-reached');
