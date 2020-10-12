@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.adminapp')
 
 @section('content')
     <div class="header bg-primary pb-6">
@@ -9,14 +9,14 @@
               <h6 class="h2 text-white d-inline-block mb-0">Warranty Extensions</h6>
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                  <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="{{route('user.warranty_extension.list')}}">All Warranty Extensions</a></li>
+                  <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="{{route('admin.warrantyextension.list')}}">All Warranty Extensions</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                 </ol>
               </nav>
             </div>
             <div class="col-3 text-right">
-              <a href="{{route('user.warranty_extension.list')}}" class="btn btn-sm btn-neutral">Back</a>
+              <a href="{{route('admin.warrantyextension.list')}}" class="btn btn-sm btn-neutral">Back</a>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
                   <h3 class="mb-0">Warranty Valid Until : {{$warrantyExtension->last()->next_warranty_valid_date ? date("d/m/Y", strtotime($warrantyExtension->last()->next_warranty_valid_date)) : 'N/A'}} </h3>
                 </div>
                 <div class="col text-right">
-                    <form method="post" id="frmaddnew" action="{{route('user.warranty_extension.saverequest')}}"> 
+                    <form method="post" id="frmaddnew" action="{{route('user.warranty_extension.store')}}"> 
                     @csrf
                         <input type="hidden" name="unique_key" value="{{$warrantyExtension->first()->unique_key}}">
                         <a href="javascript:void(0);"  onclick="deleteConfirm(this);" type="submint" class="btn btn-sm btn-primary">Submit a new warranty extension</a>
@@ -69,7 +69,7 @@
                                     </div>
                                     <div>
                                         <div class="custom-control custom-checkbox custom-checkbox-success">
-                                            <a href="{{route('user.warranty_extension.show',$warranty->id)}}" class="btn btn-info">Details</a>
+                                            <a href="{{route('admin.warrantyextension.show',$warranty->id)}}" class="btn btn-info">Details</a>
                                         </div>
                                     </div>
                                 </div>

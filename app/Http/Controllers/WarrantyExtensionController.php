@@ -295,9 +295,6 @@ class WarrantyExtensionController extends Controller
 
     public function warrantyExtensionHistory(Request $request,$unique_key)
     {
-        if (!$unique_key) {
-            abort('404');
-        }
         $warrantyExtension = WarrantyExtension::where('unique_key',$unique_key)->orderBy('next_warranty_valid_date','asc')->get();
         if (!$warrantyExtension) {
             abort('404');

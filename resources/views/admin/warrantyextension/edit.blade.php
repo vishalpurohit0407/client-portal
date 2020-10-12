@@ -32,7 +32,7 @@
             <!-- Card body -->
             <div class="card-body">
                 <!-- Form groups used in grid -->
-                <form class="form" action="{{ route('admin.warrantyextension.update', $warrantyExtension->id) }}" method="post" enctype="multipart/form-data">
+                <form class="form" action="{{ route('admin.warrantyextension.update', $warrantyExtension->id) }}" method="post" enctype="multipart/form-data" id="form">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                     <div class="row">
@@ -66,9 +66,18 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 machine-img">
-                            <div class="form-group @if($errors->has('name')) has-danger @endif ">
-                                <label class="form-control-label" for="name">Picture By Admin&nbsp;<strong class="text-danger">*</strong></label>
+                        <div class="col-md-6 tab machine-img">
+                            <div class="row" id="radiodiv">
+                              <div class="custom-control custom-radio mb-1 text-right ml-3 mr-2">
+                                  <input name="imgorvideo" class="custom-control-input" {{$warrantyExtension->image_by_admin != '' ? 'checked' : ''}} id="image" value="img" type="radio">
+                                  <label class="custom-control-label" for="image">Image</label>
+                              </div>
+                              <div class="custom-control custom-radio mb-1 text-right ml-2">
+                                  <input name="imgorvideo" class="custom-control-input" {{$warrantyExtension->admin_vid_link_url != '' ? 'checked' : ''}} id="video" value="video" type="radio">
+                                  <label class="custom-control-label" for="video">Video</label>
+                              </div>
+                            </div>
+                            <div class="form-group video-or-img @if($errors->has('name')) has-danger @endif " id="Chooseimg" >
                                 <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.warrantyextension.imgupload',['_token' => csrf_token(), 'id' => $warrantyExtension->id])}}">
                                   <div class="fallback">
                                     <div class="custom-file">
@@ -86,18 +95,43 @@
                                     <span class="form-text text-danger">{{ $errors->first('warranty_main_image') }}</span>
                                 @endif
                             </div>
+                            <div class="form-group mb-1 video-or-img" id="Choosevideo">
+                                <label class="form-control-label" for="admin_vid_link_type">Video Link</label>
+                                <div class="input-group mb-3">
+                                  <div class="input-group-prepend">
+                                    <select class="custom-select" id="admin_vid_link_type" name="admin_vid_link_type" style="border-radius: 0;font-size:1rem;">
+                                      <option value="youtube">Youtube</option>
+                                      <option value="vimeo">Vimeo</option>
+                                    </select>
+                                  </div>
+                                  <input type="text" class="form-control" id="admin_vid_link_url" name="admin_vid_link_url" placeholder="Enter here the URL of a Youtube or Vimeo video" value="{{old('admin_vid_link_url',$warrantyExtension->admin_vid_link_url)}}">
+                                </div>
+                                <p class="text-info mb-0"><strong>Note: Please add embed URL for Youtube and Vimeo video.</strong></p>
+                            </div>
+                            <div class="col-12 p-0" id="imgerror" style="display: none;">
+                                <span class="text-danger"><strong>The image or video field is required.</strong></span>
+                            </div>
                         </div>
 
                         @if($warrantyExtension->status != '0' && $warrantyExtension->status != '1')
-                            @if($warrantyExtension->picture_by_user)
-                            <div class="col-md-6 machine-img">
-                                <div class="form-group @if($errors->has('name')) has-danger @endif ">
-                                    <label class="form-control-label" for="name">Picture By User</label>
-                                    <div class="">
-                                        <img class="picture-by-user" src="{{asset($warrantyExtension->image_by_user)}}">
+                            @if($warrantyExtension->vid_link_url)
+                                <div class="col-md-6 machine-img">
+                                    <div class="form-group">
+                                        <label class="form-control-label">{{$warrantyExtension->vid_link_type ? $warrantyExtension->vid_link_type : ''}}</label>
+                                        <div class="embed-responsive embed-responsive-4by3 rounded">
+                                            <iframe class="embed-responsive-item" src="{{asset($warrantyExtension->vid_link_url)}}"></iframe>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="col-md-6 machine-img">
+                                    <div class="form-group @if($errors->has('name')) has-danger @endif ">
+                                        <label class="form-control-label" for="name">Picture By User</label>
+                                        <div class="">
+                                            <img class="picture-by-user" src="{{asset($warrantyExtension->image_by_user)}}">
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
                         @endif
 
@@ -178,7 +212,7 @@
                         </div>
                     </div>
                     <hr>
-                    <button class="btn btn-primary" type="submit">Save</button>
+                    <a href="javascript:void(0);"  onclick="validateForm();" class="btn btn-primary" type="submit">Save</a>
                     @if($warrantyExtension->status == '2')
                         <button class="btn btn-success" type="submit" name="approve" value="approve">Approve</button>
                         <button class="btn btn-danger" type="submit" name="decline" value="decline">Decline</button>
@@ -189,11 +223,11 @@
     </div>
 <style type="text/css">
   .machine-img .dz-default.dz-message{
-    height: 300px;
+    height: 344px;
     padding: 8rem 1rem;
   }
   .picture-by-user{
-    height: 300px;
+    height: 344px;
     border-radius: .375rem;
   }
 </style>
@@ -205,6 +239,31 @@ $(document).ready(function() {
         $(".dz-preview.dz-preview-single").html('<div class="dz-preview-cover dz-processing dz-image-preview dz-success dz-complete"><img class="dz-preview-img" src="{{asset($warrantyExtension->image_by_admin)}}"></div>');
         $(".dropzone.dropzone-single").addClass('dz-clickable dz-max-files-reached');
     @endif
+    var checkBox = document.getElementById("image");
+    if (checkBox.checked == true){
+        $("#Chooseimg").show();
+        $("#Choosevideo").hide();
+    } else {
+        $("#Chooseimg").hide();
+        $("#Choosevideo").show();
+    }
+    $("input[name$='imgorvideo']").click(function() {
+        var test = $(this).val();
+        $("div.video-or-img").hide();
+        $("#Choose" + test).show();
+    });
 });
+function validateForm() {
+    var z = document.getElementById("admin_vid_link_url");
+    var form = document.getElementById("form");
+    if (z.value == "" ) {
+        document.getElementById("imgerror").style.display = "block";
+        return false;
+    }else{
+        form.submit();
+        return true;
+    }
+
+    }
 </script>
 @endsection

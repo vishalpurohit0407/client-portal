@@ -35,7 +35,7 @@ class WarrantyExtension extends Model
      * @var array
      */
     protected $fillable = [
-        'unique_key', 'warranty_valid_date', 'picture_by_admin','picture_by_user','voltage','temperat','thing_on','do_something','status'
+        'unique_key', 'warranty_valid_date', 'picture_by_admin','picture_by_user','voltage','temperat','thing_on','do_something','status','vid_link_type','vid_link_url','admin_vid_link_type','admin_vid_link_url'
     ];
 
     /**
