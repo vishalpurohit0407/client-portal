@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	//Warranty Extension Module Routes
 	Route::post('/warranty_extension/user-img-upload/{id}','WarrantyExtensionController@userImgUpload')->name('user.warranty_extension.imgupload');
+	Route::post('/warranty_extension/list/data','WarrantyExtensionController@listdata')->name('user.warranty_extension.listdata');
 	Route::resource('/warranty_extension', 'WarrantyExtensionController', [
 	    'names' => [
 	        'index' => 'user.warranty_extension.list',

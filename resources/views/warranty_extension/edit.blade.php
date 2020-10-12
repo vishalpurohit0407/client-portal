@@ -52,15 +52,27 @@
                 <!-- Card body -->
                 <div class="card-body" id="stap1">
                     <h3 class="card-title">Stap 1</h3>
-                    <small class="text-muted mb-3">Take a picture of exactly the same view as the picture on the left.</small>
-                    <div class="row pt-3">
-                        <div class="col-md-6 main-img">
+                    <div class="row">
+                      <small class="text-muted mb-3 col-6">Take a picture of exactly the same view as the picture on the left.</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 main-img pt-3">
                             <div class="form-group">
                                 <img class="dz-preview-img"  style="height: 344px;" src="{{$warranty->image_by_admin}}">
                             </div>
                         </div>
                         <div class="col-md-6 tab main-img">
-                            <div class="form-group">
+                            <div class="row" id="radiodiv">
+                              <div class="custom-control custom-radio mb-1 text-right ml-3 mr-2">
+                                  <input name="imgorvideo" class="custom-control-input" checked id="image" value="img" type="radio">
+                                  <label class="custom-control-label" for="image">Image</label>
+                              </div>
+                              <div class="custom-control custom-radio mb-1 text-right ml-2">
+                                  <input name="imgorvideo" class="custom-control-input" id="video" value="video" type="radio">
+                                  <label class="custom-control-label" for="video">Video</label>
+                              </div>
+                            </div>
+                            <div class="form-group video-or-img" id="Chooseimg">
                                 <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('user.warranty_extension.imgupload',['id' => $warranty->id])}}">
                                   <div class="fallback">
                                     <div class="custom-file">
@@ -75,8 +87,24 @@
                                   </div>
                                 </div>
                             </div>
+                            <div class="form-group mb-1 video-or-img" id="Choosevideo" style="display: none;">
+                                <label class="form-control-label" for="vid_link_type">Video Link</label>
+                                <div class="input-group mb-3">
+                                  <div class="input-group-prepend">
+                                    <select class="custom-select" id="vid_link_type" name="vid_link_type" style="border-radius: 0;font-size:1rem;">
+                                      <option value="youtube">Youtube</option>
+                                      <option value="vimeo">Vimeo</option>
+                                    </select>
+                                  </div>
+                                  <input type="text" class="form-control" id="vid_link_url" name="vid_link_url" placeholder="Enter here the URL of a Youtube or Vimeo video" value="">
+                                </div>
+                                <p class="text-info mb-0"><strong>Note: Please add embed URL for Youtube and Vimeo video.</strong></p>
+                            </div>
+                            <div class="col-12 p-0" id="imgerror" style="display: none;">
+                                <span class="text-danger"><strong>The image or video field is required.</strong></span>
+                            </div>
                         </div>
-                        <div class="col-md-6 tab border border-1 rounded main-img p-4" style="display: none;">
+                        <div class="col-md-6 tab border border-1 rounded main-img p-4 mt-3" style="display: none;">
                             <div class="form-group row mt-2 @if($errors->has('voltage')) is-invalid @endif">
                                 <label class="form-control-label col-md-9" for="voltage">Measure the current over the terminals and enter  the Voltage: <strong class="text-danger">*</strong></label>
                                 <div class="col-md-3">
@@ -145,10 +173,19 @@
 @endsection
 @section('pagewise_js')
 <script type="text/javascript">
+  $( document ).ready(function() {
     @if($warranty->picture_by_user) 
         $(".dz-preview.dz-preview-single").html('<div class="dz-preview-cover dz-processing dz-image-preview dz-success dz-complete"><img class="dz-preview-img" src="{{asset($warranty->image_by_user)}}"></div>');
         $(".dropzone.dropzone-single").addClass('dz-clickable dz-max-files-reached');
+        $("#imgerror").addClass('d-none');
     @endif
+
+    $("input[name$='imgorvideo']").click(function() {
+      var test = $(this).val();
+      $("div.video-or-img").hide();
+      $("#Choose" + test).show();
+    });
+  });
     var currentTab = 0;
     showTab(currentTab); 
     function showTab(n) {
@@ -183,9 +220,10 @@
       var x, y, i, valid = true;
       x = document.getElementsByClassName("tab");
       y = x[currentTab].getElementsByClassName("dz-preview dz-preview-single");
+      z = document.getElementById("vid_link_url");
       for (i = 0; i < y.length; i++) {
-        if (y[i].innerHTML == "") {
-          alert('please Image Uplode first');
+        if (y[i].innerHTML == "" && z.value == "" ) {
+          document.getElementById("imgerror").style.display = "block";
           valid = false;
         }
       }
