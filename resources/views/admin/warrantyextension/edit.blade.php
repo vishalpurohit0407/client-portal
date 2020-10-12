@@ -10,7 +10,7 @@
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="{{route('admin.maintenance.warrantyextension.list')}}">Warranty Extensions List</a></li>
+                  <li class="breadcrumb-item"><a href="{{route('admin.warrantyextension.list')}}">Warranty Extensions List</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                 </ol>
               </nav>
@@ -32,7 +32,7 @@
             <!-- Card body -->
             <div class="card-body">
                 <!-- Form groups used in grid -->
-                <form class="form" action="{{ route('admin.maintenance.warrantyextension.update', $warrantyExtension->id) }}" method="post" enctype="multipart/form-data">
+                <form class="form" action="{{ route('admin.warrantyextension.update', $warrantyExtension->id) }}" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                     <div class="row">
@@ -58,7 +58,7 @@
                         <div class="col-md-6 machine-img">
                             <div class="form-group @if($errors->has('name')) has-danger @endif ">
                                 <label class="form-control-label" for="name">Picture By Admin&nbsp;<strong class="text-danger">*</strong></label>
-                                <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.maintenance.warrantyextension.imgupload',['_token' => csrf_token(), 'id' => $warrantyExtension->id])}}">
+                                <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.warrantyextension.imgupload',['_token' => csrf_token(), 'id' => $warrantyExtension->id])}}">
                                   <div class="fallback">
                                     <div class="custom-file">
                                       <input type="file" class="custom-file-input" id="warranty_main_image">

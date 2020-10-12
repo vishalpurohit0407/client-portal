@@ -106,15 +106,16 @@ Route::group(['middleware' => ['admin']],function(){
 
 
 	//Warranty Extension
-	Route::post('/maintenance/warranty-extension/list/data','admin\WarrantyExtensionController@listdata')->name('admin.maintenance.warrantyextension.listdata');
-	Route::post('/maintenance/warranty-extension/img-upload/{id}','admin\WarrantyExtensionController@machineImgUpload')->name('admin.maintenance.warrantyextension.imgupload');
-	Route::resource('/maintenance/warranty-extension', 'admin\WarrantyExtensionController', [
+	Route::post('/warranty-extension/list/data','admin\WarrantyExtensionController@listdata')->name('admin.warrantyextension.listdata');
+	Route::post('/warranty-extension/img-upload/{id}','admin\WarrantyExtensionController@machineImgUpload')->name('admin.warrantyextension.imgupload');
+	Route::post('/warranty-extension/list/request','admin\WarrantyExtensionController@requestListData')->name('admin.warrantyextension.listreqest');
+	Route::resource('/warranty-extension', 'admin\WarrantyExtensionController', [
 	    'names' => [
-	        'index' => 'admin.maintenance.warrantyextension.list',
-	        'edit' => 'admin.maintenance.warrantyextension.edit',
-	        'update' => 'admin.maintenance.warrantyextension.update',
-	        'destroy' => 'admin.maintenance.destroy',
-	        'show' => 'admin.maintenance.show'
+	        'index' => 'admin.warrantyextension.list',
+	        'edit' => 'admin.warrantyextension.edit',
+	        'update' => 'admin.warrantyextension.update',
+	        'destroy' => 'admin.destroy',
+	        'show' => 'admin.show'
 	    ]
 	]);
 
