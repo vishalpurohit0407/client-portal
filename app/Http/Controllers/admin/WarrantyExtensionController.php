@@ -30,14 +30,15 @@ class WarrantyExtensionController extends Controller
             3 => 'created_at',
         );
   
-        $totalData = WarrantyExtension::count();
-            
-        $totalFiltered = $totalData; 
+         
 
         $limit = $request->input('length');
         $start = $request->input('start');
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
+
+        $totalData = WarrantyExtension::distinct('unique_key')->count();     
+        $totalFiltered = $totalData;
             
         if(empty($request->input('search.value')))
         {            
@@ -45,8 +46,10 @@ class WarrantyExtensionController extends Controller
                          ->select('warranty_extension.*','users.name')
                          ->offset($start)
                          ->limit($limit)
+                         ->groupBy('warranty_extension.unique_key')
                          ->orderBy($order,$dir)
                          ->get();
+
         }
         else {
             $search = $request->input('search.value'); 
@@ -56,12 +59,14 @@ class WarrantyExtensionController extends Controller
                             ->orWhere('unique_key', 'LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
+                            ->groupBy('warranty_extension.unique_key')
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
                             ->where('users.name', 'LIKE',"%{$search}%")
                             ->orWhere('unique_key', 'LIKE',"%{$search}%")
+                            ->groupBy('warranty_extension.unique_key')
                             ->count();
         }
         //dd($extensions);
@@ -70,7 +75,7 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                $edit =  route('admin.maintenance.warrantyextension.edit',$extension->id);
+                $edit =  route('admin.warrantyextension.edit',$extension->id);
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;

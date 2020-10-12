@@ -93,7 +93,7 @@
               }
             },
             "ajax":{
-              "url": "{{ route('admin.maintenance.warrantyextension.listdata',['_token' => csrf_token() ]) }}",
+              "url": "{{ route('admin.warrantyextension.listdata',['_token' => csrf_token() ]) }}",
               "dataType": "json",
               "type": "POST",
                data: {
