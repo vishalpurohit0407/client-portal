@@ -78,7 +78,7 @@ class WarrantyExtensionController extends Controller
             foreach ($extensions as $extension)
             {
                 if($extension->status == '3' || $extension->status == '4'){
-                    $edit =  route('admin.warrantyextension.show',$extension->id);
+                    $edit =  route('admin.warrantyextension.history',$extension->unique_key);
                 }else {
                     $edit =  route('admin.warrantyextension.edit',$extension->id);
                 }
@@ -250,7 +250,7 @@ class WarrantyExtensionController extends Controller
      */
     public function show(WarrantyExtension $warrantyExtension)
     {
-        //
+        return view('admin.warrantyextension.detail',array('title' => 'Warranty Extension Details','warrantyExtension'=>$warrantyExtension));
     }
 
     public function warrantyExtensionHistory(Request $request,$unique_key)
@@ -260,7 +260,7 @@ class WarrantyExtensionController extends Controller
             abort('404');
         }
         // echo "<pre>";print_r($warrantyExtension);exit();
-        return view('warranty_extension.history',array('title' => 'Warranty Extension History','warrantyExtension'=>$warrantyExtension));
+        return view('admin.warrantyextension.history',array('title' => 'Warranty Extension History','warrantyExtension'=>$warrantyExtension));
     }
 
     /**
@@ -326,12 +326,23 @@ class WarrantyExtensionController extends Controller
         $input = $request->all();
         
         if($warrantyExtension->status == '0'){
-
+            if ($request->admin_vid_link_url) {
+              Storage::disk('public')->delete($warrantyExtension->picture_by_admin);
+              $warrantyExtension->picture_by_admin = NULL;
+            }
             $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
+            $warrantyExtension->admin_vid_link_type = $request->admin_vid_link_type == 'youtube' ? 'youtube' : 'vimeo';
+            $warrantyExtension->admin_vid_link_url = $request->admin_vid_link_url;
             $warrantyExtension->status = '1';
             
         }else{
+            if ($request->admin_vid_link_url) {
+              Storage::disk('public')->delete($warrantyExtension->picture_by_admin);
+              $warrantyExtension->picture_by_admin = NULL;
+            }
 
+            $warrantyExtension->admin_vid_link_type = $request->admin_vid_link_type == 'youtube' ? 'youtube' : 'vimeo';
+            $warrantyExtension->admin_vid_link_url = $request->admin_vid_link_url;
             $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
             $warrantyExtension->voltage = $request->voltage;
             $warrantyExtension->temperat = $request->temperat;
@@ -380,9 +391,10 @@ class WarrantyExtensionController extends Controller
             $fileAdded = Storage::disk('public')->putFileAs('warranty_extension/'.$id.'/',$file,$imageName.".".$imgext);
             
             if($fileAdded){
+
                 $guideData = WarrantyExtension::find($id);
                 Storage::disk('public')->delete($guideData->picture_by_admin);
-                $media = WarrantyExtension::where('id',$id)->update(['picture_by_admin' => $path]);
+                $media = WarrantyExtension::where('id',$id)->update(['picture_by_admin' => $path,'admin_vid_link_url'=>NULL,'admin_vid_link_type'=>NULL]);
                 return Response::json(['status' => true, 'message' => 'Media uploaded.']);
             }
             return Response::json(['status' => false, 'message' => 'Something went wrong.']);

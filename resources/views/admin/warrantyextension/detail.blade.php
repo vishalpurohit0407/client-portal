@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.adminapp')
 
 @section('content')
     <div class="header bg-primary pb-6">
@@ -9,8 +9,8 @@
               <h6 class="h2 text-white d-inline-block mb-0">Warranty Extensions</h6>
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                  <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="{{route('user.warranty_extension.list')}}">all Warranty Extensions</a></li>
+                  <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="{{route('admin.warrantyextension.list')}}">all Warranty Extensions</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                 </ol>
               </nav>
@@ -70,7 +70,7 @@
                         @else
                           <div class="col-md-6 machine-img">
                             <div class="form-group">
-                                <label class="form-control-label">Picture By Admin</label>
+                                <label class="form-control-label">Picture By User</label>
                                 <img class="dz-preview-img"  style="height: 344px;" src="{{$warrantyExtension->image_by_admin}}">
                             </div>
                           </div>

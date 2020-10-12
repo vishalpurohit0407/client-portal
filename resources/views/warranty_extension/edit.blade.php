@@ -56,11 +56,23 @@
                       <small class="text-muted mb-3 col-6">Take a picture of exactly the same view as the picture on the left.</small>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 main-img pt-3">
-                            <div class="form-group">
-                                <img class="dz-preview-img"  style="height: 344px;" src="{{$warranty->image_by_admin}}">
-                            </div>
-                        </div>
+                        @if($warranty->admin_vid_link_url)
+                          <div class="col-md-6 main-img">
+                              <div class="form-group">
+                                  <label class="form-control-label">{{$warranty->admin_vid_link_type ? $warranty->admin_vid_link_type : ''}}</label>
+                                  <div class="embed-responsive embed-responsive-4by3 rounded">
+                                    <iframe class="embed-responsive-item" src="{{asset($warranty->admin_vid_link_url)}}"></iframe>
+                                  </div>
+                              </div>
+                          </div>
+                        @else
+                          <div class="col-md-6 main-img pt-3">
+                              <div class="form-group">
+                                <label class="form-control-label">Picture By Admin</label>
+                                  <img class="dz-preview-img"  style="height: 344px;" src="{{$warranty->image_by_admin}}">
+                              </div>
+                          </div>
+                        @endif
                         <div class="col-md-6 tab main-img">
                             <div class="row" id="radiodiv">
                               <div class="custom-control custom-radio mb-1 text-right ml-3 mr-2">
