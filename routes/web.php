@@ -59,6 +59,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/warranty_extension/user-img-upload/{id}','WarrantyExtensionController@userImgUpload')->name('user.warranty_extension.imgupload');
 	Route::get('/warranty_extension/history/{unique_key}','WarrantyExtensionController@warrantyExtensionHistory')->name('user.warranty_extension.history');
 	Route::post('/warranty_extension/list/data','WarrantyExtensionController@listdata')->name('user.warranty_extension.listdata');
+	Route::get('/warranty_extension/list/request','WarrantyExtensionController@requestListData')->name('user.warranty_extension.listreqest');
+	Route::post('/warranty_extension/list/request-data','WarrantyExtensionController@requestListData')->name('user.warranty_extension.listreqest.data');
+
+	Route::post('/warranty_extension/history/saverequest','WarrantyExtensionController@saveRequest')->name('user.warranty_extension.saverequest');
+	
 	Route::resource('/warranty_extension', 'WarrantyExtensionController', [
 	    'names' => [
 	        'index' => 'user.warranty_extension.list',

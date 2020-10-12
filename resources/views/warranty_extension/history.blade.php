@@ -32,7 +32,7 @@
                   <h3 class="mb-0">Warranty Valid Until : {{$warrantyExtension->last()->next_warranty_valid_date ? date("d/m/Y", strtotime($warrantyExtension->last()->next_warranty_valid_date)) : 'N/A'}} </h3>
                 </div>
                 <div class="col text-right">
-                    <form method="post" id="frmaddnew" action="{{route('user.warranty_extension.store')}}"> 
+                    <form method="post" id="frmaddnew" action="{{route('user.warranty_extension.saverequest')}}"> 
                     @csrf
                         <input type="hidden" name="unique_key" value="{{$warrantyExtension->first()->unique_key}}">
                         <a href="javascript:void(0);"  onclick="deleteConfirm(this);" type="submint" class="btn btn-sm btn-primary">Submit a new warranty extension</a>

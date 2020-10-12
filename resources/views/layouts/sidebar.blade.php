@@ -70,6 +70,11 @@
                       <span class="sidenav-normal">Add New Warranty Extension</span>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="{{route('user.warranty_extension.listreqest')}}" class="nav-link {{ Request::routeIs('user.warranty_extension.listreqest') ? 'active' : '' }}">
+                      <span class="sidenav-normal">Warranty Extension Request</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </li>

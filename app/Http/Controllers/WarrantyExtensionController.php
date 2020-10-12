@@ -15,7 +15,7 @@ class WarrantyExtensionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-     public function index()
+    public function index()
     {
         return view('warranty_extension.list',array('title' => 'Warranty Extension List'));
     }
@@ -25,10 +25,10 @@ class WarrantyExtensionController extends Controller
     {
         //echo "<pre>"; print_r($request->all()); exit();
         $columns = array(  
-            0 =>'name',
-            1 =>'unique_key',
-            2 => 'status',
-            3 => 'created_at',
+            
+            0 =>'unique_key',
+            1 => 'status',
+            2 => 'created_at',
         );
   
         $totalData = WarrantyExtension::groupBy('unique_key')->count();
@@ -71,7 +71,11 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                $show =  route('user.warranty_extension.history',$extension->unique_key);
+                if($extension->status == '3' || $extension->status == '4'){
+                    $show =  route('user.warranty_extension.history',$extension->unique_key);
+                }else {
+                    $show =  route('user.warranty_extension.edit',$extension->id);
+                }
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;
@@ -109,6 +113,105 @@ class WarrantyExtensionController extends Controller
         echo json_encode($json_data);
     }
 
+    public function requestListData(Request $request)
+    {
+        if($request->ajax()){
+          //echo "<pre>"; print_r($request->all()); exit();
+          $columns = array(  
+              
+              0 =>'unique_key',
+              1 => 'status',
+              2 => 'created_at',
+          );
+    
+          $totalData = WarrantyExtension::distinct('unique_key')->whereIn('warranty_extension.status',['0','1','2'])->count();
+              
+          $totalFiltered = $totalData; 
+
+          $limit = $request->input('length');
+          $start = $request->input('start');
+          $order = $columns[$request->input('order.0.column')];
+          $dir = $request->input('order.0.dir');
+              
+          if(empty($request->input('search.value')))
+          {            
+              $extensions = WarrantyExtension::where('user_id', Auth::user()->id)
+                           ->whereIn('warranty_extension.status',['0','1','2'])
+                           ->offset($start)
+                           ->limit($limit)
+                           ->groupBy('unique_key')
+                           ->orderBy($order,$dir)
+                           ->get();
+          }
+          else {
+              $search = $request->input('search.value'); 
+
+              $extensions =  WarrantyExtension::where('user_id', Auth::user()->id)
+                              ->whereIn('warranty_extension.status',['0','1','2'])
+                              ->where('unique_key', 'LIKE',"%{$search}%")
+                              ->offset($start)
+                              ->limit($limit)
+                              ->groupBy('unique_key')
+                              ->orderBy($order,$dir)
+                              ->get();
+
+              $totalFiltered = WarrantyExtension::where('user_id', Auth::user()->id)
+                              ->whereIn('warranty_extension.status',['0','1','2'])
+                              ->where('unique_key', 'LIKE',"%{$search}%")
+                              ->groupBy('unique_key')
+                              ->count();
+          }
+          //dd($extensions);
+          $data = array();
+          if(!empty($extensions))
+          {   $srnumber = 1;
+              foreach ($extensions as $extension)
+              {
+                  if($extension->status == '3' || $extension->status == '4'){
+                      $show =  route('user.warranty_extension.history',$extension->unique_key);
+                  }else {
+                      $show =  route('user.warranty_extension.edit',$extension->id);
+                  }
+                  $token =  $request->session()->token();
+
+                  $nestedData['id'] = $extension->id;
+                  $nestedData['srnumber'] = $srnumber;
+                  //$nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
+                  $nestedData['key'] = $extension->unique_key;
+
+                  if($extension->status == '0'){ 
+                    $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
+                  }else if($extension->status == '1'){ 
+                    $nestedData['status'] = '<span class="badge badge-pill badge-primary">Admin Reply</span>';
+                  }elseif($extension->status == '2'){
+                    $nestedData['status'] = '<span class="badge badge-pill badge-success">Request</span>';
+                  }elseif($extension->status == '3'){
+                    $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
+                  }elseif($extension->status == '4'){
+                    $nestedData['status'] = '<span class="badge badge-pill badge-danger">Declined</span>';
+                  }
+                  
+                  $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
+                  $nestedData['options'] = "&emsp;<a href='{$show}' class='btn btn-success btn-sm mr-0' title='View' >View</a>";
+                  
+                  $srnumber++;
+                  $data[] = $nestedData;
+              }
+          }
+            
+          $json_data = array(
+                      "draw"            => intval($request->input('draw')),  
+                      "recordsTotal"    => intval($totalData),  
+                      "recordsFiltered" => intval($totalFiltered), 
+                      "data"            => $data   
+                      );
+              
+          echo json_encode($json_data);die();
+        }
+
+        return view('warranty_extension.list-request',array('title' => 'Warranty Extension Request List'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -130,15 +233,49 @@ class WarrantyExtensionController extends Controller
         $request->validate([
             'unique_key' => 'required',
         ]);
+
         try {
-            $warrantyExtension = new WarrantyExtension;
-            $warrantyExtension->unique_key = $request->unique_key;
-            $warrantyExtension->user_id = Auth::user()->id;
-            if($warrantyExtension->save())
-            {
-                $request->session()->flash('alert-success', 'Warranty Extension added successfuly.');  
+
+            $existing = WarrantyExtension::where('unique_key', $request->unique_key)->count();
+
+            if($existing > 0){
+                return redirect(route('user.warranty_extension.history', ['unique_key' => $request->unique_key ]));
+            }else{
+              $warrantyExtension = new WarrantyExtension;
+              $warrantyExtension->unique_key = $request->unique_key;
+              $warrantyExtension->user_id = Auth::user()->id;
+              if($warrantyExtension->save())
+              {
+                  WarrantyExtension::sendWarrantyNotification(env('ADMIN_EMAIL'), env('MAIL_FROM_NAME')." Admin", Auth::user()->name.' initialize warranty extension request.', route('admin.warrantyextension.listreqest'));
+                  $request->session()->flash('alert-success', 'Warranty Extension added successfuly.');  
+              }
+              return redirect(route('user.warranty_extension.list'));
             }
+
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('user.warranty_extension.list'));
+        }
+    }
+
+    public function saveRequest(Request $request)
+    { 
+        $request->validate([
+            'unique_key' => 'required',
+        ]);
+
+        try {
+
+              $warrantyExtension = new WarrantyExtension;
+              $warrantyExtension->unique_key = $request->unique_key;
+              $warrantyExtension->user_id = Auth::user()->id;
+              if($warrantyExtension->save())
+              {
+                  WarrantyExtension::sendWarrantyNotification(env('ADMIN_EMAIL'), env('MAIL_FROM_NAME')." Admin", Auth::user()->name.' initialize warranty extension request.', route('admin.warrantyextension.listreqest'));
+                  $request->session()->flash('alert-success', 'Warranty Extension added successfuly.');  
+              }
+              return redirect(route('user.warranty_extension.list'));
+            
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('user.warranty_extension.list'));
@@ -222,6 +359,7 @@ class WarrantyExtensionController extends Controller
             'temperat' => 'required',
             'thing_on' => 'required',
         ]);
+
         try {
             if (!$warrantyExtension) {
                 return abort(404);
@@ -239,6 +377,7 @@ class WarrantyExtensionController extends Controller
             $warrantyExtension->status =  '2';
             if($warrantyExtension->save())
             {
+                WarrantyExtension::sendWarrantyNotification(env('ADMIN_EMAIL'), env('MAIL_FROM_NAME')." Admin", Auth::user()->name.' send new warranty extension request', route('admin.warrantyextension.listreqest.'));
                 $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
             }
             return redirect(route('user.warranty_extension.list'));

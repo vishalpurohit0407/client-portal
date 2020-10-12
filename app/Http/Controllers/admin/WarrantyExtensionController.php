@@ -138,7 +138,7 @@ class WarrantyExtensionController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $totalData = WarrantyExtension::distinct('unique_key')->count();     
+            $totalData = WarrantyExtension::distinct('unique_key')->whereIn('warranty_extension.status',['0','1','2'])->count();     
             $totalFiltered = $totalData;
                 
             if(empty($request->input('search.value')))
@@ -317,6 +317,11 @@ class WarrantyExtensionController extends Controller
         
         if($warrantyExtension->status == '0'){
 
+            if($user && $warrantyExtension->status == '0'){
+                $messageNoti = 'Your warranty extension request detail has been filled by Administration, Please check and submit require detail as per instruction.';
+                WarrantyExtension::sendWarrantyNotification($user->email, $user->name, $messageNoti, route('user.warranty_extension.list'));
+            }
+
             $warrantyExtension->warranty_valid_date = $request->warranty_valid_date;
             $warrantyExtension->status = '1';
             
@@ -332,10 +337,6 @@ class WarrantyExtensionController extends Controller
           
         if($warrantyExtension->save())
         {
-            if($user && $warrantyExtension->status == '0'){
-                $messageNoti = 'Your warranty extension request detail has been filled by Administration, Please check and submit detail as per instruction.';
-                WarrantyExtension::sendWarrantyNotification($user->email, $user->name, $messageNoti, route('user.warranty_extension.list'));
-            }
             $request->session()->flash('alert-success', 'Warranty Extension updated successfuly.');  
         }
         return redirect(route('admin.warrantyextension.list'));
