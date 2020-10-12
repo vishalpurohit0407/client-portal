@@ -31,7 +31,7 @@ class WarrantyExtensionController extends Controller
             3 => 'created_at',
         );
   
-        $totalData = WarrantyExtension::count();
+        $totalData = WarrantyExtension::groupBy('unique_key')->count();
             
         $totalFiltered = $totalData; 
 
@@ -45,6 +45,7 @@ class WarrantyExtensionController extends Controller
             $extensions = WarrantyExtension::where('user_id', Auth::user()->id)
                          ->offset($start)
                          ->limit($limit)
+                         ->groupBy('unique_key')
                          ->orderBy($order,$dir)
                          ->get();
         }
@@ -55,11 +56,13 @@ class WarrantyExtensionController extends Controller
                             ->where('unique_key', 'LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
+                            ->groupBy('unique_key')
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = WarrantyExtension::where('user_id', Auth::user()->id)
                             ->where('unique_key', 'LIKE',"%{$search}%")
+                            ->groupBy('unique_key')
                             ->count();
         }
         //dd($extensions);
@@ -68,7 +71,7 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                $edit =  route('user.warranty_extension.edit',$extension->id);
+                $show =  route('user.warranty_extension.show',$extension->id);
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;
@@ -89,7 +92,7 @@ class WarrantyExtensionController extends Controller
                 }
                 
                 $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
-                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0' title='EDIT' >View</a>";
+                $nestedData['options'] = "&emsp;<a href='{$show}' class='btn btn-success btn-sm mr-0' title='View' >View</a>";
                 
                 $srnumber++;
                 $data[] = $nestedData;
@@ -151,7 +154,7 @@ class WarrantyExtensionController extends Controller
      */
     public function show(WarrantyExtension $warrantyExtension)
     {
-        //
+        return view('warranty_extension.detail',array('title' => 'Warranty Extension Details','warrantyExtension'=>$warrantyExtension));
     }
 
     /**
@@ -202,7 +205,6 @@ class WarrantyExtensionController extends Controller
      */
     public function update(Request $request, WarrantyExtension $warrantyExtension)
     {
-        // echo "<pre>";print_r($request->all());exit();
         $request->validate([
             'voltage' => 'required',
             'temperat' => 'required',
@@ -212,9 +214,15 @@ class WarrantyExtensionController extends Controller
             if (!$warrantyExtension) {
                 return abort(404);
             }
+            if ($request->vid_link_url) {
+                Storage::disk('public')->delete($warrantyExtension->picture_by_user);
+                $warrantyExtension->picture_by_user = '';
+            }
             $warrantyExtension->voltage = $request->voltage;
             $warrantyExtension->temperat = $request->temperat;
             $warrantyExtension->thing_on = $request->thing_on;
+            $warrantyExtension->vid_link_type = $request->vid_link_type == 'youtube' ? 'youtube' : 'vimeo';
+            $warrantyExtension->vid_link_url = $request->vid_link_url;
             $warrantyExtension->do_something = $request->do_something ? 'true' : 'false';
             $warrantyExtension->status =  '2';
             if($warrantyExtension->save())

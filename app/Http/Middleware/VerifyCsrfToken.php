@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         '/admin/selfdiagnosis/main-img-upload/*',
         '/admin/maintenance/main-img-upload/*',
         '/warranty_extension/user-img-upload/*',
+        '/warranty_extension/list/data/*'
     ];
 }
