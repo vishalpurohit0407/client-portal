@@ -76,7 +76,8 @@
                                 @endif
                             </div>
                         </div>
-                        
+
+                        @if($warrantyExtension->status != '0' && $warrantyExtension->status != '1')
                             @if($warrantyExtension->picture_by_user)
                             <div class="col-md-6 machine-img">
                                 <div class="form-group @if($errors->has('name')) has-danger @endif ">
@@ -87,60 +88,63 @@
                                 </div>
                             </div>
                             @endif
-                        
-                    </div>
-
-                    <div class="row">
-                        @if($warrantyExtension->voltage)
-                        <div class="col-md-6">
-                            <div class="form-group @if($errors->has('voltage')) has-danger @endif">
-                                <label class="form-control-label" for="name">Measure the current over the terminals and enter the Voltage&nbsp;<strong class="text-danger">*</strong></label>
-                                <input class="form-control" type="text" name="voltage" value="{{old('voltage',$warrantyExtension->voltage)}}">
-                                @if($errors->has('voltage'))
-                                    <span class="form-text text-danger">{{ $errors->first('voltage') }}</span>
-                                @endif
-                            </div>
-                        </div>
                         @endif
 
-                        @if($warrantyExtension->temperat)
-                        <div class="col-md-6">
-                            <div class="form-group @if($errors->has('temperat')) has-danger @endif ">
-                                <label class="form-control-label" for="temperat">Measure the temperature here&nbsp;<strong class="text-danger">*</strong></label>
-                                <input class="form-control" type="text" name="temperat" value="{{old('temperat',$warrantyExtension->temperat)}}">
-                                @if($errors->has('temperat'))
-                                    <span class="form-text text-danger">{{ $errors->first('temperat') }}</span>
-                                @endif
-                            </div>
-                        </div>
-                        @endif
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group @if($errors->has('voltage')) has-danger @endif">
-                                <label class="form-control-label" for="name">Is the thing on &nbsp; &nbsp;</label><br>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="thing_on1" name="thing_on" class="custom-control-input" @if($warrantyExtension->thing_on == 'yes') checked @endif>
-                                    <label class="custom-control-label" for="thing_on1">Yes</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="thing_on2" name="thing_on" class="custom-control-input" @if($warrantyExtension->thing_on == 'no') checked @endif>
-                                    <label class="custom-control-label" for="thing_on2">No</label>
+                    @if($warrantyExtension->status != '0' && $warrantyExtension->status != '1')
+                        <div class="row">
+                            @if($warrantyExtension->voltage)
+                            <div class="col-md-6">
+                                <div class="form-group @if($errors->has('voltage')) has-danger @endif">
+                                    <label class="form-control-label" for="name">Measure the current over the terminals and enter the Voltage&nbsp;<strong class="text-danger">*</strong></label>
+                                    <input class="form-control" type="text" name="voltage" value="{{old('voltage',$warrantyExtension->voltage)}}">
+                                    @if($errors->has('voltage'))
+                                        <span class="form-text text-danger">{{ $errors->first('voltage') }}</span>
+                                    @endif
                                 </div>
                             </div>
+                            @endif
+
+                            @if($warrantyExtension->temperat)
+                            <div class="col-md-6">
+                                <div class="form-group @if($errors->has('temperat')) has-danger @endif ">
+                                    <label class="form-control-label" for="temperat">Measure the temperature here&nbsp;<strong class="text-danger">*</strong></label>
+                                    <input class="form-control" type="text" name="temperat" value="{{old('temperat',$warrantyExtension->temperat)}}">
+                                    @if($errors->has('temperat'))
+                                        <span class="form-text text-danger">{{ $errors->first('temperat') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            @endif
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group @if($errors->has('temperat')) has-danger @endif ">
-                                <label class="form-control-label" for="temperat">Did you do something</label>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1" name="do_something" @if($warrantyExtension->do_something == 'true') checked @endif>
-                                    <label class="custom-control-label" for="customCheck1"></label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group @if($errors->has('voltage')) has-danger @endif">
+                                    <label class="form-control-label" for="name">Is the thing on &nbsp; &nbsp;</label><br>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="thing_on1" name="thing_on" class="custom-control-input" @if($warrantyExtension->thing_on == 'yes') checked @endif>
+                                        <label class="custom-control-label" for="thing_on1">Yes</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="thing_on2" name="thing_on" class="custom-control-input" @if($warrantyExtension->thing_on == 'no') checked @endif>
+                                        <label class="custom-control-label" for="thing_on2">No</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group @if($errors->has('temperat')) has-danger @endif ">
+                                    <label class="form-control-label" for="temperat">Did you do something</label>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1" name="do_something" @if($warrantyExtension->do_something == 'true') checked @endif>
+                                        <label class="custom-control-label" for="customCheck1"></label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
 
                     <div class="row">
                         <div class="col-md-6">
@@ -164,8 +168,10 @@
                     </div>
                     <hr>
                     <button class="btn btn-primary" type="submit">Save</button>
-                    <button class="btn btn-success" type="submit" name="approve" value="approve">Approve</button>
-                    <button class="btn btn-danger" type="submit" name="decline" value="decline">Decline</button>
+                    @if($warrantyExtension->status == '3')
+                        <button class="btn btn-success" type="submit" name="approve" value="approve">Approve</button>
+                        <button class="btn btn-danger" type="submit" name="decline" value="decline">Decline</button>
+                    @endif
                 </form>
             </div>
         </div>
