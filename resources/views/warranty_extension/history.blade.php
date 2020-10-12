@@ -46,7 +46,7 @@
                 <ul class="list-group list-group-flush">
                     @if($warrantyExtension)
                     @php 
-                    $color = array('warning','primary','success','danger');
+                    $color = array('warning','primary','success','success','danger');
                     @endphp
                         @foreach($warrantyExtension as $warranty_key => $warranty)
                             <li class="checklist-entry list-group-item flex-column align-items-start py-4 px-4">
