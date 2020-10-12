@@ -107,8 +107,8 @@
                             <div class="form-group">
                                 <label class="form-control-label" for="temperat">Did you do something</label><br>
                                 @if($warrantyExtension->do_something)
-                                <span class="badge badge-{{$warrantyExtension->do_something == 'true' ? 'success' : ''}}">Yes</span>
-                                <span class="badge badge-{{$warrantyExtension->do_something == 'false' ? 'danger' : ''}}">No</span>
+                                <span class="badge badge-{{$warrantyExtension->do_something == 'true' ? 'success' : ''}}">True</span>
+                                <span class="badge badge-{{$warrantyExtension->do_something == 'false' ? 'danger' : ''}}">False</span>
                                 @else
                                 N/A
                                 @endif
