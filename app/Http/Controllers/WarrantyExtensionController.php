@@ -71,7 +71,7 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                $show =  route('user.warranty_extension.show',$extension->id);
+                $show =  route('user.warranty_extension.history',$extension->unique_key);
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;
@@ -126,8 +126,7 @@ class WarrantyExtensionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        // echo "<pre>";print_r($request->all());exit();  
+    { 
         $request->validate([
             'unique_key' => 'required',
         ]);
@@ -155,6 +154,19 @@ class WarrantyExtensionController extends Controller
     public function show(WarrantyExtension $warrantyExtension)
     {
         return view('warranty_extension.detail',array('title' => 'Warranty Extension Details','warrantyExtension'=>$warrantyExtension));
+    }
+
+    public function warrantyExtensionHistory(Request $request,$unique_key)
+    {
+        if (!$unique_key) {
+            abort('404');
+        }
+        $warrantyExtension = WarrantyExtension::where('unique_key',$unique_key)->orderBy('next_warranty_valid_date','asc')->get();
+        if (!$warrantyExtension) {
+            abort('404');
+        }
+        // echo "<pre>";print_r($warrantyExtension);exit();
+        return view('warranty_extension.history',array('title' => 'Warranty Extension History','warrantyExtension'=>$warrantyExtension));
     }
 
     /**

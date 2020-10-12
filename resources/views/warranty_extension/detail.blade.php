@@ -6,17 +6,17 @@
         <div class="header-body">
           <div class="row align-items-center py-4">
             <div class="col-9">
-              <h6 class="h2 text-white d-inline-block mb-0">Warranty Extensions Details</h6>
+              <h6 class="h2 text-white d-inline-block mb-0">Warranty Extensions</h6>
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="{{route('user.warranty_extension.list')}}">Warranty Extensions List</a></li>
+                  <li class="breadcrumb-item"><a href="{{route('user.warranty_extension.list')}}">all Warranty Extensions</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                 </ol>
               </nav>
             </div>
             <div class="col-3 text-right">
-              <a href="{{route('user.warranty_extension.list')}}" class="btn btn-sm btn-neutral">Back</a>
+              <a href="{{url()->previous()}}" class="btn btn-sm btn-neutral">Back</a>
             </div>
           </div>
         </div>
@@ -34,17 +34,25 @@
                 <!-- Form groups used in grid -->
                 <form class="form">
                     <div class="row row-example">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-control-label" for="name">Unique Key: </label>
                                 <span>{{$warrantyExtension->unique_key}}</span>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row row-example">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-control-label" for="warranty_valid_date">Warranty Valid Until</label>
                                 <span>{{$warrantyExtension->warranty_valid_date ? $warrantyExtension->warranty_valid_date : 'N/A'}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="warranty_valid_date">Next Warranty Valid Until</label>
+                                <span>{{$warrantyExtension->next_warranty_valid_date ? $warrantyExtension->next_warranty_valid_date : 'N/A'}}</span>
                             </div>
                         </div>
                     </div>
@@ -107,8 +115,8 @@
                             <div class="form-group">
                                 <label class="form-control-label" for="temperat">Did you do something</label><br>
                                 @if($warrantyExtension->do_something)
-                                <span class="badge badge-{{$warrantyExtension->do_something == 'true' ? 'success' : ''}}">Yes</span>
-                                <span class="badge badge-{{$warrantyExtension->do_something == 'false' ? 'danger' : ''}}">No</span>
+                                <span class="badge badge-{{$warrantyExtension->do_something == 'true' ? 'success' : ''}}">True</span>
+                                <span class="badge badge-{{$warrantyExtension->do_something == 'false' ? 'danger' : ''}}">False</span>
                                 @else
                                 N/A
                                 @endif
