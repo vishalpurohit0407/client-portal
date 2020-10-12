@@ -5,9 +5,16 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Uuid;
 use Storage;
+use App\Notifications\WarrantyExtensions as WarrantyExtensionsNotification;
+use Mail;
+use Config;
+use Notification;
+use Illuminate\Notifications\Notifiable;
 
 class WarrantyExtension extends Model
 {
+    use Notifiable;
+
     public static function boot()
     {
         parent::boot();
@@ -50,5 +57,17 @@ class WarrantyExtension extends Model
     public function user()
     {
         return $this->hasOne('App\User', 'id','user_id');
+    }
+
+    public static function sendWarrantyNotification($email, $name, $message, $action)
+    {
+        $data = array(
+            'username' => $name,
+            'message' => $message,
+            'action' => $action,
+            'subject' => 'Warranty Extension'
+        );
+
+        return Notification::route('mail', $email)->notify(new WarrantyExtensionsNotification($data));
     }
 }
