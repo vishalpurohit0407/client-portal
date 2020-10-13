@@ -197,6 +197,8 @@
 
     $("input[name$='imgorvideo']").click(function() {
       var test = $(this).val();
+      document.getElementById("imgerror").style.display = "none";
+      document.getElementById("imgtypeerror").style.display = "none";
       $("div.video-or-img").hide();
       $("#Choose" + test).show();
     });

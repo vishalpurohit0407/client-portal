@@ -47,7 +47,7 @@ class ProfileController extends Controller
             $path = 'userprofile/'.$user->id.'/'.$imageName.".".$imgext;
             Storage::disk('public')->putFileAs('userprofile/'.$user->id,$file,$imageName.".".$imgext);
             
-           $userArr['profile_img'] = 'storage/'.$path;
+           $userArr['profile_img'] = $path;
         }
 
         auth()->user()->update($userArr);
