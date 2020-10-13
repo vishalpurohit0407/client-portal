@@ -257,6 +257,7 @@ function validateForm() {
     var z = document.getElementById("admin_vid_link_url");
     var form = document.getElementById("form");
     if (z.value == "" && $(".dropzone-single .dz-preview .dz-complete").length == 0) {
+        
         document.getElementById("imgerror").style.display = "block";
         return false;
     }else{

@@ -48,7 +48,8 @@ class WarrantyExtensionController extends Controller
                          ->select('warranty_extension.*','users.name')
                          ->offset($start)
                          ->limit($limit)
-                         ->groupBy('warranty_extension.unique_key')
+                         ->distinct('warranty_extension.unique_key')
+                         //->groupBy('warranty_extension.unique_key')
                          ->orderBy($order,$dir)
                          ->get();
 
@@ -61,14 +62,16 @@ class WarrantyExtensionController extends Controller
                             ->orWhere('unique_key', 'LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
-                            ->groupBy('warranty_extension.unique_key')
+                            ->distinct('warranty_extension.unique_key')
+                            //->groupBy('warranty_extension.unique_key')
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
                             ->where('users.name', 'LIKE',"%{$search}%")
                             ->orWhere('unique_key', 'LIKE',"%{$search}%")
-                            ->groupBy('warranty_extension.unique_key')
+                            //->groupBy('warranty_extension.unique_key')
+                            ->distinct('warranty_extension.unique_key')
                             ->count();
         }
         //dd($extensions);
@@ -150,7 +153,8 @@ class WarrantyExtensionController extends Controller
                              ->whereIn('warranty_extension.status',['0','1','2'])
                              ->offset($start)
                              ->limit($limit)
-                             ->groupBy('warranty_extension.unique_key')
+                             //->groupBy('warranty_extension.unique_key')
+                             ->distinct('warranty_extension.unique_key')
                              ->orderBy($order,$dir)
                              ->get();
 
@@ -164,7 +168,8 @@ class WarrantyExtensionController extends Controller
                                 ->orWhere('unique_key', 'LIKE',"%{$search}%")
                                 ->offset($start)
                                 ->limit($limit)
-                                ->groupBy('warranty_extension.unique_key')
+                                ->distinct('warranty_extension.unique_key')
+                                //->groupBy('warranty_extension.unique_key')
                                 ->orderBy($order,$dir)
                                 ->get();
 
@@ -172,7 +177,8 @@ class WarrantyExtensionController extends Controller
                                 ->whereIn('warranty_extension.status',['0','1','2'])
                                 ->where('users.name', 'LIKE',"%{$search}%")
                                 ->orWhere('unique_key', 'LIKE',"%{$search}%")
-                                ->groupBy('warranty_extension.unique_key')
+                                ->distinct('warranty_extension.unique_key')
+                                //->groupBy('warranty_extension.unique_key')
                                 ->count();
             }
 
