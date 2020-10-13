@@ -16,7 +16,7 @@
               </nav>
             </div>
             <div class="col-5 text-right">
-              <a href="{{route('admin.category.list')}}" class="btn btn-sm btn-neutral">Back</a>
+              <a href="{{url()->previous()}}" class="btn btn-sm btn-neutral">Back</a>
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@
 
                     <div class="row">
                         <div class="col-md-6 tab machine-img">
-                            <div class="row" id="radiodiv">
+                            <div class="row mb-1" id="radiodiv">
                               <div class="custom-control custom-radio mb-1 text-right ml-3 mr-2">
                                   <input name="imgorvideo" class="custom-control-input" {{$warrantyExtension->image_by_admin != '' ? 'checked' : ''}} id="image" value="img" type="radio">
                                   <label class="custom-control-label" for="image">Image</label>
@@ -85,7 +85,7 @@
                                       <label class="custom-file-label" for="warranty_main_image">Choose file</label>
                                     </div>
                                   </div>
-                                  <div class="dz-preview dz-preview-single" style="height: 300px;">
+                                  <div class="dz-preview dz-preview-single" id="dz-preview" style="height: 344px;">
                                     <div class="dz-preview-cover">
                                       <img class="dz-preview-img" src="" data-dz-thumbnail>
                                     </div>
@@ -111,16 +111,17 @@
                             <div class="col-12 p-0" id="imgerror" style="display: none;">
                                 <span class="text-danger"><strong>The image or video field is required.</strong></span>
                             </div>
+                            <div class="col-12 p-0" id="imgtypeerror" style="display: none;">
+                                <span class="text-danger"><strong>The image must be a file type of: jpeg, png, jpg, gif, svg, and may not be greater than 1024 kilobytes.</strong></span>
+                            </div>
                         </div>
 
                         @if($warrantyExtension->status != '0' && $warrantyExtension->status != '1')
                             @if($warrantyExtension->vid_link_url)
                                 <div class="col-md-6 machine-img">
                                     <div class="form-group">
-                                        <label class="form-control-label">{{$warrantyExtension->vid_link_type ? $warrantyExtension->vid_link_type : ''}}</label>
-                                        <div class="embed-responsive embed-responsive-4by3 rounded">
-                                            <iframe class="embed-responsive-item" src="{{asset($warrantyExtension->vid_link_url)}}"></iframe>
-                                        </div>
+                                        <label class="form-control-label">{{$warrantyExtension->vid_link_type ? ucfirst($warrantyExtension->vid_link_type) : ''}}   By Admin</label>
+                                            <iframe class="dz-preview-img mt-1" style="height: 344px;" src="{{asset($warrantyExtension->vid_link_url)}}"></iframe>
                                     </div>
                                 </div>
                             @else
@@ -256,13 +257,18 @@ $(document).ready(function() {
 function validateForm() {
     var z = document.getElementById("admin_vid_link_url");
     var form = document.getElementById("form");
-    if (z.value == "" && $(".dropzone-single .dz-preview .dz-complete").length == 0) {
-        
+    if (z.value == "" && $('.dz-preview.dz-preview-single')[0].innerHTML == "") {
         document.getElementById("imgerror").style.display = "block";
         return false;
     }else{
-        form.submit();
-        return true;
+        if ($(".dz-preview-cover.dz-processing.dz-image-preview.dz-error.dz-complete").length > 0) {
+            document.getElementById("imgerror").style.display = "none";
+            document.getElementById("imgtypeerror").style.display = "block";
+            return false;
+        }else{
+            form.submit();
+            return true;
+        }
     }
 
     }

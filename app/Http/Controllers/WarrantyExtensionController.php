@@ -341,7 +341,7 @@ class WarrantyExtensionController extends Controller
             if($fileAdded){
                 $guideData = WarrantyExtension::find($id);
                 Storage::disk('public')->delete($guideData->picture_by_user);
-                $media = WarrantyExtension::where('id',$id)->update(['picture_by_user' => $path]);
+                $media = WarrantyExtension::where('id',$id)->update(['picture_by_user' => $path,'vid_link_url'=>NULL,'vid_link_type'=>NULL]);
                 return Response::json(['status' => true, 'message' => 'Media uploaded.']);
             }
             return Response::json(['status' => false, 'message' => 'Something went wrong.']);

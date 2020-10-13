@@ -46,13 +46,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-control-label" for="warranty_valid_date">Warranty Valid Until</label>
-                                <span>{{$warrantyExtension->warranty_valid_date ? $warrantyExtension->warranty_valid_date : 'N/A'}}</span>
+                                <span>{{$warrantyExtension->warranty_valid_date ? date("d-m-Y", strtotime($warrantyExtension->warranty_valid_date)) : 'N/A'}}</span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-control-label" for="warranty_valid_date">Next Warranty Valid Until</label>
-                                <span>{{$warrantyExtension->next_warranty_valid_date ? $warrantyExtension->next_warranty_valid_date : 'N/A'}}</span>
+                                <span>{{$warrantyExtension->next_warranty_valid_date ? date("d-m-Y", strtotime($warrantyExtension->next_warranty_valid_date)) : 'N/A'}}</span>
                             </div>
                         </div>
                     </div>
@@ -61,10 +61,8 @@
                         @if($warrantyExtension->admin_vid_link_url)
                           <div class="col-md-6 machine-img">
                               <div class="form-group">
-                                  <label class="form-control-label">{{$warrantyExtension->admin_vid_link_type ? $warrantyExtension->admin_vid_link_type : ''}}</label>
-                                  <div class="embed-responsive embed-responsive-4by3 rounded">
-                                    <iframe class="embed-responsive-item" src="{{asset($warrantyExtension->admin_vid_link_url)}}"></iframe>
-                                  </div>
+                                  <label class="form-control-label">{{$warrantyExtension->admin_vid_link_type ? ucfirst($warrantyExtension->admin_vid_link_type) : ''}} By Admin</label>
+                                    <iframe class="dz-preview-img mt-1" style="height: 344px;" src="{{asset($warrantyExtension->admin_vid_link_url)}}"></iframe>
                               </div>
                           </div>
                         @else
@@ -78,10 +76,8 @@
                         @if($warrantyExtension->vid_link_url)
                           <div class="col-md-6 machine-img">
                               <div class="form-group">
-                                  <label class="form-control-label">{{$warrantyExtension->vid_link_type ? $warrantyExtension->vid_link_type : ''}}</label>
-                                  <div class="embed-responsive embed-responsive-4by3 rounded">
-                                    <iframe class="embed-responsive-item" src="{{asset($warrantyExtension->vid_link_url)}}"></iframe>
-                                  </div>
+                                  <label class="form-control-label">{{$warrantyExtension->vid_link_type ? ucfirst($warrantyExtension->vid_link_type) : ''}} By User</label>
+                                    <iframe class="dz-preview-img mt-1" style="height: 344px;" src="{{asset($warrantyExtension->vid_link_url)}}"></iframe>
                               </div>
                           </div>
                         @else
@@ -103,7 +99,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-control-label" for="temperat">temperature</label>
+                                <label class="form-control-label" for="temperat">Temperature</label>
                                 <span>{{$warrantyExtension->temperat ? $warrantyExtension->temperat : 'N/A'}}</span>
                             </div>
                         </div>
