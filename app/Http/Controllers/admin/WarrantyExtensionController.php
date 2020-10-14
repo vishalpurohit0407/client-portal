@@ -90,7 +90,7 @@ class WarrantyExtensionController extends Controller
 
                 $nestedData['id'] = $extension->id;
                 $nestedData['srnumber'] = $srnumber;
-                $nestedData['name'] = '<img src="'.asset($extension->user->profile_img).'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
+                $nestedData['name'] = '<img src="'.asset('storage/'.$extension->user->profile_img).'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                 $nestedData['key'] = $extension->unique_key;
 
                 $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;

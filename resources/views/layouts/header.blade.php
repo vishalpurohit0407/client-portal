@@ -9,7 +9,7 @@
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
                             
-                            <img src="@if(is_file(public_path(auth()->user()->profile_img))) {{url(auth()->user()->profile_img)}} @else {{ asset('argon') }}/img/theme/defualt-user.png @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
+                            <img src="{{auth()->user()->user_image_url}}" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
                         </span>
                         <div class="media-body ml-2 d-none d-lg-block">
                             <span class="mb-0 text-sm  font-weight-bold">{{ auth()->user()->name }}</span>
