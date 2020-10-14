@@ -207,6 +207,7 @@
 }
 .card.custom_card {
     height: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
 }
 .custom_card .card-body{
 	padding-bottom: 2.5rem;
@@ -222,12 +223,13 @@
 }
 .footer .container-fluid{
     padding-right: 30px;
-    padding-left: 30px;
+    padding-left: 40px;
 }
 
 
 .card.custom_card_front {
     height: 95%;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
 }
 .custom_card_front .card-body{
     padding-bottom: 1rem;
@@ -312,4 +314,9 @@
 
 .g-sidenav-pinned .sidenav.fixed-left + .main-content{
     margin-left: 260px !important;
+}
+
+.custom-hr{
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, .1);
 }

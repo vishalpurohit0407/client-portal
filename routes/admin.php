@@ -121,6 +121,14 @@ Route::group(['middleware' => ['admin']],function(){
 	]);
 
 
+	//Flowchart
+	Route::resource('/flowchart', 'admin\FlowchartController', [
+	    'names' => [
+	        'index' => 'admin.flowchart.list',
+	    ]
+	]);
+
+
 	// CMS Page Module Routes
 	Route::post('/cms_page/list/data','admin\CmsPageController@listdata')->name('admin.cms.page.listdata');
 	Route::resource('/cms_page', 'admin\CmsPageController', [
