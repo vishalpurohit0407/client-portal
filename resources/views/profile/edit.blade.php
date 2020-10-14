@@ -15,8 +15,8 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-3 order-lg-2">
                             <div class="card-profile-image">
-                                <a href="#">
-                                    <img src="@if(is_file(public_path(auth()->user()->profile_img))) {{url(auth()->user()->profile_img)}} @else {{ asset('argon') }}/img/theme/defualt-user.png @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
+                                <a href="javascript:void(0);">
+                                    <img src="{{auth()->user()->user_image_url}}" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
                                 </a>
                             </div>
                         </div>
@@ -98,8 +98,8 @@
                                     </div>
 
                                     <div class="col-6 col-md-4">
-                                        <a href="#!">
-                                            <img id="output" src="@if(is_file(public_path(auth()->user()->profile_img))) {{url(auth()->user()->profile_img)}} @else {{ asset('argon') }}/img/theme/defualt-user.png @endif" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
+                                        <a href="javascript:void(0);">
+                                            <img id="output" src="{{auth()->user()->user_image_url}}" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" style="width: 140px;">
                                         </a>
                                     </div>
                                 </div>

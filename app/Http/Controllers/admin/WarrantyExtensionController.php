@@ -48,6 +48,7 @@ class WarrantyExtensionController extends Controller
                          ->select('warranty_extension.*','users.name')
                          ->offset($start)
                          ->limit($limit)
+                         //->distinct('warranty_extension.unique_key')
                          ->groupBy('warranty_extension.unique_key')
                          ->orderBy($order,$dir)
                          ->get();
@@ -61,6 +62,7 @@ class WarrantyExtensionController extends Controller
                             ->orWhere('unique_key', 'LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
+                            //->distinct('warranty_extension.unique_key')
                             ->groupBy('warranty_extension.unique_key')
                             ->orderBy($order,$dir)
                             ->get();
@@ -69,6 +71,7 @@ class WarrantyExtensionController extends Controller
                             ->where('users.name', 'LIKE',"%{$search}%")
                             ->orWhere('unique_key', 'LIKE',"%{$search}%")
                             ->groupBy('warranty_extension.unique_key')
+                            //->distinct('warranty_extension.unique_key')
                             ->count();
         }
         //dd($extensions);
@@ -87,7 +90,7 @@ class WarrantyExtensionController extends Controller
 
                 $nestedData['id'] = $extension->id;
                 $nestedData['srnumber'] = $srnumber;
-                $nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
+                $nestedData['name'] = '<img src="'.asset('storage/'.$extension->user->profile_img).'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                 $nestedData['key'] = $extension->unique_key;
 
                 $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
@@ -105,7 +108,7 @@ class WarrantyExtensionController extends Controller
                 }
                 
                 $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
-                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0' title='EDIT' >View</a>";
+                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0'>View</a>";
                 
                 $srnumber++;
                 $data[] = $nestedData;
@@ -151,6 +154,7 @@ class WarrantyExtensionController extends Controller
                              ->offset($start)
                              ->limit($limit)
                              ->groupBy('warranty_extension.unique_key')
+                             //->distinct('warranty_extension.unique_key')
                              ->orderBy($order,$dir)
                              ->get();
 
@@ -164,6 +168,7 @@ class WarrantyExtensionController extends Controller
                                 ->orWhere('unique_key', 'LIKE',"%{$search}%")
                                 ->offset($start)
                                 ->limit($limit)
+                                //->distinct('warranty_extension.unique_key')
                                 ->groupBy('warranty_extension.unique_key')
                                 ->orderBy($order,$dir)
                                 ->get();
@@ -172,6 +177,7 @@ class WarrantyExtensionController extends Controller
                                 ->whereIn('warranty_extension.status',['0','1','2'])
                                 ->where('users.name', 'LIKE',"%{$search}%")
                                 ->orWhere('unique_key', 'LIKE',"%{$search}%")
+                                //->distinct('warranty_extension.unique_key')
                                 ->groupBy('warranty_extension.unique_key')
                                 ->count();
             }

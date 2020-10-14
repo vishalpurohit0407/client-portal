@@ -46,6 +46,7 @@ class WarrantyExtensionController extends Controller
                          ->offset($start)
                          ->limit($limit)
                          ->groupBy('unique_key')
+                         //->distinct('unique_key')
                          ->orderBy($order,'asc')
                          ->get();
         }
@@ -56,12 +57,14 @@ class WarrantyExtensionController extends Controller
                             ->where('unique_key', 'LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
+                            //->distinct('unique_key')
                             ->groupBy('unique_key')
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = WarrantyExtension::where('user_id', Auth::user()->id)
                             ->where('unique_key', 'LIKE',"%{$search}%")
+                            //->distinct('unique_key')
                             ->groupBy('unique_key')
                             ->count();
         }
@@ -71,11 +74,8 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                if($extension->status == '3' || $extension->status == '4'){
-                    $show =  route('user.warranty_extension.history',$extension->unique_key);
-                }else {
-                    $show =  route('user.warranty_extension.edit',$extension->id);
-                }
+                $show =  route('user.warranty_extension.history',$extension->unique_key);
+                
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;
@@ -139,6 +139,7 @@ class WarrantyExtensionController extends Controller
                            ->whereIn('warranty_extension.status',['0','1','2'])
                            ->offset($start)
                            ->limit($limit)
+                           //->distinct('unique_key')
                            ->groupBy('unique_key')
                            ->orderBy($order,$dir)
                            ->get();
@@ -151,6 +152,7 @@ class WarrantyExtensionController extends Controller
                               ->where('unique_key', 'LIKE',"%{$search}%")
                               ->offset($start)
                               ->limit($limit)
+                              //->distinct('unique_key')
                               ->groupBy('unique_key')
                               ->orderBy($order,$dir)
                               ->get();
@@ -158,6 +160,7 @@ class WarrantyExtensionController extends Controller
               $totalFiltered = WarrantyExtension::where('user_id', Auth::user()->id)
                               ->whereIn('warranty_extension.status',['0','1','2'])
                               ->where('unique_key', 'LIKE',"%{$search}%")
+                              //->distinct('unique_key')
                               ->groupBy('unique_key')
                               ->count();
           }
@@ -335,7 +338,7 @@ class WarrantyExtensionController extends Controller
             if($fileAdded){
                 $guideData = WarrantyExtension::find($id);
                 Storage::disk('public')->delete($guideData->picture_by_user);
-                $media = WarrantyExtension::where('id',$id)->update(['picture_by_user' => $path]);
+                $media = WarrantyExtension::where('id',$id)->update(['picture_by_user' => $path,'vid_link_url'=>NULL,'vid_link_type'=>NULL]);
                 return Response::json(['status' => true, 'message' => 'Media uploaded.']);
             }
             return Response::json(['status' => false, 'message' => 'Something went wrong.']);
