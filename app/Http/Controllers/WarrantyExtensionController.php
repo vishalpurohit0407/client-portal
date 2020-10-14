@@ -74,11 +74,8 @@ class WarrantyExtensionController extends Controller
         {   $srnumber = 1;
             foreach ($extensions as $extension)
             {
-                if($extension->status == '3' || $extension->status == '4'){
-                    $show =  route('user.warranty_extension.history',$extension->unique_key);
-                }else {
-                    $show =  route('user.warranty_extension.edit',$extension->id);
-                }
+                $show =  route('user.warranty_extension.history',$extension->unique_key);
+                
                 $token =  $request->session()->token();
 
                 $nestedData['id'] = $extension->id;

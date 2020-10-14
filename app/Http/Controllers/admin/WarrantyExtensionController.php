@@ -108,7 +108,7 @@ class WarrantyExtensionController extends Controller
                 }
                 
                 $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
-                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0' title='EDIT' >View</a>";
+                $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0'>View</a>";
                 
                 $srnumber++;
                 $data[] = $nestedData;

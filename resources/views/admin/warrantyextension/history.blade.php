@@ -63,7 +63,11 @@
                                     </div>
                                     <div>
                                         <div class="custom-control custom-checkbox custom-checkbox-success">
+                                          @if($warranty->status == 3 || $warranty->status == 4)
                                             <a href="{{route('admin.warrantyextension.show',$warranty->id)}}" class="btn btn-info">Details</a>
+                                          @else
+                                            <a href="{{route('admin.warrantyextension.edit',$warranty->id)}}" class="btn btn-info">Edit</a>
+                                          @endif
                                         </div>
                                     </div>
                                 </div>
