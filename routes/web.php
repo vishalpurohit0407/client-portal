@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
 
 	// Self Diagnosis Module Routes
+	Route::get('/guide/flowchart/{flowchart_id}','GuideController@flowChart')->name('user.selfdiagnosis.flowchart');
 	Route::get('/guide/pdf/{id}','GuideController@createPDF')->name('selfdiagnosis.pdf.export');
 	Route::get('/guide/complete/{id}','GuideController@completedGuide')->name('user.complete.guide');
 	Route::get('/guide/search','GuideController@search')->name('user.selfdiagnosis.search');
