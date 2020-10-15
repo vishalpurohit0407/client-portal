@@ -46,5 +46,8 @@ class Guide extends Authenticatable
     {
         return $this->hasMany('App\GuideSteps', 'guide_id','id')->orderBy('step_no', 'asc');
     }
-
+    public function guide_flowchart()
+    {
+        return $this->hasOne('App\GuideFlowchart', 'guide_id','id');
+    }
 }

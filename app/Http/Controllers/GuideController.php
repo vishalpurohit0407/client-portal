@@ -7,6 +7,7 @@ use App\Category;
 use Illuminate\Http\Request;
 use Auth;
 use App\GuideCompletion;
+use App\Flowchart;
 use PDF;
 use Str;
 use Dompdf\Dompdf;
@@ -102,6 +103,15 @@ class GuideController extends Controller
         // $dompdf->setPaper('A4', 'landscape'); 
         // $dompdf->render(); 
         // $dompdf->stream("codexworld", array("Attachment" => 1));
+    }
+
+    public function flowChart(Request $request,$flowchart_id)
+    {
+        $flowchart = Flowchart::where('id',$flowchart_id)->with('flowchart_node')->first();
+        if (!$flowchart) {
+            return abort(404);
+        }
+        return view('selfdiagnosis.flowchart',array('title'=>'Flow Chart','flowchart'=>$flowchart));
     }
 
     public function create()

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Uuid;
 use Storage;
 
-class Flowchart extends Model
+class GuideFlowchart extends Model
 {
     public static function boot()
     {
@@ -16,7 +16,7 @@ class Flowchart extends Model
         });
     }
 
-	protected $table = 'flowchart';
+	protected $table = 'guide_flowchart';
     protected $keyType = 'string';
 
     public $incrementing = false;
@@ -27,12 +27,6 @@ class Flowchart extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'description', 'status'
+        'guide_id', 'flowchart_id'
     ];
-
-
-    public function flowchart_node()
-    {
-        return $this->hasMany('App\Flowchartnode', 'flowchart_id','id')->orderBy('created_at','asc');
-    }
 }
