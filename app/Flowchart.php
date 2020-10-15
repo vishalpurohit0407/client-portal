@@ -32,6 +32,6 @@ class Flowchart extends Model
 
     public function flowchart_node()
     {
-        return $this->hasMany('App\Flowchartnode', 'flowchart_id','id');
+        return $this->hasMany('App\Flowchartnode', 'flowchart_id','id')->orderBy('created_at','asc');
     }
 }

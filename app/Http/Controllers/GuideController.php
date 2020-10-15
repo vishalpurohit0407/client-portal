@@ -111,17 +111,7 @@ class GuideController extends Controller
         if (!$flowchart) {
             return abort(404);
         }
-        $data = [];
-        foreach ($flowchart->flowchart_node as $node)
-        {
-            $data[] = [
-                'label' => $node->label,
-                'type' => $node->type,
-                'text' => $node->text,
-            ];
-        }
-        // echo "<pre>";print_r($data);exit();
-        return view('selfdiagnosis.flowchart',array('title'=>'Flow Chart','flowchart'=>json_encode($data)));
+        return view('selfdiagnosis.flowchart',array('title'=>'Flow Chart','flowchart'=>$flowchart));
     }
 
     public function create()
