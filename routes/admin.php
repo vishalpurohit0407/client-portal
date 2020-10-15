@@ -125,6 +125,8 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::resource('/flowchart', 'admin\FlowchartController', [
 	    'names' => [
 	        'index' => 'admin.flowchart.list',
+	        'edit' => 'admin.flowchart.edit',
+	        'update' => 'admin.flowchart.update',
 	    ]
 	]);
 

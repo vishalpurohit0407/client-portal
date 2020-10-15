@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\CmsPage;
+use App\Flowchart;
+use App\Flowchartnode;
 use Illuminate\Http\Request;
 use Response;
 use Str;
@@ -153,12 +154,15 @@ class FlowchartController extends Controller
      * @param  \App\CmsPage  $cmsPage
      * @return \Illuminate\Http\Response
      */
-    public function edit(CmsPage $cmsPage)
+    public function edit(Flowchart $flowchart)
     {
-        if (!$cmsPage) {
+        if (!$flowchart) {
           return abort(404);
         }
-        return view('admin.cms_pages.edit',array('title' => 'Edit CMS Page','page'=>$cmsPage));
+
+        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label')->get();
+        
+        return view('admin.flowchart.edit',array('title' => 'Edit Flowchart','flowchart'=>$flowchart, 'childNode' => $childNode));
     }
 
     /**
@@ -168,32 +172,85 @@ class FlowchartController extends Controller
      * @param  \App\CmsPage  $cmsPage
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CmsPage $cmsPage)
+    public function update(Request $request, Flowchart $flowchart)
     {
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required', 
-        ]);
+        //dd($request->all());
+
+        if (!$flowchart) {
+            return abort(404);
+        }
+
+        $validationArr = [
+            'lable' => 'required',
+            'type' => 'required', 
+            'text' => 'required'
+        ];
+
+        if($request->type == 'decision'){
+            $validationArr['dicision_yes'] = 'required';
+            $validationArr['dicision_no'] = 'required';
+        }
+
+        if($request->type == 'process'){
+            $validationArr['process_next'] = 'required';
+        }
+
+        if(isset($request->add_link) && $request->type != 'decision'){
+            $validationArr['link_text'] = 'required';
+            $validationArr['link_url'] = 'required|url';
+        }
+
+        if(isset($request->add_tip) && $request->type != 'decision'){
+            $validationArr['tip_title'] = 'required';
+            $validationArr['tip_text'] = 'required';
+        }
+
+        $request->validate($validationArr);
+
+
         try {
-            if (!$cmsPage) {
-              return abort(404);
+
+            $flowchartnodeArr = array();    
+            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
+            $flowchartnodeArr['label'] = $request->lable;
+            $flowchartnodeArr['type'] = $request->type;
+            $flowchartnodeArr['text'] = $request->text;
+
+            if($request->type == 'decision'){
+                $flowchartnodeArr['yes'] = $request->dicision_yes;
+                $flowchartnodeArr['no'] = $request->dicision_no;
             }
-            $cmsPage->title = $request->title;
-            $cmsPage->content = $request->content;
-            //$cmsPage->url_slug = Str::slug($request->title, '-');
-            if ($request->status != "") {
-                $cmsPage->status = '1';
-            }else{
-                $cmsPage->status = "0";
+
+            if($request->type == 'process'){
+                $flowchartnodeArr['next'] = $request->process_next;
             }
-            if($cmsPage->save())
+
+            if(isset($request->add_link) && $request->type != 'decision'){
+                $flowchartnodeArr['link_text'] = $request->link_text;
+                $flowchartnodeArr['link_url'] = $request->link_url;
+                $flowchartnodeArr['link_target'] = $request->link_target;
+            }
+
+            if(isset($request->add_tip) && $request->type != 'decision'){
+                $flowchartnodeArr['tips_title'] = $request->tip_title;
+                $flowchartnodeArr['tips_text'] = $request->tip_text;
+            }
+            
+            if(isset($request->change_orient) && $request->type == 'decision'){
+                $flowchartnodeArr['orient_yes'] = $request->orient_yes;
+                $flowchartnodeArr['orient_no'] = $request->orient_no;
+            }
+
+            
+            if(Flowchartnode::create($flowchartnodeArr))
             {
-                $request->session()->flash('alert-success', 'CMS Page updated successfuly.');  
+                $request->session()->flash('alert-success', 'Flowchart node added successfuly.');  
             }
-            return redirect(route('admin.cms.page.list'));
+
+            return redirect(route('admin.flowchart.edit',['id' => $flowchart->id]));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('admin.cms.page.list'));
+            return redirect(route('admin.flowchart.edit',['id' => $flowchart->id]));
         }
     }
 
