@@ -160,7 +160,7 @@ class FlowchartController extends Controller
           return abort(404);
         }
 
-        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label')->get();
+        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->get();
         
         return view('admin.flowchart.edit',array('title' => 'Edit Flowchart','flowchart'=>$flowchart, 'childNode' => $childNode));
     }
@@ -241,13 +241,13 @@ class FlowchartController extends Controller
                 $flowchartnodeArr['orient_no'] = $request->orient_no;
             }
 
-            
+            //dd($flowchartnodeArr);
             if(Flowchartnode::create($flowchartnodeArr))
             {
                 $request->session()->flash('alert-success', 'Flowchart node added successfuly.');  
             }
 
-            return redirect(route('admin.flowchart.edit',['id' => $flowchart->id]));
+            return redirect(route('admin.flowchart.edit', $flowchart->id));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('admin.flowchart.edit',['id' => $flowchart->id]));

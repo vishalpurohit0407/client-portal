@@ -26,8 +26,10 @@
     </div>
     <!-- Page content -->
     <div class="container-fluid mt--6">
+        {{ Session::get('alert-success') }}
         @foreach (['danger', 'warning', 'success', 'info'] as $msg)
             @if(Session::has('alert-' . $msg))
+                <div class="alert alert-custom alert-{{ $msg }} alert-dismissible fade show mb-2" role="alert">                           
                     <div class="alert-text">{{ Session::get('alert-' . $msg) }}</div>
                     <div class="alert-close">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -219,7 +221,7 @@
                                                 <div class="col-sm-3 col-md-3">
                                                     <div class="form-group @if($errors->has('tip_title')) has-danger @endif">
                                                         <label class="form-control-label" for="example4cols2Input">Title</label>
-                                                        <input type="text" class="form-control @if($errors->has('tip_title')) is-invalid @endif" id="tip_title" name="tip_title" placeholder="Tip Title" value="{{old('link_url')}}">
+                                                        <input type="text" class="form-control @if($errors->has('tip_title')) is-invalid @endif" id="tip_title" name="tip_title" placeholder="Tip Title" value="{{old('tip_title')}}">
                                                         @if($errors->has('tip_title'))
                                                             <span class="form-text text-danger">{{$errors->first('tip_title')}}</span>
                                                         @endif
@@ -228,7 +230,7 @@
                                                 <div class="col-sm-3 col-md-3">
                                                     <div class="form-group @if($errors->has('tip_text')) has-danger @endif">
                                                         <label class="form-control-label" for="tip_text">Text</label>
-                                                        <input type="text" class="form-control @if($errors->has('tip_text')) is-invalid @endif" id="tip_text" name="tip_text" placeholder="Tip Text" value="{{old('link_url')}}">
+                                                        <input type="text" class="form-control @if($errors->has('tip_text')) is-invalid @endif" id="tip_text" name="tip_text" placeholder="Tip Text" value="{{old('tip_text')}}">
                                                         @if($errors->has('tip_text'))
                                                             <span class="form-text text-danger">{{$errors->first('tip_text')}}</span>
                                                         @endif
@@ -281,7 +283,7 @@
                               <div class="card-header border-0">
                                 <div class="row">
                                   <div class="col-6">
-                                    <h3 class="mb-0">Step Listing</h3>
+                                    <h3 class="mb-0">Node Listing</h3>
                                   </div>
                                   
                                 </div>
@@ -291,9 +293,10 @@
                                 <table class="table align-items-center table-flush">
                                   <thead class="thead-light">
                                     <tr>
-                                      <th>Author</th>
+                                      <th>Lable</th>
+                                      <th>Type</th>
+                                      <th>Text</th>
                                       <th>Created at</th>
-                                      <th>Product</th>
                                       <th></th>
                                     </tr>
                                   </thead>
@@ -318,86 +321,7 @@
                                         </a>
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td class="table-user">
-                                        
-                                        <b>Alex Smith</b>
-                                      </td>
-                                      <td>
-                                        <span class="text-muted">08/09/2018</span>
-                                      </td>
-                                      <td>
-                                        <a href="#!" class="font-weight-bold">Argon Design System</a>
-                                      </td>
-                                      <td class="table-actions">
-                                        <a href="#!" class="table-action" data-toggle="tooltip" data-original-title="Edit product">
-                                          <i class="fas fa-user-edit"></i>
-                                        </a>
-                                        <a href="#!" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete product">
-                                          <i class="fas fa-trash"></i>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td class="table-user">
-                                       
-                                        <b>Samantha Ivy</b>
-                                      </td>
-                                      <td>
-                                        <span class="text-muted">30/08/2018</span>
-                                      </td>
-                                      <td>
-                                        <a href="#!" class="font-weight-bold">Black Dashboard</a>
-                                      </td>
-                                      <td class="table-actions">
-                                        <a href="#!" class="table-action" data-toggle="tooltip" data-original-title="Edit product">
-                                          <i class="fas fa-user-edit"></i>
-                                        </a>
-                                        <a href="#!" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete product">
-                                          <i class="fas fa-trash"></i>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td class="table-user">
-                                        
-                                        <b>John Michael</b>
-                                      </td>
-                                      <td>
-                                        <span class="text-muted">10/09/2018</span>
-                                      </td>
-                                      <td>
-                                        <a href="#!" class="font-weight-bold">Argon Dashboard PRO</a>
-                                      </td>
-                                      <td class="table-actions">
-                                        <a href="#!" class="table-action" data-toggle="tooltip" data-original-title="Edit product">
-                                          <i class="fas fa-user-edit"></i>
-                                        </a>
-                                        <a href="#!" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete product">
-                                          <i class="fas fa-trash"></i>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td class="table-user">
-                                        
-                                        <b>John Michael</b>
-                                      </td>
-                                      <td>
-                                        <span class="text-muted">10/09/2018</span>
-                                      </td>
-                                      <td>
-                                        <a href="#!" class="font-weight-bold">Argon Dashboard PRO</a>
-                                      </td>
-                                      <td class="table-actions">
-                                        <a href="#!" class="table-action" data-toggle="tooltip" data-original-title="Edit product">
-                                          <i class="fas fa-user-edit"></i>
-                                        </a>
-                                        <a href="#!" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete product">
-                                          <i class="fas fa-trash"></i>
-                                        </a>
-                                      </td>
-                                    </tr>
+                                    
                                   </tbody>
                                 </table>
                               </div>
