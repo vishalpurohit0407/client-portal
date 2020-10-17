@@ -119,7 +119,6 @@
     });
 function deleteConfirm(event){
   var id = $(event).attr('id');
-  console.log(id);
   swal({
       title: "Are you sure?",
       text: "You won't be able to revert this!",

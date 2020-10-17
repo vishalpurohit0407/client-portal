@@ -7,6 +7,8 @@ use App\Flowchartnode;
 use Illuminate\Http\Request;
 use Response;
 use Str;
+use App\Guide;
+use App\GuideFlowchart;
 
 class FlowchartController extends Controller
 {
@@ -17,7 +19,7 @@ class FlowchartController extends Controller
      */
     public function index()
     {
-        return view('admin.flowchart.list',array('title' => 'Flowchart'));
+        return view('admin.flowchart.list',array('title' => 'Flowchart List'));
     }
 
     public function listdata(Request $request){
@@ -25,12 +27,11 @@ class FlowchartController extends Controller
       $columns = array( 
                         0 => 'id', 
                         1 => 'title',
-                        2 => 'url_slug',
-                        3 => 'status',
-                        4 => 'created_at',
+                        2 => 'status',
+                        3 => 'created_at',
                     );
   
-        $totalData = CmsPage::count();
+        $totalData = Flowchart::where('status','!=','3')->count();
             
         $totalFiltered = $totalData; 
 
@@ -41,47 +42,58 @@ class FlowchartController extends Controller
             
         if(empty($request->input('search.value')))
         {            
-            $posts = CmsPage::offset($start)
+            $flowchart = Flowchart::where('status','!=','3')
+            			 ->offset($start)
                          ->limit($limit)
                          ->orderBy($order,$dir)
                          ->get();
         }
         else {
             $search = $request->input('search.value'); 
-            $posts =  CmsPage::where('url_slug','LIKE',"%{$search}%")
-                            ->orWhere('title', 'LIKE',"%{$search}%")
+            $flowchart =  Flowchart::where('status','!=','3')
+            				->where(function ($query) use ($search){
+                                $query->orWhere('description','LIKE',"%{$search}%")
+                            		  ->orWhere('title', 'LIKE',"%{$search}%");
+                            })
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalFiltered = CmsPage::where('url_slug','LIKE',"%{$search}%")
-                            ->orWhere('title', 'LIKE',"%{$search}%")
+            $totalFiltered = Flowchart::where('status','!=','3')
+            				->where(function ($query) use ($search){
+                                $query->orWhere('description','LIKE',"%{$search}%")
+                            		  ->orWhere('title', 'LIKE',"%{$search}%");
+                            })
                             ->count();
         }
 
         $data = array();
-        if(!empty($posts))
+        if(!empty($flowchart))
         {   $srnumber = 1;
-            foreach ($posts as $post)
+            foreach ($flowchart as $chart)
             {
-                $view =  route('cms.pagepreview',$post->url_slug);
-                $edit =  route('admin.cms.page.edit',$post->id);
+                $view =  'javacript:void(0);';
+                $edit =  route('admin.flowchart.edit',$chart->id);
+                $delete =  route('admin.flowchart.destroy',$chart->id);
                 $token =  $request->session()->token();
 
-                $nestedData['id'] = $post->id;
+                $nestedData['id'] = $chart->id;
                 $nestedData['srnumber'] = $srnumber;
-                $nestedData['title'] = $post->title;
-                $nestedData['url_slug'] = $post->url_slug;
-                if($post->status == '0'){
-                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Inactive</span>';
-                }elseif($post->status == '1'){ 
+                $nestedData['title'] = $chart->title;
+                if($chart->status == '0'){
+                  $nestedData['status'] = '<span class="badge badge-pill badge-info">Draft</span>';
+                }elseif($chart->status == '1'){ 
                   $nestedData['status'] = '<span class="badge badge-pill badge-success">Active</span>';
+                }elseif($chart->status == '2'){ 
+                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Inactive</span>';
+                }elseif($chart->status == '3'){ 
+                  $nestedData['status'] = '<span class="badge badge-pill badge-danger">Deleted</span>';
                 };
-                $nestedData['created_at'] = date('d-M-Y',strtotime($post->created_at));
+                $nestedData['created_at'] = date('d-M-Y',strtotime($chart->created_at));
                 $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-primary btn-sm mr-0' title='EDIT' >Edit</a>
-                                          &emsp;<a href='{$view}' target='_blank' class='btn btn-info btn-sm mr-0' title='VIEW' >View</a>";
-                                          // &emsp;<form action='' method='POST' style='display: contents;' id='frm_{$post->id}'> <input type='hidden' name='_method' value='DELETE'> <input type='hidden' name='_token' value='{$token}'> <a type='submit' class='btn btn-danger btn-sm' style='color: white;' onclick='return deleteConfirm(this);' id='{$post->id}'>Delete</a></form>
+                                          &emsp;<a href='{$view}' class='btn btn-info btn-sm mr-0' title='VIEW' >View</a>
+                                          &emsp;<form action='{$delete}' method='POST' style='display: contents;' id='frm_{$chart->id}'> <input type='hidden' name='_method' value='DELETE'> <input type='hidden' name='_token' value='{$token}'> <a type='submit' class='btn btn-danger btn-sm' style='color: white;' onclick='return deleteConfirm(this);' id='{$chart->id}'>Delete</a></form>";
                 $srnumber++;
                 $data[] = $nestedData;
             }
@@ -105,7 +117,7 @@ class FlowchartController extends Controller
     public function create()
     {
         // return abort(404);
-        return view('admin.cms_pages.create',array('title' => 'CMS Page Create'));
+        // return view('admin.flowchart.create',array('title' => 'Flowchart Create'));
     }
 
     /**
@@ -116,34 +128,35 @@ class FlowchartController extends Controller
      */
     public function store(Request $request)
     {
+    	// echo "<pre>";print_r($request->all());exit();
         $request->validate([
             'title' => 'required',
-            'content' => 'required', 
+            'description' => 'required', 
         ]);
         try {
             $input = $request->all();
             $input['title'] = $request->title;
-            $input['content'] = $request->content;
-            $input['url_slug'] = Str::slug($request->title, '-');
-            $input['status'] =(isset($input['status']))?$input['status']:'0';
-            if(CmsPage::create($input))
+            $input['description'] = $request->description;
+            $input['status'] ='0';
+            $flowchart = Flowchart::create($input);
+            if($flowchart)
             {
-                $request->session()->flash('alert-success', 'CMS Page created successfuly.');  
+                $request->session()->flash('alert-success', 'Flowchart created successfuly.');  
             }
-            return redirect(route('admin.cms.page.list'));
+            return redirect(route('admin.flowchart.edit',$flowchart->id));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('admin.cms.page.list'));
+            return redirect(route('admin.flowchart.list'));
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\CmsPage  $cmsPage
+     * @param  \App\Flowchart  $flowchart
      * @return \Illuminate\Http\Response
      */
-    public function show(CmsPage $cmsPage)
+    public function show(Flowchart $flowchart)
     {
         //  
     }
@@ -151,7 +164,7 @@ class FlowchartController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CmsPage  $cmsPage
+     * @param  \App\Flowchart  $flowchart
      * @return \Illuminate\Http\Response
      */
     public function edit(Flowchart $flowchart)
@@ -162,118 +175,146 @@ class FlowchartController extends Controller
 
         $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->orderBy('created_at','desc')->get();
         
-        return view('admin.flowchart.edit',array('title' => 'Edit Flowchart','flowchart'=>$flowchart, 'childNode' => $childNode));
+        $maintenance = Guide::where('guide_type','maintenance')->get();
+        $self_diagnosis = Guide::where('guide_type','self-diagnosis')->get();
+        $guideflowchart_guideid = GuideFlowchart::where('flowchart_id',$flowchart->id)->pluck('guide_id')->toArray();
+        return view('admin.flowchart.edit',array('title' => 'Edit Flowchart','flowchart'=>$flowchart, 'childNode' => $childNode,'self_diagnosis'=>$self_diagnosis,'maintenance'=>$maintenance, 'guide_id_array'=>$guideflowchart_guideid));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CmsPage  $cmsPage
+     * @param  \App\Flowchart  $flowchart
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Flowchart $flowchart)
     {
         //dd($request->all());
-
+        // echo "<pre>";print_r($request->all());exit();
         if (!$flowchart) {
             return abort(404);
         }
-
-        $validationArr = [
-            'lable' => 'required',
-            'type' => 'required', 
-            'text' => 'required'
-        ];
-
-        if($request->type == 'decision'){
-            $validationArr['dicision_yes'] = 'required';
-            $validationArr['dicision_no'] = 'required';
+        if ($request->flag != 'flowchart_details' && $request->flag != 'flowchart_addnode') {
+            return abort(404);
         }
-
-        if($request->type == 'process'){
-            $validationArr['process_next'] = 'required';
-        }
-
-        if(isset($request->add_link) && $request->type != 'decision'){
-            $validationArr['link_text'] = 'required';
-            $validationArr['link_url'] = 'required|url';
-        }
-
-        if(isset($request->add_tip) && $request->type != 'decision'){
-            $validationArr['tip_title'] = 'required';
-            $validationArr['tip_text'] = 'required';
-        }
-
-        $request->validate($validationArr);
-
 
         try {
+        	if ($request->flag == 'flowchart_details') {
+        		$request->validate([
+			        'title' => 'required|max:255',
+			    ]);   
+	            $flowchart['title'] = $request->title;
+	            $flowchart['description'] = $request->description;
+	            if ($request->guide_id) {
+	            	$deleteguid = GuideFlowchart::where('flowchart_id',$flowchart->id)->whereNotIn('guide_id',$request->guide_id)->delete();
+	            	// echo "<pre>";print_r($deleteguid);exit();
+	            	foreach ($request->guide_id as $guidekey => $guide_id) {
+	            		$guideflowchart = GuideFlowchart::updateOrCreate([
+	            			'guide_id'=>$guide_id,
+	            			'flowchart_id'=>$flowchart->id,
+	            		]);
+	            	}
+	            }
+	            if($flowchart->save())
+	            {
+	                $request->session()->flash('alert-success', 'Flowchart details updated successfuly.');  
+	            }
 
-            $flowchartnodeArr = array();    
-            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
-            $flowchartnodeArr['label'] = $request->lable;
-            $flowchartnodeArr['type'] = $request->type;
-            $flowchartnodeArr['text'] = $request->text;
+        	}
 
-            if($request->type == 'decision'){
-                $flowchartnodeArr['yes'] = $request->dicision_yes;
-                $flowchartnodeArr['no'] = $request->dicision_no;
-            }
+        	if ($request->flag == 'flowchart_addnode') {
+        		$validationArr = [
+		            'lable' => 'required',
+		            'type' => 'required', 
+		            'text' => 'required'
+		        ];
 
-            if($request->type == 'process'){
-                $flowchartnodeArr['next'] = $request->process_next;
-            }
+		        if($request->type == 'decision'){
+		            $validationArr['dicision_yes'] = 'required';
+		            $validationArr['dicision_no'] = 'required';
+		        }
 
-            if(isset($request->add_link) && $request->type != 'decision'){
-                $flowchartnodeArr['link_text'] = $request->link_text;
-                $flowchartnodeArr['link_url'] = $request->link_url;
-                $flowchartnodeArr['link_target'] = $request->link_target;
-            }
+		        if($request->type == 'process'){
+		            $validationArr['process_next'] = 'required';
+		        }
 
-            if(isset($request->add_tip) && $request->type != 'decision'){
-                $flowchartnodeArr['tips_title'] = $request->tip_title;
-                $flowchartnodeArr['tips_text'] = $request->tip_text;
-            }
-            
-            if(isset($request->change_orient) && $request->type == 'decision'){
-                $flowchartnodeArr['orient_yes'] = $request->orient_yes;
-                $flowchartnodeArr['orient_no'] = $request->orient_no;
-            }
+		        if(isset($request->add_link) && $request->type != 'decision'){
+		            $validationArr['link_text'] = 'required';
+		            $validationArr['link_url'] = 'required|url';
+		        }
 
-            //dd($flowchartnodeArr);
-            if(Flowchartnode::create($flowchartnodeArr))
-            {
-                $request->session()->flash('alert-success', 'Flowchart node added successfuly.');  
-            }
+		        if(isset($request->add_tip) && $request->type != 'decision'){
+		            $validationArr['tip_title'] = 'required';
+		            $validationArr['tip_text'] = 'required';
+		        }
+		        $request->validate($validationArr);
+
+        		$flowchartnodeArr = array();    
+	            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
+	            $flowchartnodeArr['label'] = $request->lable;
+	            $flowchartnodeArr['type'] = $request->type;
+	            $flowchartnodeArr['text'] = $request->text;
+
+	            if($request->type == 'decision'){
+	                $flowchartnodeArr['yes'] = $request->dicision_yes;
+	                $flowchartnodeArr['no'] = $request->dicision_no;
+	            }
+
+	            if($request->type == 'process'){
+	                $flowchartnodeArr['next'] = $request->process_next;
+	            }
+
+	            if(isset($request->add_link) && $request->type != 'decision'){
+	                $flowchartnodeArr['link_text'] = $request->link_text;
+	                $flowchartnodeArr['link_url'] = $request->link_url;
+	                $flowchartnodeArr['link_target'] = $request->link_target;
+	            }
+
+	            if(isset($request->add_tip) && $request->type != 'decision'){
+	                $flowchartnodeArr['tips_title'] = $request->tip_title;
+	                $flowchartnodeArr['tips_text'] = $request->tip_text;
+	            }
+	            
+	            if(isset($request->change_orient) && $request->type == 'decision'){
+	                $flowchartnodeArr['orient_yes'] = $request->orient_yes;
+	                $flowchartnodeArr['orient_no'] = $request->orient_no;
+	            }
+
+	            if(Flowchartnode::create($flowchartnodeArr))
+	            {
+	                $request->session()->flash('alert-success', 'Flowchart node added successfuly.');  
+	            }
+
+        	}
 
             return redirect(route('admin.flowchart.edit', $flowchart->id));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('admin.flowchart.edit',['id' => $flowchart->id]));
+            return redirect(route('admin.flowchart.edit',$flowchart->id));
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CmsPage  $cmsPage
+     * @param  \App\Flowchart  $flowchart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CmsPage $cmsPage)
+    public function destroy(Request $request, Flowchart $flowchart)
     {
         try {
-            if(!$cmsPage){
+            if(!$flowchart){
                 return abort(404) ;
             }
-            $cmsPage->status = '0';
-            if ($cmsPage->save()) {
-                $request->session()->flash('alert-success', 'CMS Page deleted successfuly.');
+            $flowchart->status = '3';
+            if ($flowchart->save()) {
+                $request->session()->flash('alert-success', 'Flowchart deleted successfuly.');
             }
-            return redirect(route('admin.cms.page.list'));
+            return redirect(route('admin.flowchart.list'));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('admin.cms.page.list'));
+            return redirect(route('admin.flowchart.list'));
         }
     }
 

@@ -122,12 +122,17 @@ Route::group(['middleware' => ['admin']],function(){
 
 
 	//Flowchart
+
 	Route::delete('/flowchart/remove-node/{id}','admin\FlowchartController@removeNode')->name('admin.flowchart.remove.node');
+	Route::post('/flowchart/list/data','admin\FlowchartController@listdata')->name('admin.flowchart.listdata');
 	Route::resource('/flowchart', 'admin\FlowchartController', [
 	    'names' => [
 	        'index' => 'admin.flowchart.list',
+	        'create' => 'admin.flowchart.create',
+	        'store' => 'admin.flowchart.store',
 	        'edit' => 'admin.flowchart.edit',
 	        'update' => 'admin.flowchart.update',
+	        'destroy' => 'admin.flowchart.destroy',
 	    ]
 	]);
 
