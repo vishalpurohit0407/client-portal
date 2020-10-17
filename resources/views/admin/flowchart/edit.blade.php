@@ -3,6 +3,11 @@
 
 @section('pagewise_css')
 <link href="{{asset('assets/vendor/flowsvg/jquerysctipttop.css')}}" rel="stylesheet" type="text/css">
+<style type="text/css">
+    .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        color: #fcfdfe !important;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -28,6 +33,7 @@
     <div class="container-fluid mt--6">
         @foreach (['danger', 'warning', 'success', 'info'] as $msg)
             @if(Session::has('alert-' . $msg))
+                <div class="alert alert-custom alert-{{ $msg }} alert-dismissible fade show mb-2" role="alert">           
                     <div class="alert-text">{{ Session::get('alert-' . $msg) }}</div>
                     <div class="alert-close">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -52,9 +58,79 @@
 
                     <div class="table-responsive py-4">
 
-                        <form class="form" action="{{ route('admin.flowchart.update',$flowchart->id) }}" method="post" enctype="multipart/form-data">
+                        <form class="form" name="flowchart_details" id="flowchart_details" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_details']) }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
-                            {{ method_field('PUT') }}    
+                            {{ method_field('PUT') }} 
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-header border-0">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h3 class="mb-0">Flowchart Details</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group @if($errors->has('title')) has-danger @endif">
+                                                    <label class="form-control-label" for="title">Text</label>
+                                                    <input type="text" class="form-control @if($errors->has('title')) is-invalid @endif" id="title" name="title" placeholder="Title" value="{{old('title',$flowchart->title)}}">
+                                                    @if($errors->has('title'))
+                                                        <span class="form-text text-danger">{{ $errors->first('title') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group @if($errors->has('description')) has-danger @endif">
+                                                    <label class="form-control-label" for="description">Description</label>
+                                                    <textarea rows="5" class="form-control @if($errors->has('description')) is-invalid @endif" id="description" name="description" placeholder="Description">{{old('description',$flowchart->description)}}</textarea> 
+                                                    @if($errors->has('description'))
+                                                        <span class="form-text text-danger">{{ $errors->first('description') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-center">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="guide_id[]">Self Diagnosis</label>
+                                                    <select class="form-control" name="guide_id[]" data-toggle="select" multiple data-placeholder="Select Self Diagnosis" id="self_diagnosis">
+                                                        @foreach($self_diagnosis as $diagnosis)
+                                                            <option value="{{$diagnosis->id}}" {{ $diagnosis->id == in_array($diagnosis->id, $guide_id_array) ? 'selected' : '' }}>{{$diagnosis->main_title}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @if($errors->has('guide_id[]'))
+                                                        <span class="form-text text-danger">{{ $errors->first('guide_id[]') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6 col-md-6" >
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="maintenance">Maintenance</label>
+                                                    <select class="form-control" id="maintenance" name="guide_id[]" data-toggle="select" multiple data-placeholder="Select Maintenance">
+                                                        @foreach($maintenance as $mainten)
+                                                            <option class="text-white" value="{{$mainten->id}}" {{ $mainten->id == in_array($mainten->id, $guide_id_array) ? 'selected' : '' }}>{{$mainten->main_title}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                     @if($errors->has('guide_id[]'))
+                                                        <span class="form-text text-danger">{{ $errors->first('guide_id[]') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="hr-dotted">
+                                        <input type="submit" form="flowchart_details" class="btn btn-info" name="submit">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <hr>
+
+                        <form class="form" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_addnode']) }}" method="post" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            {{ method_field('PUT') }}   
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-header border-0">
