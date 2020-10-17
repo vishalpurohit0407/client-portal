@@ -173,7 +173,7 @@ class FlowchartController extends Controller
           return abort(404);
         }
 
-        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label')->get();
+        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->get();
         $maintenance = Guide::where('guide_type','maintenance')->get();
         $self_diagnosis = Guide::where('guide_type','self-diagnosis')->get();
         $guideflowchart_guideid = GuideFlowchart::where('flowchart_id',$flowchart->id)->pluck('guide_id')->toArray();
@@ -286,8 +286,8 @@ class FlowchartController extends Controller
 	            }
 
         	}
-            
-            return redirect(route('admin.flowchart.edit',$flowchart->id));
+
+            return redirect(route('admin.flowchart.edit', $flowchart->id));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('admin.flowchart.edit',$flowchart->id));
