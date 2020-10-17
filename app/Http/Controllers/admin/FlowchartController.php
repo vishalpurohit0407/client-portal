@@ -73,7 +73,7 @@ class FlowchartController extends Controller
         {   $srnumber = 1;
             foreach ($flowchart as $chart)
             {
-                $view =  'javacript:void(0);';
+                $view =  route('admin.flowchart.show',$chart->id);
                 $edit =  route('admin.flowchart.edit',$chart->id);
                 $delete =  route('admin.flowchart.destroy',$chart->id);
                 $token =  $request->session()->token();
@@ -158,7 +158,7 @@ class FlowchartController extends Controller
      */
     public function show(Flowchart $flowchart)
     {
-        //  
+       	return view('admin.flowchart.preview',array('title' => 'Flowchart Preview','flowchart'=>$flowchart));
     }
 
     /**
@@ -175,8 +175,8 @@ class FlowchartController extends Controller
 
         $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->orderBy('created_at','desc')->get();
         
-        $maintenance = Guide::where('guide_type','maintenance')->get();
-        $self_diagnosis = Guide::where('guide_type','self-diagnosis')->get();
+        $maintenance = Guide::where('guide_type','maintenance')->where('status','1')->get();
+        $self_diagnosis = Guide::where('guide_type','self-diagnosis')->where('status','1')->get();
         $guideflowchart_guideid = GuideFlowchart::where('flowchart_id',$flowchart->id)->pluck('guide_id')->toArray();
         return view('admin.flowchart.edit',array('title' => 'Edit Flowchart','flowchart'=>$flowchart, 'childNode' => $childNode,'self_diagnosis'=>$self_diagnosis,'maintenance'=>$maintenance, 'guide_id_array'=>$guideflowchart_guideid));
     }
@@ -206,15 +206,22 @@ class FlowchartController extends Controller
 			    ]);   
 	            $flowchart['title'] = $request->title;
 	            $flowchart['description'] = $request->description;
+	            if ($request->flowchart_details_submit == 'Publish') {
+	            	$flowchart['status'] = '1';
+	            }else if($request->flowchart_details_submit == 'save as a draft'){
+	            	$flowchart['status'] = '0';
+	            }
+
 	            if ($request->guide_id) {
-	            	$deleteguid = GuideFlowchart::where('flowchart_id',$flowchart->id)->whereNotIn('guide_id',$request->guide_id)->delete();
-	            	// echo "<pre>";print_r($deleteguid);exit();
+	            	$guideflowid = GuideFlowchart::where('flowchart_id',$flowchart->id)->whereNotIn('guide_id',$request->guide_id)->delete();
 	            	foreach ($request->guide_id as $guidekey => $guide_id) {
 	            		$guideflowchart = GuideFlowchart::updateOrCreate([
 	            			'guide_id'=>$guide_id,
 	            			'flowchart_id'=>$flowchart->id,
 	            		]);
 	            	}
+	            }else{
+	            	GuideFlowchart::where('flowchart_id',$flowchart->id)->delete();
 	            }
 	            if($flowchart->save())
 	            {
@@ -287,8 +294,12 @@ class FlowchartController extends Controller
 	            }
 
         	}
-
-            return redirect(route('admin.flowchart.edit', $flowchart->id));
+        	if ($request->submit == 'Preview') {
+        		$redirect = [$flowchart->id,'#flowchart_preview'];
+        	}else{
+        		$redirect = $flowchart->id;
+        	}
+            return redirect(route('admin.flowchart.edit', $redirect));
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('admin.flowchart.edit',$flowchart->id));
@@ -332,9 +343,9 @@ class FlowchartController extends Controller
             }
             
             if ($node->delete()) {
-                Flowchartnode::where('yes',$id)->delete();
-                Flowchartnode::where('no',$id)->delete();
-                Flowchartnode::where('next',$id)->delete();
+                Flowchartnode::where('yes',$id)->update(['yes'=>NULL,]);
+                Flowchartnode::where('no',$id)->update(['no'=>NULL,]);
+                Flowchartnode::where('next',$id)->update(['next'=>NULL,]);
                 $request->session()->flash('alert-success', 'Flowchart node deleted successfuly.');
             }
             return redirect(route('admin.flowchart.edit', $flowchartId));

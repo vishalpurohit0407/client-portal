@@ -132,6 +132,7 @@ Route::group(['middleware' => ['admin']],function(){
 	        'store' => 'admin.flowchart.store',
 	        'edit' => 'admin.flowchart.edit',
 	        'update' => 'admin.flowchart.update',
+	        'show' => 'admin.flowchart.show',
 	        'destroy' => 'admin.flowchart.destroy',
 	    ]
 	]);
