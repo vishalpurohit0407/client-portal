@@ -160,7 +160,7 @@ class FlowchartController extends Controller
           return abort(404);
         }
 
-        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->get();
+        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->orderBy('created_at','desc')->get();
         
         return view('admin.flowchart.edit',array('title' => 'Edit Flowchart','flowchart'=>$flowchart, 'childNode' => $childNode));
     }
@@ -274,6 +274,32 @@ class FlowchartController extends Controller
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('admin.cms.page.list'));
+        }
+    }
+
+    public function removeNode(Request $request, $id)
+    {
+        
+        try {
+
+
+            $node = Flowchartnode::find($id);
+            $flowchartId = $node->flowchart_id;
+
+            if(!$node){
+                return abort(404) ;
+            }
+            
+            if ($node->delete()) {
+                Flowchartnode::where('yes',$id)->delete();
+                Flowchartnode::where('no',$id)->delete();
+                Flowchartnode::where('next',$id)->delete();
+                $request->session()->flash('alert-success', 'Flowchart node deleted successfuly.');
+            }
+            return redirect(route('admin.flowchart.edit', $flowchartId));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('admin.flowchart.list'));
         }
     }
 }

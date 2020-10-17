@@ -301,26 +301,28 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <tr>
-                                      <td class="table-user">
-                                        
-                                        <b>John Michael</b>
-                                      </td>
-                                      <td>
-                                        <span class="text-muted">10/09/2018</span>
-                                      </td>
-                                      <td>
-                                        <a href="#!" class="font-weight-bold">Argon Dashboard PRO</a>
-                                      </td>
-                                      <td class="table-actions">
-                                        <a href="#!" class="table-action" data-toggle="tooltip" data-original-title="Edit product">
-                                          <i class="fas fa-user-edit"></i>
-                                        </a>
-                                        <a href="#!" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete product">
-                                          <i class="fas fa-trash"></i>
-                                        </a>
-                                      </td>
-                                    </tr>
+                                    @if($childNode)
+                                        @foreach($childNode as $nodeData)
+                                            <tr>
+                                              <td class="table-user"><b>{{$nodeData->label}}</b></td>
+                                              <td><span class="text-muted">{{ucfirst($nodeData->type)}}</span></td>
+                                              <td><a href="javascript:void(0);" class="font-weight-bold">{{mb_strimwidth($nodeData->text, 0, 90, "...")}}</a></td>
+                                              <td><a href="javascript:void(0);" class="font-weight-bold">{{date('d M, Y',strtotime($nodeData->created_at))}}</a></td>
+                                              <td class="table-actions">
+                                                <a href="javascript:void(0);" class="table-action" data-toggle="tooltip" data-original-title="Edit Node">
+                                                  <i class="fas fa-user-edit"></i>
+                                                </a>
+                                                <form action="{{ route('admin.flowchart.remove.node',['id' => $nodeData->id]) }}" method="POST" style="display: contents;" id="frm_{{$nodeData->id}}"> 
+                                                    {{ csrf_field() }}
+                                                    {{ method_field('DELETE') }}
+                                                    <a href="javascript:void(0);" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete Node" onclick="return deleteConfirm(this);" id='{{$nodeData->id}}'>
+                                                  <i class="fas fa-trash"></i>
+                                                </a>
+                                                </form>
+                                              </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                     
                                   </tbody>
                                 </table>
@@ -550,10 +552,6 @@
 
 function changeNodeType(ele){
 
-    
-
-
-
     if(ele.value == 'decision'){
 
         $('.dicision_section').show();
@@ -592,5 +590,23 @@ function showSection(ele){
     }
 }
 
+function deleteConfirm(event){
+  var id = $(event).attr('id');
+  console.log(id);
+  swal({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: !0,
+      buttonsStyling: !1,
+      confirmButtonClass: "btn btn-danger",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonClass: "btn btn-secondary"
+  }).then((result) => {
+    if (result.value) {
+      $("#frm_"+id).submit();
+    }
+  });
+}
 </script>
 @endsection
