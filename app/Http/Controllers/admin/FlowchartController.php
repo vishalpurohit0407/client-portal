@@ -342,47 +342,46 @@ class FlowchartController extends Controller
             }
             $request->validate($validationArr);
 
-            /*$flowchartnodeArr = array();    
-            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
-            $flowchartnodeArr['label'] = $request->lable;
-            $flowchartnodeArr['type'] = $request->type;
-            $flowchartnodeArr['text'] = $request->text;
+            
+            $flowchartnode['label'] = $request->lable;
+            $flowchartnode['type'] = $request->type;
+            $flowchartnode['text'] = $request->text;
 
             if($request->type == 'decision'){
-                $flowchartnodeArr['yes'] = $request->dicision_yes;
-                $flowchartnodeArr['no'] = $request->dicision_no;
+                $flowchartnode['yes'] = $request->dicision_yes;
+                $flowchartnode['no'] = $request->dicision_no;
             }
 
             if($request->type == 'process'){
-                $flowchartnodeArr['next'] = $request->process_next;
+                $flowchartnode['next'] = $request->process_next;
             }
 
             if(isset($request->add_link) && $request->type != 'decision'){
-                $flowchartnodeArr['link_text'] = $request->link_text;
-                $flowchartnodeArr['link_url'] = $request->link_url;
-                $flowchartnodeArr['link_target'] = $request->link_target;
+                $flowchartnode['link_text'] = $request->link_text;
+                $flowchartnode['link_url'] = $request->link_url;
+                $flowchartnode['link_target'] = $request->link_target;
             }
 
             if(isset($request->add_tip) && $request->type != 'decision'){
-                $flowchartnodeArr['tips_title'] = $request->tip_title;
-                $flowchartnodeArr['tips_text'] = $request->tip_text;
+                $flowchartnode['tips_title'] = $request->tip_title;
+                $flowchartnode['tips_text'] = $request->tip_text;
             }
             
             if(isset($request->change_orient) && $request->type == 'decision'){
-                $flowchartnodeArr['orient_yes'] = $request->orient_yes;
-                $flowchartnodeArr['orient_no'] = $request->orient_no;
+                $flowchartnode['orient_yes'] = $request->orient_yes;
+                $flowchartnode['orient_no'] = $request->orient_no;
             }
 
-            if(Flowchartnode::create($flowchartnodeArr))
+            if($flowchartnode->save())
             {
-                $request->session()->flash('alert-success', 'Flowchart node added successfuly.');  
-            }*/
-
-            //return redirect(route('admin.flowchart.edit', $flowchart->id));
+                $request->session()->flash('alert-success', 'Node updated successfuly.');
+                return Response::json(['status' => true, 'message' => 'Node updated successfuly.']);
+            }
+            
+            return Response::json(['status' => false, 'message' => 'Something went wrong.']);
             
         }catch (ModelNotFoundException $exception) {
-            $request->session()->flash('alert-danger', $exception->getMessage()); 
-            return redirect(route('admin.flowchart.edit',$flowchart->id));
+            return Response::json(['status' => false, 'message' => $exception->getMessage()]);
         }
     }
 
