@@ -129,7 +129,8 @@
                         </form>
                         <hr>
 
-                        <form class="form" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_addnode']) }}" method="post" enctype="multipart/form-data" id="frm_node">
+                        <form class="form" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_addnode']) }}" method="post" enctype="multipart/form-data" id="add_node_frm">
+
                             {{ csrf_field() }}
                             {{ method_field('PUT') }}   
                             <div class="col-lg-12">
@@ -349,6 +350,17 @@
                                 </div>
                             </div>
                         </form>
+
+                        @if(count($childNode) > 0)
+
+                            @foreach($childNode as $key => $nodeData)
+                                <!-- node_edit_form -->
+                                <div class="node_edit_form" id="edit_node_frm_{{$key}}" style="display: none;">
+                                    
+                                </div>
+                            @endforeach
+                        @endif
+
                         <hr>
 
                         <div class="col-lg-12">
@@ -375,7 +387,8 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    @if($childNode)
+                                    @if(count($childNode) > 0)
+
                                         @foreach($childNode as $nodeData)
                                             <tr>
                                               <td class="table-user"><b>{{$nodeData->label}}</b></td>
@@ -383,9 +396,9 @@
                                               <td><a href="javascript:void(0);" class="font-weight-bold">{{mb_strimwidth($nodeData->text, 0, 90, "...")}}</a></td>
                                               <td><a href="javascript:void(0);" class="font-weight-bold">{{date('d M, Y',strtotime($nodeData->created_at))}}</a></td>
                                               <td class="table-actions">
-                                                <a href="javascript:void(0);" class="table-action" data-toggle="tooltip" data-original-title="Edit Node">
-                                                  <i class="fas fa-user-edit"></i>
+                                                <a href="javascript:void(0);" class="table-action" data-toggle="modal" data-target="#node-form-{{$nodeData->id}}" ><i class="fas fa-user-edit"></i>
                                                 </a>
+                                                <!-- onclick="return showEditForm('{{$key}}');" -->
                                                 <form action="{{ route('admin.flowchart.remove.node',['id' => $nodeData->id]) }}" method="POST" style="display: contents;" id="frm_{{$nodeData->id}}"> 
                                                     {{ csrf_field() }}
                                                     {{ method_field('DELETE') }}
@@ -395,7 +408,235 @@
                                                 </form>
                                               </td>
                                             </tr>
+
+                                            <div class="modal fade" id="node-form-{{$nodeData->id}}" tabindex="-2" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                                <div class="modal-dialog modal- modal-dialog-centered modal-md" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body p-0">
+                                                            <div class="card bg-secondary border-0 mb-0">
+                                                                <div class="card-header bg-transparent">
+                                                                    <div class="text-muted text-center">Edit Flowchart</div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <form class="form editNodeForm" action="{{ route('admin.flowchart.node.update',['flowchart_id' => $flowchart->id , 'id' => $nodeData->id]) }}" method="post" enctype="multipart/form-data" id="node_frm_{{$nodeData->id}}">
+                                                                        {{ csrf_field() }}
+                                                                         
+<div class="col-lg-12">
+    
+    <div class="row align-items-center">
+        <div class="col-sm-4 col-md-4">
+            <div class="form-group @if($errors->has('lable')) has-danger @endif ">
+                <label class="form-control-label" for="lable">Label <a href="javascript:void(0);" title="Label Instructions" data-toggle="popover" data-placement="top" data-content="Add unique label per flowchart"><i class="fas fa-question-circle" style="font-size: 16px;"></i></a></label>
+                <input type="text" class="form-control @if($errors->has('lable')) is-invalid @endif" id="lable" name="lable" placeholder="Lable" value="{{old('lable',$nodeData->label)}}">
+                
+                <span class="form-text text-danger" style="display: none;">The lable field is required.</span>
+                
+            </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4">
+            <div class="form-group">
+                <label class="form-control-label" for="type">Type</label>
+                <select class="form-control" id="type" name="type" onchange="changeEditNodeType(this,'{{$nodeData->id}}');">
+                    <option value="decision" @if(old('type',$nodeData->type) == 'decision') selected="" @endif>Decision</option>
+                    <option value="finish" @if(old('type',$nodeData->type) == 'finish') selected="" @endif>Finish</option>
+                    <option value="process" @if(old('type',$nodeData->type) == 'process') selected="" @endif>Process</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4">
+            <div class="form-group @if($errors->has('text')) has-danger @endif">
+                <label class="form-control-label" for="text">Text</label>
+                <input type="text" class="form-control @if($errors->has('text')) is-invalid @endif" id="text" name="text" placeholder="Descriptive text for node" value="{{old('text',$nodeData->text)}}">
+                @if($errors->has('text'))
+                    <span class="form-text text-danger">{{ $errors->first('text') }}</span>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center">
+        
+        <div class="col-sm-3 col-md-3 dicision_section" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
+            <div class="form-group @if($errors->has('dicision_yes')) has-danger @endif">
+                <label class="form-control-label" for="dicision_yes">Yes (Choose Child)</label>
+                <select class="form-control @if($errors->has('dicision_yes')) is-invalid @endif" id="dicision_yes" name="dicision_yes">
+                    <option value="">Select Child Node </option>
+                    @foreach($childNode as $node)
+                        <option value="{{$node->id}}" @if(old('dicision_yes', $nodeData->yes) == $node->id) selected @endif>{{$node->label}}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('dicision_yes'))
+                    <span class="form-text text-danger">{{ $errors->first('dicision_yes') }}</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="col-sm-3 col-md-3 dicision_section" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
+            <div class="form-group @if($errors->has('dicision_no')) has-danger @endif">
+                <label class="form-control-label" for="dicision_no">No (Choose Child)</label>
+                <select class="form-control @if($errors->has('dicision_no')) is-invalid @endif" id="dicision_no" name="dicision_no">
+                    <option value="">Select Child Node</option>
+                    @foreach($childNode as $node)
+                        <option value="{{$node->id}}" @if(old('dicision_no',$nodeData->no) == $node->id) selected @endif>{{$node->label}}</option>
+                    @endforeach
+                </select>
+                 @if($errors->has('dicision_no'))
+                    <span class="form-text text-danger">{{ $errors->first('dicision_no') }}</span>
+                @endif
+            </div>
+        </div>
+        
+        <div class="col-sm-3 col-md-3 process_section" @if(old('type',$nodeData->type) == 'process') @else style="display: none;" @endif >
+            <div class="form-group @if($errors->has('process_next')) has-danger @endif">
+                <label class="form-control-label" for="process_next">Next (Choose Child)</label>
+                <select class="form-control" id="process_next" name="process_next">
+                    <option value="">Select Child Node</option>
+                    @foreach($childNode as $node)
+                        <option value="{{$node->id}}" @if(old('process_next',$nodeData->next) == $node->id) selected @endif>{{$node->label}}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('process_next'))
+                    <span class="form-text text-danger">{{ $errors->first('process_next') }}</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="col-sm-2 col-md-2 add_link_block" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') @else style="display: none;" @endif >
+            <div class="form-group">
+                <label class="form-control-label" for="add_link">Add Link?</label><br>
+                <label class="custom-toggle  custom-toggle-success">
+                    <input type="checkbox" name="add_link" id="add_link" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('add_link',$nodeData->link_text)) checked="" @endif>
+                    <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="col-sm-2 col-md-2 add_tip_block" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') @else style="display: none;" @endif >
+            <div class="form-group">
+                <label class="form-control-label" for="example4cols2Input">Add Tip?</label><br>
+                <label class="custom-toggle  custom-toggle-primary">
+                    <input type="checkbox" name="add_tip" id="add_tip" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('add_tip',$nodeData->tips_title)) checked="" @endif>
+                    <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="col-sm-2 col-md-2 change_orient_block" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
+            <div class="form-group">
+                <label class="form-control-label" for="example4cols2Input">Change Orient?</label><br>
+                <label class="custom-toggle custom-toggle-warning">
+                    <input type="checkbox" name="change_orient" id="change_orient" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('change_orient',$nodeData->orient_yes)) checked="" @endif>
+                    <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="add_link_section" @if(old('add_link',$nodeData->link_text)) @else style="display: none;" @endif>
+        <div class="custom-hr"></div>
+        <p><h3 class="mb-0">Link Section</h3></p>
+        <div class="row align-items-center">
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group @if($errors->has('link_text')) has-danger @endif">
+                    <label class="form-control-label" for="link_text">Text</label>
+                    <input type="text" class="form-control @if($errors->has('link_text')) is-invalid @endif" name="link_text" id="link_text" placeholder="Link Text" value="{{old('link_text',$nodeData->link_text)}}">
+                    @if($errors->has('link_text'))
+                        <span class="form-text text-danger">{{ $errors->first('link_text') }}</span>
+                    @endif
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group @if($errors->has('link_url')) has-danger @endif">
+                    <label class="form-control-label" for="link_url">URL</label>
+                    <input type="text" class="form-control @if($errors->has('link_url')) is-invalid @endif" id="link_url" name="link_url" placeholder="Link URL" value="{{old('link_url',$nodeData->link_url)}}">
+                    @if($errors->has('link_url'))
+                        <span class="form-text text-danger">{{ $errors->first('link_url') }}</span>
+                    @endif
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="link_target">Target</label><br>
+                    <select class="form-control" name="link_target">
+                        <option value="_blank" @if(old('link_target',$nodeData->link_target) == '_blank') selected @endif>Blank</option>
+                        <option value="_self" @if(old('link_target',$nodeData->link_target) == '_self') selected @endif>Self</option>
+                        <option value="_parent" @if(old('link_target',$nodeData->link_target) == '_parent') selected @endif>Parent</option>
+                        <option value="_top" @if(old('link_target',$nodeData->link_target) == '_top') selected @endif>Top</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="add_tip_section" @if(old('add_tip',$nodeData->tips_title)) @else style="display: none;" @endif >
+        <div class="custom-hr"></div>
+        <p><h3 class="mb-0">Tip Section</h3></p>
+        <div class="row align-items-center">
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group @if($errors->has('tip_title')) has-danger @endif">
+                    <label class="form-control-label" for="example4cols2Input">Title</label>
+                    <input type="text" class="form-control @if($errors->has('tip_title')) is-invalid @endif" id="tip_title" name="tip_title" placeholder="Tip Title" value="{{old('tip_title',$nodeData->tips_title)}}">
+                    @if($errors->has('tip_title'))
+                        <span class="form-text text-danger">{{$errors->first('tip_title')}}</span>
+                    @endif
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group @if($errors->has('tip_text')) has-danger @endif">
+                    <label class="form-control-label" for="tip_text">Text</label>
+                    <input type="text" class="form-control @if($errors->has('tip_text')) is-invalid @endif" id="tip_text" name="tip_text" placeholder="Tip Text" value="{{old('tip_text',$nodeData->tips_title)}}">
+                    @if($errors->has('tip_text'))
+                        <span class="form-text text-danger">{{$errors->first('tip_text')}}</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="change_orient_section" @if(old('change_orient',$nodeData->orient_yes)) @else style="display: none;" @endif >
+        <div class="custom-hr"></div>
+        <p><h3 class="mb-0">Orient Section</h3></p>
+        <div class="row align-items-center">
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="orient_yes">Yes</label>
+                    <select class="form-control" name="orient_yes">
+                        <option value="l" @if(old('orient_yes',$nodeData->orient_yes) == 'l') selected @endif>Left</option>
+                        <option value="r" @if(old('orient_yes',$nodeData->orient_yes) == 'r') selected @endif >Right</option>
+                        <option value="b" @if(old('orient_yes',$nodeData->orient_yes) == 'b') selected @endif>Bottom</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="orient_no">No</label>
+                    <select class="form-control" name="orient_no">
+                        
+                        <option value="r" @if(old('orient_no',$nodeData->orient_no) == 'r') selected @endif >Right</option>
+                        <option value="l" @if(old('orient_no',$nodeData->orient_no) == 'l') selected @endif>Left</option>
+                        <option value="b" @if(old('orient_no',$nodeData->orient_no) == 'b') selected @endif>Bottom</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="hr-dotted">
+    <input type="submit" class="btn btn-info" name="submit" value="Save">
+    <input  type="button" data-dismiss="modal" class="btn btn-success" name="submit" value="Cancel">    
+</div>
+                                                                    </form>  
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
+                                    @else
+                                        <tr align="center"><td colspan="4">Record Not Found.</td></tr>
                                     @endif
                                     
                                   </tbody>
@@ -418,6 +659,9 @@
             </div>
         </div>
     </div>
+
+
+   
 <style type="text/css">
   .custom-toggle{
     width: 53px;
@@ -427,6 +671,9 @@
   }
   .custom-toggle input:checked + .custom-toggle-slider:after{
      left:0px !important;
+  }
+  .modal-dialog{
+    max-width: 800px;
   }
 </style>
 @endsection
@@ -532,6 +779,35 @@
     });
     flowSVG.shapes(shapesArr);
 
+$(document).ready(function () {
+
+    $('.editNodeForm').submit(function (e) {
+
+        e.preventDefault();
+        var frm = $(this);
+        var id = $(this).attr('id');
+
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                console.log('Submission was successful.');
+                console.log(data);
+            },
+            error: function (data) {
+
+                if( data.status === 422 ) {
+                    var errors = $.parseJSON(data.responseText);
+                    $.each(errors, function (key, val) {
+                        $("#" + key + "_error").text(val[0]);
+                    });
+                }
+            },
+        });
+    });
+});
+
 function changeNodeType(ele){
     if(ele.value == 'decision'){
 
@@ -559,6 +835,37 @@ function changeNodeType(ele){
     } 
 }
 
+function changeEditNodeType(ele,id){
+
+    var ids = "#node-form-"+id
+   
+    if(ele.value == 'decision'){
+
+        $(ids+' .dicision_section').show();
+        $(ids+' .change_orient_block').show();
+
+        $(ids+' .process_section').hide();
+        $(ids+' .add_link_block').hide();
+        $(ids+' .add_tip_block').hide();
+
+    }else if(ele.value == 'process'){
+
+        $(ids+' .dicision_section').hide();
+        $(ids+' .change_orient_block').hide();
+
+        $(ids+' .process_section').show();
+        $(ids+' .add_link_block').show();
+        $(ids+' .add_tip_block').show();
+
+    }else{
+        $(ids+' .dicision_section').hide();
+        $(ids+' .process_section').hide();
+        $(ids+' .change_orient_block').hide();
+        $(ids+' .add_link_block').show();
+        $(ids+' .add_tip_block').show();
+    } 
+}
+
 function showSection(ele){
 
     var ids = $(ele).attr('id');
@@ -567,6 +874,18 @@ function showSection(ele){
         $("."+ids+"_section").show();
     }else{
         $("."+ids+"_section").hide();
+    }
+}
+
+function showEditSection(ele, id){
+
+    var fetchId = "#node-form-"+id
+    var ids = $(ele).attr('id');
+
+    if($(fetchId+" #"+ids).prop('checked')){
+        $(fetchId+" ."+ids+"_section").show();
+    }else{
+        $(fetchId+" ."+ids+"_section").hide();
     }
 }
 
@@ -587,6 +906,13 @@ function deleteConfirm(event){
       $("#frm_"+id).submit();
     }
   });
+}
+
+function showEditForm(id){
+    
+    $("#add_node_frm").hide();
+    $(".node_edit_form").hide();
+    $(".node_edit_form").show();
 }
 </script>
 @endsection

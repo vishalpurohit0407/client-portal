@@ -125,6 +125,7 @@ Route::group(['middleware' => ['admin']],function(){
 
 	Route::delete('/flowchart/remove-node/{id}','admin\FlowchartController@removeNode')->name('admin.flowchart.remove.node');
 	Route::post('/flowchart/list/data','admin\FlowchartController@listdata')->name('admin.flowchart.listdata');
+	Route::post('/flowchart/node/update','admin\FlowchartController@nodeUpdate')->name('admin.flowchart.node.update');
 	Route::resource('/flowchart', 'admin\FlowchartController', [
 	    'names' => [
 	        'index' => 'admin.flowchart.list',

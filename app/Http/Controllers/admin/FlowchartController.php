@@ -173,7 +173,7 @@ class FlowchartController extends Controller
           return abort(404);
         }
 
-        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->select('id','label','type','text','created_at')->orderBy('created_at','desc')->get();
+        $childNode = Flowchartnode::where('flowchart_id',$flowchart->id)->orderBy('created_at','desc')->get();
         
         $maintenance = Guide::where('guide_type','maintenance')->where('status','1')->get();
         $self_diagnosis = Guide::where('guide_type','self-diagnosis')->where('status','1')->get();
@@ -238,12 +238,12 @@ class FlowchartController extends Controller
 		        ];
 
 		        if($request->type == 'decision'){
-		            $validationArr['dicision_yes'] = 'required';
-		            $validationArr['dicision_no'] = 'required';
+		            //$validationArr['dicision_yes'] = 'required';
+		            //$validationArr['dicision_no'] = 'required';
 		        }
 
 		        if($request->type == 'process'){
-		            $validationArr['process_next'] = 'required';
+		            //$validationArr['process_next'] = 'required';
 		        }
 
 		        if(isset($request->add_link) && $request->type != 'decision'){
@@ -300,6 +300,86 @@ class FlowchartController extends Controller
         		$redirect = $flowchart->id;
         	}
             return redirect(route('admin.flowchart.edit', $redirect));
+        }catch (ModelNotFoundException $exception) {
+            $request->session()->flash('alert-danger', $exception->getMessage()); 
+            return redirect(route('admin.flowchart.edit',$flowchart->id));
+        }
+    }
+
+    public function nodeUpdate(Request $request)
+    {
+        //dd($request->all());
+        $flowchartnode = Flowchartnode::find($request->id);
+        if (!$flowchartnode) {
+            return abort(404);
+        }
+
+        try {
+            
+            $validationArr = [
+                'lable' => 'required',
+                'type' => 'required', 
+                'text' => 'required'
+            ];
+
+            if($request->type == 'decision'){
+                //$validationArr['dicision_yes'] = 'required';
+                //$validationArr['dicision_no'] = 'required';
+            }
+
+            if($request->type == 'process'){
+                //$validationArr['process_next'] = 'required';
+            }
+
+            if(isset($request->add_link) && $request->type != 'decision'){
+                $validationArr['link_text'] = 'required';
+                $validationArr['link_url'] = 'required|url';
+            }
+
+            if(isset($request->add_tip) && $request->type != 'decision'){
+                $validationArr['tip_title'] = 'required';
+                $validationArr['tip_text'] = 'required';
+            }
+            $request->validate($validationArr);
+
+            /*$flowchartnodeArr = array();    
+            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
+            $flowchartnodeArr['label'] = $request->lable;
+            $flowchartnodeArr['type'] = $request->type;
+            $flowchartnodeArr['text'] = $request->text;
+
+            if($request->type == 'decision'){
+                $flowchartnodeArr['yes'] = $request->dicision_yes;
+                $flowchartnodeArr['no'] = $request->dicision_no;
+            }
+
+            if($request->type == 'process'){
+                $flowchartnodeArr['next'] = $request->process_next;
+            }
+
+            if(isset($request->add_link) && $request->type != 'decision'){
+                $flowchartnodeArr['link_text'] = $request->link_text;
+                $flowchartnodeArr['link_url'] = $request->link_url;
+                $flowchartnodeArr['link_target'] = $request->link_target;
+            }
+
+            if(isset($request->add_tip) && $request->type != 'decision'){
+                $flowchartnodeArr['tips_title'] = $request->tip_title;
+                $flowchartnodeArr['tips_text'] = $request->tip_text;
+            }
+            
+            if(isset($request->change_orient) && $request->type == 'decision'){
+                $flowchartnodeArr['orient_yes'] = $request->orient_yes;
+                $flowchartnodeArr['orient_no'] = $request->orient_no;
+            }
+
+            if(Flowchartnode::create($flowchartnodeArr))
+            {
+                $request->session()->flash('alert-success', 'Flowchart node added successfuly.');  
+            }*/
+
+            //return redirect(route('admin.flowchart.edit', $flowchart->id));
+            
         }catch (ModelNotFoundException $exception) {
             $request->session()->flash('alert-danger', $exception->getMessage()); 
             return redirect(route('admin.flowchart.edit',$flowchart->id));

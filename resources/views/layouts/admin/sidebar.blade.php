@@ -114,7 +114,7 @@
 
             <li class="nav-item">
               <a class="nav-link {{ Request::routeIs('admin.flowchart.*') ? 'active' : '' }}" href="{{route('admin.flowchart.list')}}">
-                <i class="ni ni-ungroup text-info"></i>
+                <i class="fas fa-sitemap text-info"></i>
                 <span class="nav-link-text">Flowchart</span>
               </a>
             </li>
