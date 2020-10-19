@@ -109,7 +109,7 @@
                                             <div class="col-sm-6 col-md-6" >
                                                 <div class="form-group">
                                                     <label class="form-control-label" for="maintenance">Maintenance</label>
-                                                    <select class="form-control" id="maintenance" name="guide_id[]" data-toggle="select" multiple data-placeholder="Select Maintenance">
+                                                    <select class="form-control" id="maintenance" name="guide_id[]" data-toggle="select" multiple placeholder="Select Maintenance">
                                                         @foreach($maintenance as $mainten)
                                                             <option class="text-white" value="{{$mainten->id}}" {{ $mainten->id == in_array($mainten->id, $guide_id_array) ? 'selected' : '' }}>{{$mainten->main_title}}</option>
                                                         @endforeach
@@ -121,7 +121,8 @@
                                             </div>
                                         </div>
                                         <hr class="hr-dotted">
-                                        <input type="submit" form="flowchart_details" class="btn btn-info" name="submit">
+                                        <input type="submit" form="flowchart_details" class="btn btn-info" name="flowchart_details_submit" value="Publish">
+                                        <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="save as a draft">
                                     </div>
                                 </div>
                             </div>
@@ -129,6 +130,7 @@
                         <hr>
 
                         <form class="form" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_addnode']) }}" method="post" enctype="multipart/form-data" id="add_node_frm">
+
                             {{ csrf_field() }}
                             {{ method_field('PUT') }}   
                             <div class="col-lg-12">
@@ -342,9 +344,8 @@
                                         </div>
 
                                         <hr class="hr-dotted">
-                                        <input type="submit" class="btn btn-info" name="submit" value="Add Note">
-                                        <input type="reset" class="btn btn-success" name="submit" value="Clear">
-                                        <input type="submit" class="btn btn-success" name="submit" value="Preview">
+                                        <input type="submit" form="frm_node" class="btn btn-info" name="submit" value="Add Node">
+                                        <input type="submit" form="frm_node" class="btn btn-success" name="submit" value="Preview">
                                     </div>
                                 </div>
                             </div>
@@ -645,6 +646,13 @@
                         </div>
 
                         <hr>
+                        <div class="card-header border-0" id="flowchart_preview">
+                            <div class="row">
+                              <div class="col-6">
+                                <h3 class="mb-0">Flowchart preview</h3>
+                              </div>
+                            </div>
+                        </div>
                         <div id="drawing" style="margin:30px auto; width:900px;"></div>
                     </div>
                 </div>
@@ -674,201 +682,102 @@
 <script src="{{asset('assets/vendor/flowsvg/svg.min.js')}}"></script>
 <script src="{{asset('assets/vendor/flowsvg/flowsvg.min.js')}}"></script>
 <script>
-///////////////////// start flow chart ////////////////////////////////////////////////////////////
-    flowSVG.draw(SVG('drawing').size(900, 1100));
-    flowSVG.config({
-        interactive: false,
-        showButtons: false,
-        connectorLength: 60,
-        scrollto: true
-    });
-    flowSVG.shapes(
-        [
-            {
-          label: 'knowPolicy',
-          type: 'decision',
-          text: [
-            'Do you know the ',
-                    'Open Access policy',
-                    'of the journal?'
-          ],
-          yes: 'hasOAPolicy',
-          no: 'checkPolicy'
-        }, 
-            {
-          label: 'hasOAPolicy',
-          type: 'decision',
-          text: [
-            'Does it have Open',
-                    'Access paid option or is it an',
-                    ' Open Access journal?'
-          ],
-          yes: 'CCOffered',
-          no: 'canWrap'
-        }, 
-        {
-          label: 'CCOffered',
-          type: 'decision',
-          text: [
-                    'Creative Commons licence',
-                    'CC-BY offered?'
-                ],
-                yes: 'canComply',
-                no:'checkGreen'
-        },
-            {
-                label: 'canComply',
-                type: 'finish',
-                text: [
-                    'Great - can comply. ',
-                    'Please complete'
-                ],
-                links: [
-                    {
-                        text: 'application form', 
-                        url: 'http://www.jqueryscript.net/chart-graph/Simple-SVG-Flow-Chart-Plugin-with-jQuery-flowSVG.html', 
-                      textarget: '_blank'
-                    },
-                ],
-                tip: {
-                    title: 'HEFCE Note',
-                    text:[
-                        'You must put your',
-                        'accepted version into',
-                        'WRAP and/or subject',
-                        'repository within 3 months',
-                        'of acceptance.'
-                    ]
-                }
-            },
-        {
-          label: 'canWrap',
-          type: 'decision',
-          text: [
-                    'Can you archive in ',
-                    'WRAP and/or Subject',
-                    'repository?'
-                ],
-                yes: 'checkTimeLimits',
-          no: 'doNotComply'
-        }, 
-            {
-                label: 'doNotComply',
-                type: 'finish',
-                text: [
-                    'You do not comply at all. ',
-                    'Is this really the only journal',
-                    ' you want to use? ',
-                    'Choose another or make ',
-                    'representations to journal'
-                ],
-                tip: {
-                    title: 'HEFCE Note',
-                    text:
-                    [
-                        'If you really have to go',
-                        'this route you must log',
-                        'the exception in WRAP on',
-                        'acceptance in order',
-                        'to comply.'
-                    ]
-                }
-            },       
-            {
-          label: 'checkGreen',
-          type: 'process',
-          text: [
-                    'Check the journal\'s policy',
-                    'on the green route'
-                ],
-          next: 'journalAllows',
-        }, 
-            {
-                label: 'journalAllows',
-                type: 'decision',
-                text: ['Does the journal allow this?'],
-                yes: 'checkTimeLimits',
-                no: 'cannotComply',
-                orient: {
-                    yes:'r',
-                    no: 'b'
-                }
-            },
-            {
-          label: 'checkTimeLimits',
-          type: 'process',
-          text: [
-                    'Make sure the time limits',
-                    'acceptable',
-                    '6 month Stem',
-                    '12 month AHSS'
-                ],
-                next: 'depositInWrap'
-            },
-            {
-                label: 'cannotComply',
-                type: 'finish',
-                text: [
-                    'You cannot comply with',
-                    'RCUK policy. Contact ',
-                    'journal to discuss or',
-                    'choose another'
-                ],
-                tip: {
-                    title: 'HEFCE Note',
-                    text:
-                    [
-                        'Deposit in WRAP if',
-                        'time limits acceptable. If',
-                        'journal does not allow at all',
-                        'an exception record will',
-                        'have to be entered',
-                        'in WRAP, if you feel this is',
-                        'most appropriate journal.'
-                    ]
-                }
-            },
-            {
-                label: 'depositInWrap',
-                type: 'finish',
-                text: [
-                    'Deposit in WRAP here or ',
-                    'contact team'
-                ],
-                tip: {
-                    title: 'HEFCE Note',
-                    text:
-                    [
-                        'You must put your',
-                        'accepted version into',
-                        'WRAP and/or subject',
-                        'repository within 3 months',
-                        'of acceptance.',
-                        'Note also time limits:',
-                        'HEFCE 12 months',
-                        'STEM ? months',
-                        'AHSS ? months',
-                        'So you comply here too.'
-                    ]
-                }
-            },
-        {
-          label: 'checkPolicy',
-          type: 'process',
-          text: [
-            'Check journal website',
-                    'or go to '
-          ],
-                links: [
-                    {
-                        text: 'SHERPA FACT/ROMEO ', 
-                        url: 'http://www.jqueryscript.net/chart-graph/Simple-SVG-Flow-Chart-Plugin-with-jQuery-flowSVG.html', 
-                        target: '_blank'
+   var shapesArr = new Array();
+    @php
+        if($flowchart){
+            if($flowchart->flowchart_node){
+                foreach ($flowchart->flowchart_node as $node){
+                    if ($node->type == 'decision') {
+                        $yes_decision = \App\Flowchartnode::where('id',$node->yes)->first();
+                        $no_decision = \App\Flowchartnode::where('id',$node->no)->first();
+    @endphp
+                        var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
+                        var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
+    @php
+                        if ($node->orient_yes && $node->orient_no) {
+    @endphp
+                        var orientArr = {
+                                yes:'{{$node->orient_yes}}',
+                                no:'{{$node->orient_no}}',
+                            }
+    @php
+                        }
+    @endphp            
+                        var orientArr = {
+                                yes:'b',
+                                no:'r',
+                        }
+                        shapesArr.push({
+                            label: '{{$node->label}}', 
+                            type: '{{$node->type}}', 
+                            text : ['{{$node->text}}'],
+                            yes : yes_lable,
+                            no : no_lable,
+                            orient : orientArr,
+                        });
+    @php            
+                    }else if($node->type == 'process') {
+                    $next_process = \App\Flowchartnode::where('id',$node->next)->first();
+    @endphp
+                        var next_lable = '{{$next_process ? $next_process->label : ''}}';
+                        shapesArr.push({
+                            label: '{{$node->label}}', 
+                            type: '{{$node->type}}', 
+                            text : ['{{$node->text}}'],
+                            links: [
+                            {
+                                text : '{{$node->link_text}}',
+                                url : '{{$node->link_url}}',
+                                target : '{{$node->link_target}}',
+                            }],
+                            tip: {
+                                title: '{{$node->tips_title}}',
+                                text:
+                                [
+                                    '{{$node->tips_text}}',
+                                ]
+                            },
+                            next :  next_lable,
+                        });
+    @php
+
+                    }else if($node->type == 'finish') {
+    @endphp
+                        shapesArr.push({
+                            label: '{{$node->label}}', 
+                            type: '{{$node->type}}', 
+                            text : ['{{$node->text}}'],
+                            links: [
+                            {
+                                text : '{{$node->link_text}}',
+                                url : '{{$node->link_url}}',
+                                target : '{{$node->link_target}}',
+                            }],
+                            tip: {
+                                title: '{{$node->tips_title}}',
+                                text:
+                                [
+                                    '{{$node->tips_text}}',
+                                ]
+                            },
+                        });
+
+    @php
                     }
-                ],
-          next: 'hasOAPolicy'
+                } 
             }
-    ]);
+        }
+    @endphp
+///////////////////// start flow chart ////////////////////////////////////////////////////////////
+    flowSVG.draw(SVG('drawing').size(900, 1500));
+    flowSVG.config({
+        interactive: true,
+        showButtons: true,
+        connectorLength: 60,
+        scrollto: true,
+        defaultFontSize:'14',
+    });
+    flowSVG.shapes(shapesArr);
 
 $(document).ready(function () {
 
@@ -900,7 +809,6 @@ $(document).ready(function () {
 });
 
 function changeNodeType(ele){
-
     if(ele.value == 'decision'){
 
         $('.dicision_section').show();
@@ -911,7 +819,6 @@ function changeNodeType(ele){
         $('.add_tip_block').hide();
 
     }else if(ele.value == 'process'){
-
         $('.dicision_section').hide();
         $('.change_orient_block').hide();
 
