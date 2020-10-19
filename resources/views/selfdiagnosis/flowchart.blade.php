@@ -12,7 +12,11 @@
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                             <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.selfdiagnosis.list')}}">Self Diagnosis</a></li>
+                            @if($guide->guide_type == 'self-diagnosis')
+                                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.selfdiagnosis.show',$guide->id)}}">Self Diagnosis Details</a></li>
+                            @else
+                                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('user.maintenance.show',$guide->id)}}">Maintenance Guide Details</a></li>
+                            @endif
                             <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                         </ol>
                     </nav>

@@ -232,7 +232,7 @@ class FlowchartController extends Controller
 
         	if ($request->flag == 'flowchart_addnode') {
         		$validationArr = [
-		            'lable' => 'required',
+		            'lable' => 'required|alpha|unique:flowchart_node,label,'.$flowchart->id,
 		            'type' => 'required', 
 		            'text' => 'required'
 		        ];

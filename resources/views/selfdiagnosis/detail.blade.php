@@ -68,7 +68,7 @@
                                 $guide_flowchart = \App\GuideFlowchart::where('guide_id',$selfdiagnosis->id)->first();
                             @endphp
                             @if($guide_flowchart)
-                                <a class="dropdown-item" href="{{route('user.selfdiagnosis.flowchart',$guide_flowchart->flowchart_id)}}">Flow Chart</a>
+                                <a class="dropdown-item" href="{{route('user.flowchart',[$guide_flowchart->flowchart_id,$selfdiagnosis->id])}}">Flow Chart</a>
                             @endif
                         </div>
                     </div>

@@ -105,13 +105,14 @@ class GuideController extends Controller
         // $dompdf->stream("codexworld", array("Attachment" => 1));
     }
 
-    public function flowChart(Request $request,$flowchart_id)
+    public function flowChart(Request $request,$flowchart_id,$guide_id)
     {
+        $guide = Guide::find($guide_id);
         $flowchart = Flowchart::where('id',$flowchart_id)->with('flowchart_node')->first();
-        if (!$flowchart) {
+        if (!$flowchart && !$guide) {
             return abort(404);
         }
-        return view('selfdiagnosis.flowchart',array('title'=>'Flow Chart','flowchart'=>$flowchart));
+        return view('selfdiagnosis.flowchart',array('title'=>'Flow Chart','flowchart'=>$flowchart,'guide'=>$guide));
     }
 
     public function create()
