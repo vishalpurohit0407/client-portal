@@ -228,11 +228,13 @@
 
                                             <div class="col-sm-2 col-md-2 add_link_block" @if(old('type') && old('type') != 'decision') @else style="display: none;" @endif >
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="add_link">Add Link?</label><br>
-                                                    <label class="custom-toggle  custom-toggle-success">
-                                                        <input type="checkbox" name="add_link" id="add_link" onchange="showSection(this)" @if(old('add_link')) checked="" @endif>
-                                                        <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                                                    </label>
+                                                    <label class="form-control-label" for="add_link">Add Link?</label>
+                                                    <div>
+                                                        <label class="custom-toggle  custom-toggle-success">
+                                                            <input type="checkbox" name="add_link" id="add_link" onchange="showSection(this)" @if(old('add_link')) checked="" @endif>
+                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
 
