@@ -54,7 +54,20 @@
                     <h5 class="h3 mb-0">{{$maintenance->main_title}}</h5>
                 </div>
                 <div class="col-4 text-right">
-                    <a href="{{route('selfdiagnosis.pdf.export',$maintenance->id)}}" class="btn btn-sm btn-neutral">Export PDF</a>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" title="More Action">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a href="{{route('selfdiagnosis.pdf.export',$maintenance->id)}}" class="dropdown-item">Export PDF</a>
+                            @php
+                                $guide_flowchart = \App\GuideFlowchart::where('guide_id',$maintenance->id)->first();
+                            @endphp
+                            @if($guide_flowchart)
+                                <a class="dropdown-item" href="{{route('user.flowchart',[$guide_flowchart->flowchart_id,$maintenance->id])}}">Flow Chart</a>
+                            @endif
+                        </div>
+                    </div>
                     <!-- <button class="btn btn-sm btn-neutral" onclick="printDiv('printableArea')">Print</button> -->
                 </div>
             </div>
