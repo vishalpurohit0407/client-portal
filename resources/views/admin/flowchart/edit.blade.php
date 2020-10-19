@@ -58,7 +58,7 @@
 
                     <div class="table-responsive py-4">
 
-                        <form class="form" name="flowchart_details" id="flowchart_details" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_details']) }}" method="post" enctype="multipart/form-data">
+                        <form class="form" id="flowchart_details" action="{{ route('admin.flowchart.update',[$flowchart->id,'flag'=>'flowchart_details']) }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             {{ method_field('PUT') }} 
                             <div class="col-lg-12">
@@ -74,7 +74,7 @@
                                         <div class="row align-items-center">
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="form-group @if($errors->has('title')) has-danger @endif">
-                                                    <label class="form-control-label" for="title">Text</label>
+                                                    <label class="form-control-label" for="title">Title</label>
                                                     <input type="text" class="form-control @if($errors->has('title')) is-invalid @endif" id="title" name="title" placeholder="Title" value="{{old('title',$flowchart->title)}}">
                                                     @if($errors->has('title'))
                                                         <span class="form-text text-danger">{{ $errors->first('title') }}</span>
@@ -346,8 +346,8 @@
                                         </div>
 
                                         <hr class="hr-dotted">
-                                        <input type="submit" form="frm_node" class="btn btn-info" name="submit" value="Add Node">
-                                        <input type="submit" form="frm_node" class="btn btn-success" name="submit" value="Preview">
+                                        <input type="submit" form="add_node_frm" class="btn btn-info" name="submit" value="Add Node">
+                                        <input type="submit" form="add_node_frm" class="btn btn-success" name="submit" value="Preview">
                                     </div>
                                 </div>
                             </div>
@@ -638,7 +638,7 @@
                         <div class="card-header border-0" id="flowchart_preview">
                             <div class="row">
                               <div class="col-6">
-                                <h3 class="mb-0">Flowchart preview</h3>
+                                <h3 class="mb-0">Flowchart Preview</h3>
                               </div>
                             </div>
                         </div>
@@ -789,9 +789,10 @@ $(document).ready(function () {
             },
             error: function (data) {
 
+                console.log(data);
                 if( data.status === 422 ) {
                     var errors = $.parseJSON(data.responseText);
-                    
+                    console.log(errors);
                     $.each(errors.errors, function (key, val) {
                         
                         frm.find("#" + key + "_error").text(val[0]);
