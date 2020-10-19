@@ -25,6 +25,9 @@
                             </ol>
                         </nav>
                     </div>
+                    <div class="col-lg-6 col-5 text-right">
+                        <a href="{{url()->previous()}}" class="btn btn-sm btn-neutral">Back</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,7 +125,7 @@
                                         </div>
                                         <hr class="hr-dotted">
                                         <input type="submit" form="flowchart_details" class="btn btn-info" name="flowchart_details_submit" value="Publish">
-                                        <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="save as a draft">
+                                        <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="Save as a draft">
                                     </div>
                                 </div>
                             </div>
@@ -680,20 +683,10 @@
     @endphp
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
-    @php
-                        if ($node->orient_yes && $node->orient_no) {
-    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
-    @php
-                        }
-    @endphp            
-                        var orientArr = {
-                                yes:'b',
-                                no:'r',
-                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
