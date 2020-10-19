@@ -235,9 +235,9 @@ class FlowchartController extends Controller
                 $nodelabel = Flowchartnode::where('flowchart_id',$flowchart->id)->where('label',$request->lable)->first();
                 // echo "<pre>";print_r($nodelabel);exit();
                 if ($nodelabel) {
-                    $labelvalidation = 'required|alpha|unique:flowchart_node,label';
+                    $labelvalidation = 'required|unique:flowchart_node,label';
                 }else{
-                    $labelvalidation = 'required|alpha';
+                    $labelvalidation = 'required';
                 }
         		$validationArr = [
 		            'lable' => $labelvalidation,
@@ -267,7 +267,7 @@ class FlowchartController extends Controller
 
         		$flowchartnodeArr = array();    
 	            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
-	            $flowchartnodeArr['label'] = $request->lable;
+	            $flowchartnodeArr['label'] = Str::slug($request->lable);
 	            $flowchartnodeArr['type'] = $request->type;
 	            $flowchartnodeArr['text'] = $request->text;
 
@@ -316,16 +316,23 @@ class FlowchartController extends Controller
 
     public function nodeUpdate(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $flowchartnode = Flowchartnode::find($request->id);
         if (!$flowchartnode) {
             return abort(404);
         }
 
+        $nodelabel = Flowchartnode::where('flowchart_id',$request->flowchart_id)->where('label',$request->lable)->where('id','!=',$request->id)->count();
+                //echo "<pre>";print_r($nodelabel);exit();
+                if ($nodelabel > 0) {
+                    $labelvalidation = 'required|unique:flowchart_node,label';
+                }else{
+                    $labelvalidation = 'required';
+                }
         try {
             
             $validationArr = [
-                'lable' => 'required',
+                'lable' => $labelvalidation,
                 'type' => 'required', 
                 'text' => 'required'
             ];
@@ -351,7 +358,7 @@ class FlowchartController extends Controller
             $request->validate($validationArr);
 
             
-            $flowchartnode['label'] = $request->lable;
+            $flowchartnode['label'] = Str::slug($request->lable);
             $flowchartnode['type'] = $request->type;
             $flowchartnode['text'] = $request->text;
 

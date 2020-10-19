@@ -40,7 +40,7 @@
                         <div class="row row-example">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="form-control-label" for="name">title: </label>
+                                    <label class="form-control-label" for="name">Title: </label>
                                     <span>{{$flowchart->title}}</span>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                         <div class="row row-example">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="form-control-label" for="name">description: </label>
+                                    <label class="form-control-label" for="name">Description: </label>
                                     <span>{{$flowchart->description}}</span>
                                 </div>
                             </div>
