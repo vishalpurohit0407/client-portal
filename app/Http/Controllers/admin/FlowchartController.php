@@ -231,8 +231,16 @@ class FlowchartController extends Controller
         	}
 
         	if ($request->flag == 'flowchart_addnode') {
+
+                $nodelabel = Flowchartnode::where('flowchart_id',$flowchart->id)->where('label',$request->lable)->first();
+                // echo "<pre>";print_r($nodelabel);exit();
+                if ($nodelabel) {
+                    $labelvalidation = 'required|alpha|unique:flowchart_node,label';
+                }else{
+                    $labelvalidation = 'required|alpha';
+                }
         		$validationArr = [
-		            'lable' => 'required|alpha|unique:flowchart_node,label,'.$flowchart->id,
+		            'lable' => $labelvalidation,
 		            'type' => 'required', 
 		            'text' => 'required'
 		        ];
