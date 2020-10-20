@@ -122,7 +122,9 @@
                                         </div>
                                         <hr class="hr-dotted">
                                         <input type="submit" form="flowchart_details" class="btn btn-info" name="flowchart_details_submit" value="Publish">
-                                        <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="save as a draft">
+                                        @if($flowchart->status == '0')
+                                            <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="save as a draft">
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -754,6 +756,7 @@
             }
         }
     @endphp
+
 ///////////////////// start flow chart ////////////////////////////////////////////////////////////
     flowSVG.draw(SVG('drawing').size(900, 1500));
     flowSVG.config({
