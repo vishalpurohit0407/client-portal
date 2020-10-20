@@ -266,7 +266,7 @@ class FlowchartController extends Controller
 
         		$flowchartnodeArr = array();    
 	            $flowchartnodeArr['flowchart_id'] = $flowchart->id;
-	            $flowchartnodeArr['label'] = Str::slug($request->lable);
+	            $flowchartnodeArr['label'] = str_replace(' ', '-', $request->lable);
 	            $flowchartnodeArr['type'] = $request->type;
 	            $flowchartnodeArr['text'] = $request->text;
 
@@ -357,7 +357,7 @@ class FlowchartController extends Controller
             $request->validate($validationArr);
 
             
-            $flowchartnode['label'] = Str::slug($request->lable);
+            $flowchartnode['label'] = str_replace(' ', '-', $request->lable);
             $flowchartnode['type'] = $request->type;
             $flowchartnode['text'] = $request->text;
 
