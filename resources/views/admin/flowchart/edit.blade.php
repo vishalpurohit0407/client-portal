@@ -97,7 +97,7 @@
                                         <div class="row align-items-center">
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="guide_id[]">Self Diagnosis</label>
+                                                    <label class="form-control-label" for="guide_id[]">Choose Self Diagnosis for this flowchart</label>
                                                     <select class="form-control" name="guide_id[]" data-toggle="select" multiple data-placeholder="Select Self Diagnosis" id="self_diagnosis">
                                                         @foreach($self_diagnosis as $diagnosis)
                                                             <option value="{{$diagnosis->id}}" {{ $diagnosis->id == in_array($diagnosis->id, $guide_id_array) ? 'selected' : '' }}>{{$diagnosis->main_title}}</option>
@@ -111,7 +111,7 @@
 
                                             <div class="col-sm-6 col-md-6" >
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="maintenance">Maintenance</label>
+                                                    <label class="form-control-label" for="maintenance">Choose Maintenance Guide for this flowchart</label>
                                                     <select class="form-control" id="maintenance" name="guide_id[]" data-toggle="select" multiple placeholder="Select Maintenance">
                                                         @foreach($maintenance as $mainten)
                                                             <option class="text-white" value="{{$mainten->id}}" {{ $mainten->id == in_array($mainten->id, $guide_id_array) ? 'selected' : '' }}>{{$mainten->main_title}}</option>
@@ -181,7 +181,7 @@
 
                                         <div class="row align-items-center">
                                             
-                                            <div class="col-sm-3 col-md-3 dicision_section" @if(old('type') && old('type') != 'decision') style="display: none;" @endif>
+                                            <div class="col-sm-4 col-md-4 dicision_section" @if(old('type') && old('type') != 'decision') style="display: none;" @endif>
                                                 <div class="form-group @if($errors->has('dicision_yes')) has-danger @endif">
                                                     <label class="form-control-label" for="dicision_yes">Yes (Choose Child)</label>
                                                     <select class="form-control @if($errors->has('dicision_yes')) is-invalid @endif" id="dicision_yes" name="dicision_yes">
@@ -196,7 +196,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-3 col-md-3 dicision_section" @if(old('type') && old('type') != 'decision') style="display: none;" @endif>
+                                            <div class="col-sm-4 col-md-4 dicision_section" @if(old('type') && old('type') != 'decision') style="display: none;" @endif>
                                                 <div class="form-group @if($errors->has('dicision_no')) has-danger @endif">
                                                     <label class="form-control-label" for="dicision_no">No (Choose Child)</label>
                                                     <select class="form-control @if($errors->has('dicision_no')) is-invalid @endif" id="dicision_no" name="dicision_no">
@@ -211,7 +211,7 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-sm-3 col-md-3 process_section" @if(old('type') == 'process') @else style="display: none;" @endif >
+                                            <div class="col-sm-4 col-md-4 process_section" @if(old('type') == 'process') @else style="display: none;" @endif >
                                                 <div class="form-group @if($errors->has('process_next')) has-danger @endif">
                                                     <label class="form-control-label" for="process_next">Next (Choose Child)</label>
                                                     <select class="form-control" id="process_next" name="process_next">
@@ -229,7 +229,7 @@
                                             <div class="col-sm-2 col-md-2 add_link_block" @if(old('type') && old('type') != 'decision') @else style="display: none;" @endif >
                                                 <div class="form-group">
                                                     <label class="form-control-label" for="add_link">Add Link?</label>
-                                                    <div>
+                                                    <div class="custom-switch-lable">
                                                         <label class="custom-toggle  custom-toggle-success">
                                                             <input type="checkbox" name="add_link" id="add_link" onchange="showSection(this)" @if(old('add_link')) checked="" @endif>
                                                             <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
@@ -241,20 +241,24 @@
                                             <div class="col-sm-2 col-md-2 add_tip_block" @if(old('type') && old('type') != 'decision') @else style="display: none;" @endif >
                                                 <div class="form-group">
                                                     <label class="form-control-label" for="example4cols2Input">Add Tip?</label><br>
-                                                    <label class="custom-toggle  custom-toggle-primary">
-                                                        <input type="checkbox" name="add_tip" id="add_tip" onchange="showSection(this)" @if(old('add_tip')) checked="" @endif>
-                                                        <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                                                    </label>
+                                                    <div class="custom-switch-lable">
+                                                        <label class="custom-toggle  custom-toggle-primary">
+                                                            <input type="checkbox" name="add_tip" id="add_tip" onchange="showSection(this)" @if(old('add_tip')) checked="" @endif>
+                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-sm-2 col-md-2 change_orient_block" @if(old('type') && old('type') != 'decision') style="display: none;" @endif>
                                                 <div class="form-group">
                                                     <label class="form-control-label" for="example4cols2Input">Change Orient?</label><br>
-                                                    <label class="custom-toggle custom-toggle-warning">
-                                                        <input type="checkbox" name="change_orient" id="change_orient" onchange="showSection(this)" @if(old('change_orient')) checked="" @endif>
-                                                        <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                                                    </label>
+                                                    <div class="custom-switch-lable">
+                                                        <label class="custom-toggle custom-toggle-warning">
+                                                            <input type="checkbox" name="change_orient" id="change_orient" onchange="showSection(this)" @if(old('change_orient')) checked="" @endif>
+                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -263,7 +267,7 @@
                                             <div class="custom-hr"></div>
                                             <p><h3 class="mb-0">Link Section</h3></p>
                                             <div class="row align-items-center">
-                                                <div class="col-sm-3 col-md-3">
+                                                <div class="col-sm-4 col-md-4">
                                                     <div class="form-group @if($errors->has('link_text')) has-danger @endif">
                                                         <label class="form-control-label" for="link_text">Text</label>
                                                         <input type="text" class="form-control @if($errors->has('link_text')) is-invalid @endif" name="link_text" id="link_text" placeholder="Link Text" value="{{old('link_text')}}">
@@ -272,7 +276,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-md-3">
+                                                <div class="col-sm-4 col-md-4">
                                                     <div class="form-group @if($errors->has('link_url')) has-danger @endif">
                                                         <label class="form-control-label" for="link_url">URL</label>
                                                         <input type="text" class="form-control @if($errors->has('link_url')) is-invalid @endif" id="link_url" name="link_url" placeholder="Link URL" value="{{old('link_url')}}">
@@ -281,7 +285,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-md-3">
+                                                <div class="col-sm-4 col-md-4">
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="link_target">Target</label><br>
                                                         <select class="form-control" name="link_target">
@@ -299,7 +303,7 @@
                                             <div class="custom-hr"></div>
                                             <p><h3 class="mb-0">Tip Section</h3></p>
                                             <div class="row align-items-center">
-                                                <div class="col-sm-3 col-md-3">
+                                                <div class="col-sm-4 col-md-4">
                                                     <div class="form-group @if($errors->has('tip_title')) has-danger @endif">
                                                         <label class="form-control-label" for="example4cols2Input">Title</label>
                                                         <input type="text" class="form-control @if($errors->has('tip_title')) is-invalid @endif" id="tip_title" name="tip_title" placeholder="Tip Title" value="{{old('tip_title')}}">
@@ -308,7 +312,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-md-3">
+                                                <div class="col-sm-4 col-md-4">
                                                     <div class="form-group @if($errors->has('tip_text')) has-danger @endif">
                                                         <label class="form-control-label" for="tip_text">Text</label>
                                                         <input type="text" class="form-control @if($errors->has('tip_text')) is-invalid @endif" id="tip_text" name="tip_text" placeholder="Tip Text" value="{{old('tip_text')}}">
@@ -356,16 +360,6 @@
                             </div>
                         </form>
 
-                        @if(count($childNode) > 0)
-
-                            @foreach($childNode as $key => $nodeData)
-                                <!-- node_edit_form -->
-                                <div class="node_edit_form" id="edit_node_frm_{{$key}}" style="display: none;">
-                                    
-                                </div>
-                            @endforeach
-                        @endif
-
                         <hr>
 
                         <div class="col-lg-12">
@@ -403,7 +397,7 @@
                                               <td class="table-actions">
                                                 <a href="javascript:void(0);" class="table-action" data-toggle="modal" data-target="#node-form-{{$nodeData->id}}" ><i class="fas fa-user-edit"></i>
                                                 </a>
-                                                <!-- onclick="return showEditForm('{{$key}}');" -->
+                                                
                                                 <form action="{{ route('admin.flowchart.remove.node',['id' => $nodeData->id]) }}" method="POST" style="display: contents;" id="frm_{{$nodeData->id}}"> 
                                                     {{ csrf_field() }}
                                                     {{ method_field('DELETE') }}
@@ -456,7 +450,7 @@
 
                                                                             <div class="row align-items-center">
                                                                                 
-                                                                                <div class="col-sm-3 col-md-3 dicision_section" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
+                                                                                <div class="col-sm-4 col-md-4 dicision_section" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
                                                                                     <div class="form-group @if($errors->has('dicision_yes')) has-danger @endif">
                                                                                         <label class="form-control-label" for="dicision_yes">Yes (Choose Child)</label>
                                                                                         <select class="form-control @if($errors->has('dicision_yes')) is-invalid @endif" id="dicision_yes" name="dicision_yes">
@@ -471,7 +465,7 @@
                                                                                     </div>
                                                                                 </div>
 
-                                                                                <div class="col-sm-3 col-md-3 dicision_section" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
+                                                                                <div class="col-sm-4 col-md-4 dicision_section" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
                                                                                     <div class="form-group @if($errors->has('dicision_no')) has-danger @endif">
                                                                                         <label class="form-control-label" for="dicision_no">No (Choose Child)</label>
                                                                                         <select class="form-control @if($errors->has('dicision_no')) is-invalid @endif" id="dicision_no" name="dicision_no">
@@ -486,7 +480,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 
-                                                                                <div class="col-sm-3 col-md-3 process_section" @if(old('type',$nodeData->type) == 'process') @else style="display: none;" @endif >
+                                                                                <div class="col-sm-4 col-md-4 process_section" @if(old('type',$nodeData->type) == 'process') @else style="display: none;" @endif >
                                                                                     <div class="form-group @if($errors->has('process_next')) has-danger @endif">
                                                                                         <label class="form-control-label" for="process_next">Next (Choose Child)</label>
                                                                                         <select class="form-control" id="process_next" name="process_next">
@@ -504,30 +498,36 @@
                                                                                 <div class="col-sm-2 col-md-2 add_link_block" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') @else style="display: none;" @endif >
                                                                                     <div class="form-group">
                                                                                         <label class="form-control-label" for="add_link">Add Link?</label><br>
-                                                                                        <label class="custom-toggle  custom-toggle-success">
-                                                                                            <input type="checkbox" name="add_link" id="add_link" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('add_link',$nodeData->link_text)) checked="" @endif>
-                                                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                                                                                        </label>
+                                                                                        <div class="custom-switch-lable">
+                                                                                            <label class="custom-toggle  custom-toggle-success">
+                                                                                                <input type="checkbox" name="add_link" id="add_link" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('add_link',$nodeData->link_text)) checked="" @endif>
+                                                                                                <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                                                                            </label>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
 
                                                                                 <div class="col-sm-2 col-md-2 add_tip_block" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') @else style="display: none;" @endif >
                                                                                     <div class="form-group">
                                                                                         <label class="form-control-label" for="example4cols2Input">Add Tip?</label><br>
-                                                                                        <label class="custom-toggle  custom-toggle-primary">
-                                                                                            <input type="checkbox" name="add_tip" id="add_tip" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('add_tip',$nodeData->tips_title)) checked="" @endif>
-                                                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                                                                                        </label>
+                                                                                        <div class="custom-switch-lable">
+                                                                                            <label class="custom-toggle  custom-toggle-primary">
+                                                                                                <input type="checkbox" name="add_tip" id="add_tip" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('add_tip',$nodeData->tips_title)) checked="" @endif>
+                                                                                                <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                                                                            </label>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
 
                                                                                 <div class="col-sm-2 col-md-2 change_orient_block" @if(old('type',$nodeData->type) && old('type',$nodeData->type) != 'decision') style="display: none;" @endif>
                                                                                     <div class="form-group">
                                                                                         <label class="form-control-label" for="example4cols2Input">Change Orient?</label><br>
-                                                                                        <label class="custom-toggle custom-toggle-warning">
-                                                                                            <input type="checkbox" name="change_orient" id="change_orient" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('change_orient',$nodeData->orient_yes)) checked="" @endif>
-                                                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                                                                                        </label>
+                                                                                        <div class="custom-switch-lable">
+                                                                                            <label class="custom-toggle custom-toggle-warning">
+                                                                                                <input type="checkbox" name="change_orient" id="change_orient" onchange="showEditSection(this,'{{$nodeData->id}}')" @if(old('change_orient',$nodeData->orient_yes)) checked="" @endif>
+                                                                                                <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                                                                                            </label>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -536,21 +536,21 @@
                                                                                 <div class="custom-hr"></div>
                                                                                 <p><h3 class="mb-0">Link Section</h3></p>
                                                                                 <div class="row align-items-center">
-                                                                                    <div class="col-sm-3 col-md-3">
+                                                                                    <div class="col-sm-4 col-md-4">
                                                                                         <div class="form-group">
                                                                                             <label class="form-control-label" for="link_text">Text</label>
                                                                                             <input type="text" class="form-control" name="link_text" id="link_text" placeholder="Link Text" value="{{old('link_text',$nodeData->link_text)}}">
                                                                                             <span class="form-text text-danger" id="link_text_error"></span>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-sm-3 col-md-3">
+                                                                                    <div class="col-sm-4 col-md-4">
                                                                                         <div class="form-group">
                                                                                             <label class="form-control-label" for="link_url">URL</label>
                                                                                             <input type="text" class="form-control" id="link_url" name="link_url" placeholder="Link URL" value="{{old('link_url',$nodeData->link_url)}}">
                                                                                             <span class="form-text text-danger" id="link_url_error"></span>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-sm-3 col-md-3">
+                                                                                    <div class="col-sm-4 col-md-4">
                                                                                         <div class="form-group">
                                                                                             <label class="form-control-label" for="link_target">Target</label><br>
                                                                                             <select class="form-control" name="link_target">
@@ -568,14 +568,14 @@
                                                                                 <div class="custom-hr"></div>
                                                                                 <p><h3 class="mb-0">Tip Section</h3></p>
                                                                                 <div class="row align-items-center">
-                                                                                    <div class="col-sm-3 col-md-3">
+                                                                                    <div class="col-sm-4 col-md-4">
                                                                                         <div class="form-group">
                                                                                             <label class="form-control-label" for="example4cols2Input">Title</label>
                                                                                             <input type="text" class="form-control" id="tip_title" name="tip_title" placeholder="Tip Title" value="{{old('tip_title',$nodeData->tips_title)}}">
                                                                                             <span class="form-text text-danger" id="tip_title_error"></span>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-sm-3 col-md-3">
+                                                                                    <div class="col-sm-4 col-md-4">
                                                                                         <div class="form-group">
                                                                                             <label class="form-control-label" for="tip_text">Text</label>
                                                                                             <input type="text" class="form-control" id="tip_text" name="tip_text" placeholder="Tip Text" value="{{old('tip_text',$nodeData->tips_title)}}">
@@ -682,9 +682,15 @@
                     if ($node->type == 'decision') {
                         $yes_decision = \App\Flowchartnode::where('id',$node->yes)->first();
                         $no_decision = \App\Flowchartnode::where('id',$node->no)->first();
+
+                        $wordwrapDecision = explode("<br>",wordwrap($node->text,25,"<br>"));
     @endphp
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
+                        var decisionTextArr = <?php echo json_encode($wordwrapDecision); ?>;
+    @php
+                        if ($node->orient_yes && $node->orient_no) {
+    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
@@ -692,7 +698,7 @@
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
-                            text : ['{{$node->text}}'],
+                            text : decisionTextArr,
                             yes : yes_lable,
                             no : no_lable,
                             orient : orientArr,
@@ -700,12 +706,16 @@
     @php            
                     }else if($node->type == 'process') {
                     $next_process = \App\Flowchartnode::where('id',$node->next)->first();
+                    $wordwrapProcess = explode("<br>",wordwrap($node->text,25,"<br>"));
+                    $wordwrapProcessTip = explode("<br>",wordwrap($node->tips_text,25,"<br>"));
     @endphp
+                        var processTextArr = <?php echo json_encode($wordwrapProcess); ?>;
+                        var processTextTipsArr = <?php echo json_encode($wordwrapProcessTip); ?>;
                         var next_lable = '{{$next_process ? $next_process->label : ''}}';
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
-                            text : ['{{$node->text}}'],
+                            text : processTextArr,
                             links: [
                             {
                                 text : '{{$node->link_text}}',
@@ -714,21 +724,24 @@
                             }],
                             tip: {
                                 title: '{{$node->tips_title}}',
-                                text:
-                                [
-                                    '{{$node->tips_text}}',
-                                ]
+                                text: processTextTipsArr
                             },
                             next :  next_lable,
                         });
     @php
 
                     }else if($node->type == 'finish') {
+
+                        $wordwrapData = explode("<br>",wordwrap($node->text,25,"<br>"));
+                        $wordwrapTipData = explode("<br>",wordwrap($node->tips_text,25,"<br>"));
+
     @endphp
+                        var textArr = <?php echo json_encode($wordwrapData); ?>;
+                        var tipsTextArr = <?php echo json_encode($wordwrapTipData); ?>;
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
-                            text : ['{{$node->text}}'],
+                            text : textArr,
                             links: [
                             {
                                 text : '{{$node->link_text}}',
@@ -739,7 +752,7 @@
                                 title: '{{$node->tips_title}}',
                                 text:
                                 [
-                                    '{{$node->tips_text}}',
+                                    tipsTextArr,
                                 ]
                             },
                         });
