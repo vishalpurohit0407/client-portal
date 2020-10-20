@@ -93,12 +93,13 @@
                           </div>
                           <div class="form-group">
                               <div class="input-group">
-                                  <textarea class="form-control" name="description" id="description" rows="10" placeholder="Description*"></textarea>
+                                  <textarea class="form-control" name="description" id="description" rows="10" placeholder="Description"></textarea>
                               </div>
                               <span class="form-text text-danger" id="errordesc" style="display: none;">The description field is required.</span>
                           </div>
                           <div class="text-center">
                               <button type="submit" class="btn btn-primary my-4">Save</button>
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                           </div>
                       </form>
                   </div>
@@ -146,27 +147,11 @@
 
       $('#addflowchart').submit(function () {
           var title = document.getElementById('title');
-          var description = document.getElementById('description');
           var errortitle = document.getElementById("errortitle");
-          var errordesc = document.getElementById("errordesc");
           // Check if empty of not
-          if($.trim($('#title').val())  === '' && $.trim($('#description').val())  === ''){
-              errordesc.style.display = "block";
-              errortitle.style.display = "block";
-              description.classList.add("is-invalid");
-              title.classList.add("is-invalid");
-              return false;
-          }else if ($.trim($('#title').val())  === '') {
+          if ($.trim($('#title').val())  === '') {
               errortitle.style.display = "block";
               title.classList.add("is-invalid");
-              errordesc.style.display = "none";
-              description.classList.remove("is-invalid");
-              return false;
-          }else if($.trim($('#description').val())  === ''){
-              errordesc.style.display = "block";
-              description.classList.add("is-invalid");
-              errortitle.style.display = "none";
-              title.classList.remove("is-invalid");
               return false;
           }
       });

@@ -130,8 +130,7 @@ class FlowchartController extends Controller
     {
     	// echo "<pre>";print_r($request->all());exit();
         $request->validate([
-            'title' => 'required',
-            'description' => 'required', 
+            'title' => 'required|max:255', 
         ]);
         try {
             $input = $request->all();

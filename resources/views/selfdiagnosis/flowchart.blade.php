@@ -70,20 +70,10 @@
     @endphp
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
-    @php
-                        if ($node->orient_yes && $node->orient_no) {
-    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
-    @php
-                        }
-    @endphp            
-                        var orientArr = {
-                                yes:'b',
-                                no:'r',
-                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
