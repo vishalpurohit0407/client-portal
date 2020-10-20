@@ -26,38 +26,15 @@
     </div>
     <!-- Page content -->
     <div class="container-fluid mt--6">
-        <div class="row card-wrapper">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                      <div class="row align-items-center">
-                        <div class="col-8">
-                          <h5 class="h3 mb-0">{{$title}}</h5>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row row-example">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="name">Title: </label>
-                                    <span>{{$flowchart->title}}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row row-example">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="name">Description: </label>
-                                    <span>{{$flowchart->description}}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="drawing" style="margin:30px auto; width:900px;"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="card">
+        <div class="card-header">
+            <h5 class="h3 mb-0">{{$flowchart->title}}</h5>
         </div>
+        <div class="card-body">
+          <p class="card-text mb-4">{{$flowchart->description}}</p>
+          <div id="drawing" style="margin:30px auto; width:900px;"></div>
+        </div>
+    </div>
     </div>
 @endsection
 @section('pagewise_js')
