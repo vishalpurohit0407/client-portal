@@ -673,7 +673,7 @@
 <script src="{{asset('assets/vendor/flowsvg/svg.min.js')}}"></script>
 <script src="{{asset('assets/vendor/flowsvg/flowsvg.min.js')}}"></script>
 <script>
-   var shapesArr = new Array();
+    var shapesArr = new Array();
     @php
         if($flowchart){
             if($flowchart->flowchart_node){
@@ -756,10 +756,7 @@
                             }],
                             tip: {
                                 title: '{{$node->tips_title}}',
-                                text:
-                                [
-                                    tipsTextArr,
-                                ]
+                                text: tipsTextArr,
                             },
                         });
 
@@ -777,7 +774,7 @@
         showButtons: true,
         connectorLength: 60,
         scrollto: true,
-        defaultFontSize:'14',
+        defaultFontSize:'12',
     });
     flowSVG.shapes(shapesArr);
 

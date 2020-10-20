@@ -73,17 +73,30 @@
                     if ($node->type == 'decision') {
                         $yes_decision = \App\Flowchartnode::where('id',$node->yes)->first();
                         $no_decision = \App\Flowchartnode::where('id',$node->no)->first();
+
+                        $wordwrapDecision = explode("<br>",wordwrap($node->text,20,"<br>"));
     @endphp
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
+                        var decisionTextArr = <?php echo json_encode($wordwrapDecision); ?>;
+    @php
+                        if ($node->orient_yes && $node->orient_no) {
+    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
+    @php
+                        }
+    @endphp            
+                        var orientArr = {
+                                yes:'b',
+                                no:'r',
+                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
-                            text : ['{{$node->text}}'],
+                            text : decisionTextArr,
                             yes : yes_lable,
                             no : no_lable,
                             orient : orientArr,
@@ -91,12 +104,16 @@
     @php            
                     }else if($node->type == 'process') {
                     $next_process = \App\Flowchartnode::where('id',$node->next)->first();
+                    $wordwrapProcess = explode("<br>",wordwrap($node->text,25,"<br>"));
+                    $wordwrapProcessTip = explode("<br>",wordwrap($node->tips_text,25,"<br>"));
     @endphp
+                        var processTextArr = <?php echo json_encode($wordwrapProcess); ?>;
+                        var processTextTipsArr = <?php echo json_encode($wordwrapProcessTip); ?>;
                         var next_lable = '{{$next_process ? $next_process->label : ''}}';
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
-                            text : ['{{$node->text}}'],
+                            text : processTextArr,
                             links: [
                             {
                                 text : '{{$node->link_text}}',
@@ -105,21 +122,24 @@
                             }],
                             tip: {
                                 title: '{{$node->tips_title}}',
-                                text:
-                                [
-                                    '{{$node->tips_text}}',
-                                ]
+                                text: processTextTipsArr
                             },
                             next :  next_lable,
                         });
     @php
 
                     }else if($node->type == 'finish') {
+
+                        $wordwrapData = explode("<br>",wordwrap($node->text,25,"<br>"));
+                        $wordwrapTipData = explode("<br>",wordwrap($node->tips_text,25,"<br>"));
+
     @endphp
+                        var textArr = <?php echo json_encode($wordwrapData); ?>;
+                        var tipsTextArr = <?php echo json_encode($wordwrapTipData); ?>;
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
-                            text : ['{{$node->text}}'],
+                            text : textArr,
                             links: [
                             {
                                 text : '{{$node->link_text}}',
@@ -128,10 +148,7 @@
                             }],
                             tip: {
                                 title: '{{$node->tips_title}}',
-                                text:
-                                [
-                                    '{{$node->tips_text}}',
-                                ]
+                                text: tipsTextArr,
                             },
                         });
 
@@ -148,7 +165,7 @@
         showButtons: true,
         connectorLength: 60,
         scrollto: true,
-        defaultFontSize:'14',
+        defaultFontSize:'12',
     });
     flowSVG.shapes(shapesArr);
 
