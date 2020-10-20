@@ -353,7 +353,7 @@
 
                                         <hr class="hr-dotted">
                                         <input type="submit" form="add_node_frm" class="btn btn-info" name="submit" value="Add Node">
-                                        <input type="submit" form="add_node_frm" class="btn btn-success" name="submit" value="Preview">
+                                        <a href="#flowchart_preview" form="add_node_frm" class="btn btn-success" name="submit">Preview</a>
                                     </div>
                                 </div>
                             </div>
@@ -687,20 +687,10 @@
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
                         var decisionTextArr = <?php echo json_encode($wordwrapDecision); ?>;
-    @php
-                        if ($node->orient_yes && $node->orient_no) {
-    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
-    @php
-                        }
-    @endphp            
-                        var orientArr = {
-                                yes:'b',
-                                no:'r',
-                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 

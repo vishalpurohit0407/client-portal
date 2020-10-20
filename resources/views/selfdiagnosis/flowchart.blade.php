@@ -29,18 +29,6 @@
     </div>
 </div>
 <div class="container-fluid mt--6">
-    @foreach (['danger', 'warning', 'success', 'info'] as $msg)
-        @if(Session::has('alert-' . $msg))
-             <div class="alert alert-custom alert-{{ $msg }} alert-dismissible alert-dismissible fade show mb-2" role="alert">                           
-                <div class="alert-text">{{ Session::get('alert-' . $msg) }}</div>
-                <div class="alert-close">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-            </div>
-        @endif 
-    @endforeach
     <!-- Card stats -->
     <div class="card">
         <div class="card-header">
@@ -73,20 +61,10 @@
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
                         var decisionTextArr = <?php echo json_encode($wordwrapDecision); ?>;
-    @php
-                        if ($node->orient_yes && $node->orient_no) {
-    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
-    @php
-                        }
-    @endphp            
-                        var orientArr = {
-                                yes:'b',
-                                no:'r',
-                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
