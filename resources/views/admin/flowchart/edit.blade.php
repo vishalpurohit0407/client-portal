@@ -353,7 +353,7 @@
 
                                         <hr class="hr-dotted">
                                         <input type="submit" form="add_node_frm" class="btn btn-info" name="submit" value="Add Node">
-                                        <input type="submit" form="add_node_frm" class="btn btn-success" name="submit" value="Preview">
+                                        <a href="#flowchart_preview" class="btn btn-success">Preview</a>
                                     </div>
                                 </div>
                             </div>
