@@ -25,9 +25,6 @@
                             </ol>
                         </nav>
                     </div>
-                    <div class="col-lg-6 col-5 text-right">
-                        <a href="{{url()->previous()}}" class="btn btn-sm btn-neutral">Back</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -125,7 +122,7 @@
                                         </div>
                                         <hr class="hr-dotted">
                                         <input type="submit" form="flowchart_details" class="btn btn-info" name="flowchart_details_submit" value="Publish">
-                                        <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="Save as a draft">
+                                        <input type="submit" form="flowchart_details" class="btn btn-primary" name="flowchart_details_submit" value="save as a draft">
                                     </div>
                                 </div>
                             </div>
@@ -683,7 +680,7 @@
                         $yes_decision = \App\Flowchartnode::where('id',$node->yes)->first();
                         $no_decision = \App\Flowchartnode::where('id',$node->no)->first();
 
-                        $wordwrapDecision = explode("<br>",wordwrap($node->text,25,"<br>"));
+                        $wordwrapDecision = explode("<br>",wordwrap($node->text,20,"<br>"));
     @endphp
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
@@ -695,6 +692,13 @@
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
+    @php
+                        }
+    @endphp            
+                        var orientArr = {
+                                yes:'b',
+                                no:'r',
+                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
