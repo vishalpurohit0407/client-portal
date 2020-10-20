@@ -353,7 +353,7 @@
 
                                         <hr class="hr-dotted">
                                         <input type="submit" form="add_node_frm" class="btn btn-info" name="submit" value="Add Node">
-                                        <a href="#flowchart_preview" form="add_node_frm" class="btn btn-success" name="submit">Preview</a>
+                                        <input type="submit" form="add_node_frm" class="btn btn-success" name="submit" value="Preview">
                                     </div>
                                 </div>
                             </div>
@@ -687,10 +687,20 @@
                         var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
                         var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
                         var decisionTextArr = <?php echo json_encode($wordwrapDecision); ?>;
+    @php
+                        if ($node->orient_yes && $node->orient_no) {
+    @endphp
                         var orientArr = {
                                 yes:'{{$node->orient_yes}}',
                                 no:'{{$node->orient_no}}',
                             }
+    @php
+                        }
+    @endphp            
+                        var orientArr = {
+                                yes:'b',
+                                no:'r',
+                        }
                         shapesArr.push({
                             label: '{{$node->label}}', 
                             type: '{{$node->type}}', 
@@ -758,7 +768,7 @@
     @endphp
 
 ///////////////////// start flow chart ////////////////////////////////////////////////////////////
-    flowSVG.draw(SVG('drawing').size(900, 1000));
+    flowSVG.draw(SVG('drawing').size(900, 200));
     flowSVG.config({
        
         interactive: true,
@@ -803,6 +813,12 @@ $(document).ready(function () {
             },
         });
     });
+
+    var svg_height=20;
+    $("#drawing svg > g").each(function() {console.log($(this));
+        svg_height+=$(this).get(0).getBBox().height;
+    })
+    $("#drawing svg").attr('height',svg_height);
 });
 
 function changeNodeType(ele){

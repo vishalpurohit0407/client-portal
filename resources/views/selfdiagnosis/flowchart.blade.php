@@ -131,7 +131,7 @@
         }
     @endphp
 ///////////////////// start flow chart ////////////////////////////////////////////////////////////
-    flowSVG.draw(SVG('drawing').size(900, 1000));
+    flowSVG.draw(SVG('drawing').size(900, 200));
     flowSVG.config({
         interactive: true,
         showButtons: true,
@@ -140,5 +140,14 @@
         defaultFontSize:'12',
     });
     flowSVG.shapes(shapesArr);
+
+    $(document).ready(function () {
+
+        var svg_height=20;
+        $("#drawing svg > g").each(function() {console.log($(this));
+            svg_height+=$(this).get(0).getBBox().height;
+        })
+        $("#drawing svg").attr('height',svg_height);
+    });
 </script>
 @endsection

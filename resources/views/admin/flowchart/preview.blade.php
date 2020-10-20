@@ -125,7 +125,7 @@
             }
         }
     @endphp
-///////////////////// start flow chart ////////////////////////////////////////////////////////////
+    ///////////////////// start flow chart ////////////////////////////////////////////////////////////
     flowSVG.draw(SVG('drawing').size(900, 1000));
     flowSVG.config({
         interactive: true,
@@ -136,61 +136,14 @@
     });
     flowSVG.shapes(shapesArr);
 
-function changeNodeType(ele){
-    if(ele.value == 'decision'){
+    $(document).ready(function () {
 
-        $('.dicision_section').show();
-        $('.change_orient_block').show();
+        var svg_height=20;
+        $("#drawing svg > g").each(function() {console.log($(this));
+            svg_height+=$(this).get(0).getBBox().height;
+        })
+        $("#drawing svg").attr('height',svg_height);
+    });
 
-        $('.process_section').hide();
-        $('.add_link_block').hide();
-        $('.add_tip_block').hide();
-
-    }else if(ele.value == 'process'){
-        $('.dicision_section').hide();
-        $('.change_orient_block').hide();
-
-        $('.process_section').show();
-        $('.add_link_block').show();
-        $('.add_tip_block').show();
-
-    }else{
-        $('.dicision_section').hide();
-        $('.process_section').hide();
-        $('.change_orient_block').hide();
-        $('.add_link_block').show();
-        $('.add_tip_block').show();
-    } 
-}
-
-function showSection(ele){
-
-    var ids = $(ele).attr('id');
-
-    if($("#"+ids).prop('checked')){
-        $("."+ids+"_section").show();
-    }else{
-        $("."+ids+"_section").hide();
-    }
-}
-
-function deleteConfirm(event){
-  var id = $(event).attr('id');
-  console.log(id);
-  swal({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      type: "warning",
-      showCancelButton: !0,
-      buttonsStyling: !1,
-      confirmButtonClass: "btn btn-danger",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonClass: "btn btn-secondary"
-  }).then((result) => {
-    if (result.value) {
-      $("#frm_"+id).submit();
-    }
-  });
-}
 </script>
 @endsection
