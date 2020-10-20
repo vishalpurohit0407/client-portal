@@ -142,10 +142,7 @@
                             }],
                             tip: {
                                 title: '{{$node->tips_title}}',
-                                text:
-                                [
-                                    tipsTextArr,
-                                ]
+                                text: tipsTextArr,
                             },
                         });
 
@@ -162,7 +159,7 @@
         showButtons: true,
         connectorLength: 60,
         scrollto: true,
-        defaultFontSize:'14',
+        defaultFontSize:'12',
     });
     flowSVG.shapes(shapesArr);
 </script>
