@@ -38,19 +38,10 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link {{ Request::routeIs('user.maintenance.*') ? 'active' : '' }}" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples">
+              <a class="nav-link {{ Request::routeIs('user.maintenance.*') ? 'active' : '' }}" href="{{route('user.maintenance.list')}}">
                 <i class="fas fa-toolbox text-red"></i>
-                <span class="nav-link-text">Maintenance</span>
+                <span class="nav-link-text">Maintenance Guides</span>
               </a>
-              <div class="collapse {{ Request::routeIs('user.maintenance.*') ? 'show' : '' }}" id="navbar-examples">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="{{route('user.maintenance.list')}}" class="nav-link {{ Request::routeIs('user.maintenance.*') ? 'active' : '' }}">
-                      <span class="sidenav-normal">Maintenance Guides </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </li>
 
             <li class="nav-item">
