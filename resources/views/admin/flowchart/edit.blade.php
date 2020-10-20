@@ -768,8 +768,9 @@
     @endphp
 
 ///////////////////// start flow chart ////////////////////////////////////////////////////////////
-    flowSVG.draw(SVG('drawing').size(900, 1500));
+    flowSVG.draw(SVG('drawing').size(900, 1000));
     flowSVG.config({
+       
         interactive: true,
         showButtons: true,
         connectorLength: 60,
