@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{{ config('app.name', 'Argon Dashboard') }}</title>
   <!-- Favicon -->
   <link rel="icon" href="{{asset('assets/img/brand/favicon.png')}}" type="image/png">
@@ -18,7 +19,7 @@
 <body class="bg-default" style="padding-bottom: 0px;">
   <!-- Navbar -->
   <nav id="navbar-main" class="navbar navbar-horizontal navbar-transparent navbar-main navbar-expand-lg navbar-light">
-    <div class="container">
+    <div class="container justify-content-center">
       <a class="navbar-brand" >
         <img src="{{asset('assets/img/brand/white.png')}}">
       </a>

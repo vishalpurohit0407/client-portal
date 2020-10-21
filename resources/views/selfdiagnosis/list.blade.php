@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="header bg-primary pb-6">
+    <div class="header bg-primary pb-7">
         <div class="container-fluid">
             <div class="header-body">
                 <div class="row align-items-center py-4">
@@ -28,7 +28,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3 col-md-3 col-lg-2">
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <select class="form-control" id="category">

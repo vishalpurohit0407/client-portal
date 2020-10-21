@@ -16,7 +16,7 @@
             </div>
 
             <div class="row">
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card card-stats">
                         <div class="card-body">
                             <div class="row">
@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card card-stats">
                         <div class="card-body">
                             <div class="row">
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card card-stats">
                         <div class="card-body">
                             <div class="row">
@@ -79,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card card-stats">
                         <div class="card-body">
                             <div class="row">
@@ -112,7 +112,8 @@
 <style type="text/css">
     .card{
         height: 100%;
-        margin-bottom: 2.5rem;
+        padding-bottom: 2.5rem;
+        margin-bottom: 0;
     }
     .card-stats .card-body{
         display: block;
