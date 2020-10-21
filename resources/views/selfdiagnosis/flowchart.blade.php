@@ -21,8 +21,8 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-lg-3 col-2 text-right">
-                    
+                <div class="col-lg-4 col-2 text-right">
+                    <a href="{{ URL::previous() }}" class="btn btn-sm btn-neutral">Back</a>
                 </div>
             </div>
         </div>
