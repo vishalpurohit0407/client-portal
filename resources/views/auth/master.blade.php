@@ -37,16 +37,16 @@
         </div>
         <div class="col-xl-6">
           <ul class="nav nav-footer justify-content-center justify-content-xl-end">
-            
-            <li class="nav-item">
-              <a href="#" class="nav-link" target="_blank">About Us</a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link" target="_blank">Terms & Condition</a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link" target="_blank">License</a>
-            </li>
+            @php 
+            $cms_page = \App\CmsPage::where('status','1')->get();
+            @endphp
+            @if($cms_page)
+              @foreach($cms_page as $page)
+                <li class="nav-item">
+                  <a href="{{asset($page->url_slug)}}" target="_blank" class="nav-link">{{$page->title}}</a>
+                </li>
+              @endforeach
+            @endif
           </ul>
         </div>
       </div>
