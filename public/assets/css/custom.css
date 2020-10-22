@@ -61,6 +61,8 @@
 	border: 1px solid #ddd;
     background: #f9f9f9;
     margin: 0 auto;
+    max-width: 100%;
+    object-fit: cover;
 }
 .carousel-thumbnails-bottom .carousel-indicators li{
 	width: 15%;
@@ -308,14 +310,6 @@
     
 }
 
-.g-sidenav-pinned .sidenav{
-    max-width: 260px !important;
-}
-
-.g-sidenav-pinned .sidenav.fixed-left + .main-content{
-    margin-left: 260px !important;
-}
-
 .custom-hr{
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, .1);
@@ -324,3 +318,53 @@
 .custom-switch-lable{
     padding: .625rem 0;
 }
+.drawing_wrapper{
+    overflow: auto;
+}
+@media (min-width: 1200px){
+    .sidenav {
+    max-width: 260px !important;
+    }
+    .sidenav + .main-content{
+        margin-left: 260px !important;
+    }
+    .g-sidenav-pinned .sidenav{
+        max-width: 260px !important;
+    }
+
+    .g-sidenav-pinned .sidenav.fixed-left + .main-content{
+        margin-left: 260px !important;
+    }
+    .g-sidenav-hidden:not(.g-sidenav-show) .sidenav .navbar-nav > .nav-item > .nav-link[data-toggle='collapse']:after,
+    .g-sidenav-hide:not(.g-sidenav-show) .sidenav .navbar-nav > .nav-item > .nav-link[data-toggle='collapse']:after{
+        content: '\f105';
+    }
+    .g-sidenav-hidden:not(.g-sidenav-show) .sidenav .nav-link-text,
+    .g-sidenav-hide:not(.g-sidenav-show) .sidenav .nav-link-text,
+    .sidenav .navbar-brand, .sidenav .navbar-heading{display: block !important}
+}
+
+@media (max-width: 1199px){
+    .footer{
+        padding-left: 0 !important;
+    }
+}
+@media (max-width: 992px){
+    .footer{
+        padding: 1.5rem 0 !important;
+    }
+}
+
+@media (max-width: 480px){
+    body{
+        padding-bottom: 156px;
+    }
+}
+
+@media (max-width: 768px){
+    .carousel-thumbnails-bottom .carousel-item img{
+        height: 270px;
+    }
+}
+
+

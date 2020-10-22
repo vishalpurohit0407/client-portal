@@ -271,6 +271,7 @@ table.message_list td, table.message_list th{
             "serverSide": true,
             "destroy": true,
             "searching": false,
+            responsive: true,
             language: {
               paginate: {
                 previous: "<i class='fas fa-angle-left'>",

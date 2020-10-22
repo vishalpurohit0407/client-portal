@@ -50,11 +50,10 @@
               </div>
             </div>
             <div class="table-responsive py-4">
-              <table class="table table-flush" id="datatable-warranty">
+              <table id="datatable-warranty"  class="display responsive nowrap table table-flush" style="width:100%">
                 <thead class="thead-light">
                   <tr>
-                    <th class="w-10">No.</th>
-                    <!-- <th class="w-100">User Name</th> -->
+                    <th>No.</th>
                     <th>Unique Key</th>
                     <th>Status</th>
                     <th>Created At</th>
@@ -64,8 +63,7 @@
                 <tbody></tbody>
                 <tfoot>
                   <tr>
-                    <th class="w-10">No.</th>
-                    <!-- <th class="w-100">User Name</th> -->
+                    <th>No.</th>
                     <th>Unique Key</th>
                     <th>Status</th>
                     <th>Created At</th>
@@ -79,13 +77,19 @@
       </div>
     </div>
 @endsection
+
+
+
 @section('pagewise_js')
+
 <script>
     $(document).ready(function () {
         var table = $('#datatable-warranty').DataTable({
             "processing": true,
             "serverSide": true,
             "destroy": true,
+            responsive: true,
+            "autoWidth": false,
             language: {
               paginate: {
                 previous: "<i class='fas fa-angle-left'>",
@@ -97,7 +101,7 @@
               "dataType": "json",
               "type": "POST",
                data: {
-              
+                
               }
             },
             'columnDefs': [{
@@ -109,7 +113,6 @@
             }],
             "columns": [
                 { "data": "srnumber" },
-                //{ "data": "name" },
                 { "data": "key" },
                 { "data": "status" },
                 { "data": "created_at" },
@@ -119,6 +122,7 @@
         });
 
         table.order( [[ 1, 'asc' ]] ).draw();
+
     });
 
 </script>

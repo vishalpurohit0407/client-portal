@@ -36,7 +36,9 @@
         </div>
         <div class="card-body">
           <p class="card-text mb-4">{{$flowchart->description}}</p>
-          <div id="drawing" style="margin:30px auto; width:900px;"></div>
+          <div class="drawing_wrapper">
+            <div id="drawing" style="margin:30px auto; width:900px;"></div>
+          </div>
         </div>
     </div>
 </div>    

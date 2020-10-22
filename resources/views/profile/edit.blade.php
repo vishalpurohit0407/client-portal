@@ -24,7 +24,7 @@
                    
                     <div class="card-body pt-0 pt-md-5">
                         
-                        <div class="text-center mt-md-6">
+                        <div class="text-center mt-md-6 mt-6">
                             <h3>
                                 {{ auth()->user()->name }}
                             </h3>

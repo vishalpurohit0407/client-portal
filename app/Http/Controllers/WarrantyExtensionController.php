@@ -241,7 +241,7 @@ class WarrantyExtensionController extends Controller
 
         try {
 
-            $existing = WarrantyExtension::where('unique_key', $request->unique_key)->count();
+            $existing = WarrantyExtension::where('user_id', Auth::user()->id)->where('unique_key', $request->unique_key)->count();
 
             if($existing > 0){
                 return redirect(route('user.warranty_extension.history', ['unique_key' => $request->unique_key ]));
