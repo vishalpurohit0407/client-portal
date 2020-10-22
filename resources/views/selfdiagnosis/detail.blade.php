@@ -58,20 +58,13 @@
                 </div>
 
                 <div class="col-4 text-right">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" title="More Action">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="dropdown-item">Export PDF</a>
-                            @php
-                                $guide_flowchart = \App\GuideFlowchart::where('guide_id',$selfdiagnosis->id)->first();
-                            @endphp
-                            @if($guide_flowchart)
-                                <a class="dropdown-item" href="{{route('user.flowchart',[$guide_flowchart->flowchart_id,$selfdiagnosis->id])}}">View Flowchart</a>
-                            @endif
-                        </div>
-                    </div>
+                	<a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-default btn-sm">Export PDF</a>
+                	@php
+                        $guide_flowchart = \App\GuideFlowchart::where('guide_id',$selfdiagnosis->id)->first();
+                    @endphp
+                    @if($guide_flowchart)
+                        <a class="btn btn-primary btn-sm" href="{{route('user.flowchart',[$guide_flowchart->flowchart_id,$selfdiagnosis->id])}}">View Flowchart</a>
+                    @endif
                     <!-- <button class="btn btn-sm btn-neutral" onclick="printDiv('printableArea')">Print</button> -->
                 </div>
             </div>

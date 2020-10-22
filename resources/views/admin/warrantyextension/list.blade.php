@@ -43,13 +43,26 @@
             <!-- Card header -->
             <div class="card-header">
               <div class="row align-items-center">
-                <div class="col-8">
+                <div class="col-7">
                   <!-- Title -->
                   <h5 class="h3 mb-0">{{$title}}</h5>
                 </div>
               </div>
             </div>
             <div class="table-responsive py-4">
+              <div class="col-sm-12 col-md-6 col-xl-6 col-lg-6 pl-4 pb-3 row">
+                  <span class="col-lg-3 pb-3 pr-0">Filter By Status :</span>
+                  <span class="col-lg-4 pb-3">
+                    <select class="form-control form-control-sm" name="filter_status" id="filter_status" data-toggle="select" data-minimum-results-for-search="Infinity">
+                      <option value="">All</option>
+                      <option value="0">INITIAL</option>
+                      <option value="1">Admin Reply</option>
+                      <option value="2">Request</option>
+                      <option value="3">Approved</option>
+                      <option value="4">Declined</option>
+                    </select>
+                  </span>
+              </div>  
               <table class="table table-flush" id="datatable-warranty">
                 <thead class="thead-light">
                   <tr>
@@ -57,7 +70,7 @@
                     <th class="w-100">User Name</th>
                     <th>Unique Key</th>
                     <th>Status</th>
-                    <th>Created At</th>
+                    <th>Updated At</th>
                     <th>Options</th>
                   </tr>
                 </thead>
@@ -68,7 +81,7 @@
                     <th class="w-100">User Name</th>
                     <th>Unique Key</th>
                     <th>Status</th>
-                    <th>Created At</th>
+                    <th>Updated At</th>
                     <th>Options</th>
                   </tr>
                 </tfoot>
@@ -81,48 +94,47 @@
 @endsection
 @section('pagewise_js')
 <script>
-    $(document).ready(function () {
-        var table = $('#datatable-warranty').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "destroy": true,
-            language: {
-              paginate: {
-                previous: "<i class='fas fa-angle-left'>",
-                next: "<i class='fas fa-angle-right'>"
-              }
-            },
-            "ajax":{
-              "url": "{{ route('admin.warrantyextension.listdata',['_token' => csrf_token() ]) }}",
-              "dataType": "json",
-              "type": "POST",
-               data: {
-              
-              }
-            },
-            'columnDefs': [{
-                "targets": 0,
-                "orderable": false
-            },{
-                "targets": 5,
-                "orderable": false
-            }],
-            "columns": [
-                { "data": "srnumber" },
-                { "data": "name" },
-                { "data": "key" },
-                { "data": "status" },
-                { "data": "created_at" },
-                { "data": "options" }
-            ]  
+fetch_data();
+function fetch_data(status = ''){
+  var table = $('#datatable-warranty').DataTable({
+      "processing": true,
+      "serverSide": true,
+      "destroy": true,
+      language: {
+        paginate: {
+          previous: "<i class='fas fa-angle-left'>",
+          next: "<i class='fas fa-angle-right'>"
+        }
+      },
+      "ajax":{
+        "url": "{{ route('admin.warrantyextension.listdata',['_token' => csrf_token() ]) }}",
+        "dataType": "json",
+        "type": "POST",
+         data: {
+          status:status
+        }
+      },
+      'columnDefs': [{
+          "targets": 0,
+          "orderable": false
+      },{
+          "targets": 5,
+          "orderable": false
+      }],
+      "columns": [
+          { "data": "srnumber" },
+          { "data": "name" },
+          { "data": "key" },
+          { "data": "status" },
+          { "data": "updated_at" },
+          { "data": "options" }
+      ]  
+  });
 
-        });
-
-        table.order( [[ 1, 'asc' ]] ).draw();
-    });
+  table.order( [[ 1, 'asc' ]] ).draw();
+}
 function deleteConfirm(event){
   var id = $(event).attr('id');
-  console.log(id);
   swal({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -138,5 +150,10 @@ function deleteConfirm(event){
     }
   });
 }
+$('#filter_status').change(function(){
+  var status = $('#filter_status').val();
+  $('#datatable-warranty').DataTable().destroy();
+  fetch_data(status);
+});
 </script>
 @endsection

@@ -53,8 +53,7 @@ class WarrantyExtensionController extends Controller
                          ->orderBy($order,$dir)
                          ->get();
 
-        }
-        else {
+        }else {
             $search = $request->input('search.value'); 
 
             $extensions =  WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
@@ -73,6 +72,32 @@ class WarrantyExtensionController extends Controller
                             ->groupBy('warranty_extension.unique_key')
                             //->distinct('warranty_extension.unique_key')
                             ->count();
+        }
+        if($request->status == ''){
+            $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+                         ->select('warranty_extension.*','users.name')
+                         ->offset($start)
+                         ->limit($limit)
+                         //->distinct('warranty_extension.unique_key')
+                         ->groupBy('warranty_extension.unique_key')
+                         ->orderBy($order,$dir)
+                         ->get();
+        }else{
+          $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+                         ->select('warranty_extension.*','users.name')
+                         ->where('warranty_extension.status',$request->status)
+                         ->offset($start)
+                         ->limit($limit)
+                         //->distinct('warranty_extension.unique_key')
+                         ->groupBy('warranty_extension.unique_key')
+                         ->orderBy($order,$dir)
+                         ->get();
+
+          $totalFiltered = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+                         ->select('warranty_extension.*','users.name')
+                         ->where('warranty_extension.status',$request->status)
+                         ->groupBy('warranty_extension.unique_key')
+                         ->count();
         }
         //dd($extensions);
         $data = array();
@@ -93,21 +118,21 @@ class WarrantyExtensionController extends Controller
                 $nestedData['name'] = '<img src="'.asset('storage/'.$extension->user->profile_img).'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                 $nestedData['key'] = $extension->unique_key;
 
-                $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
+                $extension_latest = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->select('status','updated_at')->first();
 
-                if($extension->status == '0'){ 
+                if($extension_latest->status == '0'){ 
                   $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
-                }else if($extension->status == '1'){ 
+                }else if($extension_latest->status == '1'){ 
                   $nestedData['status'] = '<span class="badge badge-pill badge-primary">Admin Reply</span>';
-                }elseif($extension->status == '2'){
+                }elseif($extension_latest->status == '2'){
                   $nestedData['status'] = '<span class="badge badge-pill badge-success">Request</span>';
-                }elseif($extension->status == '3'){
+                }elseif($extension_latest->status == '3'){
                   $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
-                }elseif($extension->status == '4'){
+                }elseif($extension_latest->status == '4'){
                   $nestedData['status'] = '<span class="badge badge-pill badge-danger">Declined</span>';
                 }
                 
-                $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
+                $nestedData['updated_at'] = date('d-M-Y',strtotime($extension_latest->updated_at));
                 $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0'>View</a>";
                 
                 $srnumber++;
@@ -182,6 +207,32 @@ class WarrantyExtensionController extends Controller
                                 ->count();
             }
 
+            if($request->status == ''){
+                $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+                             ->select('warranty_extension.*','users.name')
+                             ->whereIn('warranty_extension.status',['0','1','2'])
+                             ->offset($start)
+                             ->limit($limit)
+                             ->groupBy('warranty_extension.unique_key')
+                             ->orderBy($order,$dir)
+                             ->get();
+            }else{
+              $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+                             ->select('warranty_extension.*','users.name')
+                             ->where('warranty_extension.status',$request->status)
+                             ->offset($start)
+                             ->limit($limit)
+                             ->groupBy('warranty_extension.unique_key')
+                             ->orderBy($order,$dir)
+                             ->get();
+
+              $totalFiltered = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+                             ->select('warranty_extension.*','users.name')
+                             ->where('warranty_extension.status',$request->status)
+                             ->groupBy('warranty_extension.unique_key')
+                             ->count();
+            }
+
             //dd($extensions);
             $data = array();
             if(!empty($extensions))
@@ -196,21 +247,21 @@ class WarrantyExtensionController extends Controller
                     $nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                     $nestedData['key'] = $extension->unique_key;
 
-                    $extension->status = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
+                    $extension_latest = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->select('status','updated_at')->first();
 
-                    if($extension->status == '0'){ 
+                    if($extension_latest->status == '0'){ 
                       $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
-                    }else if($extension->status == '1'){ 
+                    }else if($extension_latest->status == '1'){ 
                       $nestedData['status'] = '<span class="badge badge-pill badge-primary">Admin Reply</span>';
-                    }elseif($extension->status == '2'){
+                    }elseif($extension_latest->status == '2'){
                       $nestedData['status'] = '<span class="badge badge-pill badge-success">Request</span>';
-                    }elseif($extension->status == '3'){
+                    }elseif($extension_latest->status == '3'){
                       $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
-                    }elseif($extension->status == '4'){
+                    }elseif($extension_latest->status == '4'){
                       $nestedData['status'] = '<span class="badge badge-pill badge-danger">Declined</span>';
                     }
                     
-                    $nestedData['created_at'] = date('d-M-Y',strtotime($extension->created_at));
+                    $nestedData['updated_at'] = date('d-M-Y',strtotime($extension_latest->updated_at));
                     $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0' title='EDIT' >View</a>";
                     
                     $srnumber++;
