@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 
 @section('content')
-<div class="header bg-primary pb-6">
+<div class="header bg-primary pb-7">
     <div class="container-fluid">
         <div class="header-body">
             <div class="row align-items-center py-4">
@@ -14,7 +14,7 @@
                     </nav>
                 </div>
             </div>
-          <!-- Card stats -->
+          
             <div class="row">
                 <div class="col-xl-3 col-md-6">
                     <div class="card card-stats">
@@ -105,7 +105,76 @@
 </div>
 <!-- Page content -->
 <div class="container-fluid mt--6">
-  
+    <div class="row">
+       <div class="col-xl-12">
+          <div class="card">
+             <div class="card-header border-0">
+                <div class="row align-items-center">
+                   <div class="col">
+                      <h3 class="mb-0">Latest Warranty Extension Request</h3>
+                   </div>
+                   <div class="col text-right">
+                      <a href="{{route('admin.warrantyextension.listreqest')}}" class="btn btn-sm btn-primary">See all</a>
+                   </div>
+                </div>
+             </div>
+             <div class="table-responsive">
+                <!-- Projects table -->
+                <table class="table align-items-center table-flush" id="datatable-warranty">
+                    <thead class="thead-light">
+                      <tr>
+                        <th class="w-10">No.</th>
+                        <th class="w-100">User Name</th>
+                        <th>Unique Key</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        @if(count($extensions) > 0)
+                            @foreach($extensions as $key => $extension)
+
+                                <tr>
+                                    <td>{{$key+1}}</td>
+                                    <td><img src="{{asset($extension->user->user_image_url)}}" class="avatar rounded-circle mr-3"> <b>{{ucfirst($extension->user->name)}}</b></td>
+                                    <td>{{$extension->unique_key}}</td>
+                                    @php
+                                        $extension->status  = App\WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->first()->status;
+                                    @endphp
+                                    @if($extension->status == '0') 
+                                      <td><span class="badge badge-pill badge-warning">Initial</span></td>
+                                    @elseif($extension->status == '1') 
+                                      <td><span class="badge badge-pill badge-primary">Admin Reply</span></td>
+                                    @elseif($extension->status == '2')
+                                      <td><span class="badge badge-pill badge-success">Request</span></td>
+                                    @elseif($extension->status == '3')
+                                      <td><span class="badge badge-pill badge-success">Approved</span></td>
+                                    @elseif($extension->status == '4')
+                                      <td><span class="badge badge-pill badge-danger">Declined</span></td>
+                                    @endif
+                                    <td>{{date('d-M-Y',strtotime($extension->created_at))}}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr><td colspan="2" align="center">Record not found.</td></tr>
+                        @endif
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th class="w-10">No.</th>
+                        <th class="w-100">User Name</th>
+                        <th>Unique Key</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                       
+                      </tr>
+                    </tfoot>
+                </table>
+                
+             </div>
+          </div>
+       </div>
+    </div>
 </div>
 <style type="text/css">
     .card{

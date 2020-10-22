@@ -37,7 +37,16 @@ class AdminController extends Controller {
       $totalWarrantyRequest = WarrantyExtension::whereIn('status',['0','1','2'])->count();
       $totalSelfDiagnosis = Guide::where('guide_type','self-diagnosis')->where('status','!=','3')->count();
       $totalMaintenance = Guide::where('guide_type','maintenance')->where('status','!=','3')->count();
-      return view('admin.dashboard',array('totalUser' => $totalUser, 'totalWarrantyRequest' => $totalWarrantyRequest, 'totalSelfDiagnosis' => $totalSelfDiagnosis, 'totalMaintenance' => $totalMaintenance)); 
+
+      $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
+         ->select('warranty_extension.*','users.name')
+         ->whereIn('warranty_extension.status',['0','1','2'])
+         ->limit(5)
+         ->groupBy('warranty_extension.unique_key')
+         ->orderBy('created_at','desc')
+         ->get();
+
+      return view('admin.dashboard',array('totalUser' => $totalUser, 'totalWarrantyRequest' => $totalWarrantyRequest, 'totalSelfDiagnosis' => $totalSelfDiagnosis, 'totalMaintenance' => $totalMaintenance, 'extensions' => $extensions)); 
     }
 
     public function getChangePass() {

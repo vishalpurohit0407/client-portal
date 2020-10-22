@@ -31,7 +31,7 @@ class Guide extends Authenticatable
         'main_title', 'main_image', 'description', 'type','duration','duration_type','difficulty','cost','tags','introduction','introduction_video_type','introduction_video_link', 'guide_type', 'status'
     ];
 
-    protected $appends = [ 'main_image_url' ];
+    protected $appends = [ 'main_image_url', 'completion_guide_count' ];
 
     public function guide_category()
     {
@@ -42,6 +42,12 @@ class Guide extends Authenticatable
     {
         return (isset($this->main_image) && Storage::disk(env('FILESYSTEM_DRIVER'))->exists($this->main_image) ? Config('filesystems.disks.public.url').'/'.$this->main_image : asset('assets/img/theme/no-image.jpg'));
     }
+
+    public function getCompletionGuideCountAttribute()
+    {
+        return \App\GuideCompletion::where('guide_id', $this->id)->count();
+    }
+
     public function guide_step()
     {
         return $this->hasMany('App\GuideSteps', 'guide_id','id')->orderBy('step_no', 'asc');
