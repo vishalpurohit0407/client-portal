@@ -98,6 +98,7 @@ function fetch_data(status = ''){
         "processing": true,
         "serverSide": true,
         "destroy": true,
+        "order": [[ 4, "desc" ]],
         language: {
           paginate: {
             previous: "<i class='fas fa-angle-left'>",
@@ -113,9 +114,6 @@ function fetch_data(status = ''){
           }
         },
         'columnDefs': [{
-            "targets": 0,
-            "orderable": false
-        },{
             "targets": 5,
             "orderable": false
         }],

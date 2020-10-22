@@ -100,6 +100,7 @@ function fetch_data(status = ''){
       "processing": true,
       "serverSide": true,
       "destroy": true,
+      "order": [[ 4, "desc" ]],
       language: {
         paginate: {
           previous: "<i class='fas fa-angle-left'>",

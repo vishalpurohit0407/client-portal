@@ -26,10 +26,11 @@ class WarrantyExtensionController extends Controller
     {
         //echo "<pre>"; print_r($request->all()); exit();
         $columns = array(  
-            0 =>'name',
-            1 =>'unique_key',
-            2 => 'status',
-            3 => 'created_at',
+            0 => 'warranty_extension.id',
+            1 => 'users.name',
+            2 => 'warranty_extension.unique_key',
+            3 => 'warranty_extension.status',
+            4 => 'warranty_extension.updated_at',
         );
   
          
@@ -157,12 +158,13 @@ class WarrantyExtensionController extends Controller
             
             //echo "<pre>"; print_r($request->all()); exit();
             $columns = array(  
-                0 =>'name',
-                1 =>'unique_key',
-                2 => 'status',
-                3 => 'created_at',
+                0 => 'warranty_extension.id',
+                1 => 'users.name',
+                2 => 'warranty_extension.unique_key',
+                3 => 'warranty_extension.status',
+                4 => 'warranty_extension.updated_at',
             );
-
+            //dd($columns[$request->input('order.0.column')]);
             $limit = $request->input('length');
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
