@@ -34,7 +34,8 @@ class HomeController extends Controller
             $totalSupportTicket = 0;
             $tickets = [];
         }
-
+       
+        
         $extensions = WarrantyExtension::where('user_id', Auth::user()->id)
            ->whereIn('warranty_extension.status',['0','1','2'])
            ->limit(5)

@@ -106,8 +106,8 @@
 <!-- Page content -->
 <div class="container-fluid mt--6">
 
-    <div class="row">
-        <div class="col-xl-6">
+    <div class="row pb-4">
+        <div class="col-xl-12">
             <div class="card">
                  <div class="card-header border-0">
                     <div class="row align-items-center">
@@ -171,8 +171,10 @@
                 </div>
             </div>
         </div>
-
-       <div class="col-xl-6">
+       </div>
+        
+    <div class="row">
+       <div class="col-xl-12">
           <div class="card">
              <div class="card-header border-0">
                 <div class="row align-items-center">
@@ -197,8 +199,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                        @if(count($tickets) > 0)
-                            @foreach($tickets as $key => $ticket)
+                        @if($tickets)
+                            @foreach($tickets->tickets as $key => $ticket)
                             
                                 <tr>
                                     <td>{{$key+1}}</td>
