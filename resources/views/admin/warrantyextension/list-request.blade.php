@@ -106,14 +106,13 @@ function fetch_data(status = ''){
             "targets": 0,
             "orderable": false
         },{
-            "targets": 5,
+            "targets": 4,
             "orderable": false
         }],
         "columns": [
             { "data": "srnumber" },
             { "data": "name" },
             { "data": "key" },
-            { "data": "status" },
             { "data": "updated_at" },
             { "data": "options" }
         ]  
