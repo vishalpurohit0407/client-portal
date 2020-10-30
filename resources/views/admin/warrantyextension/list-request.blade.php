@@ -44,30 +44,19 @@
             <!-- Card header -->
             <div class="card-header">
               <div class="row align-items-center">
-                <div class="col-7">
+                <div class="col-8">
+                  <!-- Title -->
                   <h5 class="h3 mb-0">{{$title}}</h5>
                 </div>
               </div>
             </div>
             <div class="table-responsive py-4">
-              <div class="col-sm-12 col-md-6 col-xl-6 col-lg-6 pl-4 pb-3 row">
-                  <span class="col-lg-3 pb-3 pr-0">Filter By Status :</span>
-                  <span class="col-lg-4 pb-3">
-                    <select class="form-control form-control-sm" name="filter_status" id="filter_status" data-toggle="select" data-minimum-results-for-search="Infinity">
-                      <option value="">All</option>
-                      <option value="0">INITIAL</option>
-                      <option value="1">Admin Reply</option>
-                      <option value="2">Request</option>
-                    </select>
-                  </span>
-              </div>   
               <table class="table table-flush" id="datatable-warranty">
                 <thead class="thead-light">
                   <tr>
                     <th class="w-10">No.</th>
                     <th class="w-100">User Name</th>
                     <th>Unique Key</th>
-                    <th>Status</th>
                     <th>Updated At</th>
                     <th>Options</th>
                   </tr>
@@ -78,7 +67,6 @@
                     <th class="w-10">No.</th>
                     <th class="w-100">User Name</th>
                     <th>Unique Key</th>
-                    <th>Status</th>
                     <th>Updated At</th>
                     <th>Options</th>
                   </tr>
@@ -92,6 +80,7 @@
 @endsection
 @section('pagewise_js')
 <script>
+
 fetch_data();
 function fetch_data(status = ''){
     var table = $('#datatable-warranty').DataTable({

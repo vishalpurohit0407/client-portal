@@ -26,10 +26,10 @@ class WarrantyExtensionController extends Controller
     {
         //echo "<pre>"; print_r($request->all()); exit();
         $columns = array(  
-            0 =>'name',
-            1 =>'unique_key',
-            2 => 'status',
-            3 => 'created_at',
+            0 => 'warranty_extension.id',
+            1 => 'users.name',
+            2 => 'warranty_extension.unique_key',
+            3 => 'warranty_extension.updated_at',
         );
   
          
@@ -52,8 +52,7 @@ class WarrantyExtensionController extends Controller
                          ->groupBy('warranty_extension.unique_key')
                          ->orderBy($order,$dir)
                          ->get();
-
-        }else {
+        }else{
             $search = $request->input('search.value'); 
 
             $extensions =  WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
@@ -72,32 +71,6 @@ class WarrantyExtensionController extends Controller
                             ->groupBy('warranty_extension.unique_key')
                             //->distinct('warranty_extension.unique_key')
                             ->count();
-        }
-        if($request->status == ''){
-            $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
-                         ->select('warranty_extension.*','users.name')
-                         ->offset($start)
-                         ->limit($limit)
-                         //->distinct('warranty_extension.unique_key')
-                         ->groupBy('warranty_extension.unique_key')
-                         ->orderBy($order,$dir)
-                         ->get();
-        }else{
-          $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
-                         ->select('warranty_extension.*','users.name')
-                         ->where('warranty_extension.status',$request->status)
-                         ->offset($start)
-                         ->limit($limit)
-                         //->distinct('warranty_extension.unique_key')
-                         ->groupBy('warranty_extension.unique_key')
-                         ->orderBy($order,$dir)
-                         ->get();
-
-          $totalFiltered = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
-                         ->select('warranty_extension.*','users.name')
-                         ->where('warranty_extension.status',$request->status)
-                         ->groupBy('warranty_extension.unique_key')
-                         ->count();
         }
         //dd($extensions);
         $data = array();
@@ -118,19 +91,7 @@ class WarrantyExtensionController extends Controller
                 $nestedData['name'] = '<img src="'.asset('storage/'.$extension->user->profile_img).'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                 $nestedData['key'] = $extension->unique_key;
 
-                $extension_latest = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->select('status','updated_at')->first();
-
-                if($extension_latest->status == '0'){ 
-                  $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
-                }else if($extension_latest->status == '1'){ 
-                  $nestedData['status'] = '<span class="badge badge-pill badge-primary">Admin Reply</span>';
-                }elseif($extension_latest->status == '2'){
-                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Request</span>';
-                }elseif($extension_latest->status == '3'){
-                  $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
-                }elseif($extension_latest->status == '4'){
-                  $nestedData['status'] = '<span class="badge badge-pill badge-danger">Declined</span>';
-                }
+                $extension_latest = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->select('updated_at')->first();
                 
                 $nestedData['updated_at'] = date('d-M-Y',strtotime($extension_latest->updated_at));
                 $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0'>View</a>";
@@ -157,12 +118,12 @@ class WarrantyExtensionController extends Controller
             
             //echo "<pre>"; print_r($request->all()); exit();
             $columns = array(  
-                0 =>'name',
-                1 =>'unique_key',
-                2 => 'status',
-                3 => 'created_at',
+                0 => 'warranty_extension.id',
+                1 => 'users.name',
+                2 => 'warranty_extension.unique_key',
+                3 => 'warranty_extension.updated_at',
             );
-
+            //dd($columns[$request->input('order.0.column')]);
             $limit = $request->input('length');
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
@@ -183,8 +144,7 @@ class WarrantyExtensionController extends Controller
                              ->orderBy($order,$dir)
                              ->get();
 
-            }
-            else {
+            }else{
                 $search = $request->input('search.value'); 
 
                 $extensions =  WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
@@ -207,32 +167,6 @@ class WarrantyExtensionController extends Controller
                                 ->count();
             }
 
-            if($request->status == ''){
-                $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
-                             ->select('warranty_extension.*','users.name')
-                             ->whereIn('warranty_extension.status',['0','1','2'])
-                             ->offset($start)
-                             ->limit($limit)
-                             ->groupBy('warranty_extension.unique_key')
-                             ->orderBy($order,$dir)
-                             ->get();
-            }else{
-              $extensions = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
-                             ->select('warranty_extension.*','users.name')
-                             ->where('warranty_extension.status',$request->status)
-                             ->offset($start)
-                             ->limit($limit)
-                             ->groupBy('warranty_extension.unique_key')
-                             ->orderBy($order,$dir)
-                             ->get();
-
-              $totalFiltered = WarrantyExtension::join('users', 'users.id', '=', 'warranty_extension.user_id')
-                             ->select('warranty_extension.*','users.name')
-                             ->where('warranty_extension.status',$request->status)
-                             ->groupBy('warranty_extension.unique_key')
-                             ->count();
-            }
-
             //dd($extensions);
             $data = array();
             if(!empty($extensions))
@@ -247,20 +181,8 @@ class WarrantyExtensionController extends Controller
                     $nestedData['name'] = '<img src="'.$extension->user->user_image_url.'" class="avatar rounded-circle mr-3"> <b>'.ucfirst($extension->user->name).'</b>';
                     $nestedData['key'] = $extension->unique_key;
 
-                    $extension_latest = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->select('status','updated_at')->first();
+                    $extension_latest = WarrantyExtension::where('unique_key',$extension->unique_key)->latest()->select('updated_at')->first();
 
-                    if($extension_latest->status == '0'){ 
-                      $nestedData['status'] = '<span class="badge badge-pill badge-warning">Initial</span>';
-                    }else if($extension_latest->status == '1'){ 
-                      $nestedData['status'] = '<span class="badge badge-pill badge-primary">Admin Reply</span>';
-                    }elseif($extension_latest->status == '2'){
-                      $nestedData['status'] = '<span class="badge badge-pill badge-success">Request</span>';
-                    }elseif($extension_latest->status == '3'){
-                      $nestedData['status'] = '<span class="badge badge-pill badge-success">Approved</span>';
-                    }elseif($extension_latest->status == '4'){
-                      $nestedData['status'] = '<span class="badge badge-pill badge-danger">Declined</span>';
-                    }
-                    
                     $nestedData['updated_at'] = date('d-M-Y',strtotime($extension_latest->updated_at));
                     $nestedData['options'] = "&emsp;<a href='{$edit}' class='btn btn-success btn-sm mr-0' title='EDIT' >View</a>";
                     
