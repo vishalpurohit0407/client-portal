@@ -71,7 +71,7 @@ class AdminController extends Controller {
   		$userData = Admin::find(Auth::guard('admin')->user()->id);
   		if(!Hash::check($request->get('currentpass'),$userData->password)){
   			$request->session()->flash('alert-danger','Please enter valid current password.');
-  			return redirect(route('admin.changepass'));
+  			return redirect(route('admin.editprofile'));
   		}
 
   		$userData->password = Hash::make($request->get('newpass'));
@@ -79,7 +79,7 @@ class AdminController extends Controller {
   			$request->session()->flash('alert-success','Password changed successfully.');
   		}
 
-  		return redirect(route('admin.changepass'));
+  		return redirect(route('admin.editprofile'));
     }
 	
   	public function profile() {

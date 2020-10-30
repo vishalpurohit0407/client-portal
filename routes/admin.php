@@ -28,7 +28,7 @@ Route::group(['middleware' => ['admin']],function(){
 	Route::get('/logout','Adminauth\LoginController@logout')->name('admin.logout');
 
 	// Change password routes
-	Route::get('/changepass','admin\AdminController@getChangePass')->name('admin.changepass');
+	//Route::get('/changepass','admin\AdminController@getChangePass')->name('admin.changepass');
 	Route::post('/changepass','admin\AdminController@changePass')->name('admin.updatechangepass');
 
 	// Change Profile routes

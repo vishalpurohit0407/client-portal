@@ -100,6 +100,7 @@ function fetch_data(status = ''){
       "processing": true,
       "serverSide": true,
       "destroy": true,
+      responsive: true,
       language: {
         paginate: {
           previous: "<i class='fas fa-angle-left'>",
