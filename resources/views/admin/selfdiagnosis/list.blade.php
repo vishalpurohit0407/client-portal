@@ -74,9 +74,9 @@
                 </div>
             @endif 
         @endforeach
-        <div class="row">
-            @include('admin.selfdiagnosis.selfdiagnosis_data')
-        </div>
+       
+        @include('admin.selfdiagnosis.selfdiagnosis_data')
+       
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
                 {!! $selfdiagnosis->links() !!}
