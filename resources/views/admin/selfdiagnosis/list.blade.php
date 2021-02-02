@@ -101,26 +101,25 @@ var pageno=1;
 $(document).ready(function() {
     $(document).on('click', '.pagination a',function(event){
         event.preventDefault();
-
         $('li').removeClass('active');
         $(this).parent('li').addClass('active');
-
         var myurl = $(this).attr('href');
         pageno=$(this).attr('href').split('page=')[1];
         getData();
     });
-
+    var delaySearchTimer;
     $('#search').on('keyup',function(){
-        pageno=1;
-        getData();
+        clearTimeout(delaySearchTimer);
+        delaySearchTimer = setTimeout(function() {
+            pageno=1;
+            getData();
+        }, 500);        
     });
-
     $('#category').on('change',function(){
         pageno=1;
         getData();
     });
 });
-
 function getData(){
     $(".guide-listing-loader").show();
     $.ajax(
@@ -138,7 +137,6 @@ function getData(){
           $(".guide-listing-loader").hide();
     });
 }
-
 function deleteConfirm(event){
     var id = $(event).attr('id');
     swal({
@@ -156,9 +154,7 @@ function deleteConfirm(event){
       }
     });
 }
-
 function resetFilter(){
-
     $("#search").val('');
     $("#category").val('');
     $('#category').change();

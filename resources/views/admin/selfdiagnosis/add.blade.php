@@ -47,7 +47,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="guide_main_image">Main Image</label>
                     
-                    <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.selfdiagnosis.mainupload',['id' => $guide->id])}}">
+                    <div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="{{route('admin.selfdiagnosis.mainupload',['id' => $guide->id])}}" data-dropzone-accepted-files=".jpeg,.jpg,.png" dropzone-max-file-size="2028">
                       <div class="fallback">
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" id="guide_main_image">
@@ -427,7 +427,6 @@ $(document).ready(function() {
         paramName: 'file',
         maxFilesSize: 1024,
         init: function() {
-
             var thisDropzone = this;
             var mockFile = { name: 'Name Image', size: 12345, type: 'image/jpeg' };
             thisDropzone.emit("addedfile", mockFile);
@@ -435,16 +434,12 @@ $(document).ready(function() {
             thisDropzone.emit("thumbnail", mockFile, "https://admin.scanit.in/storage/adminprofile/1/b06edd21b7724c7d3c7333fb142fa65a.jpg")
         },
     });*/
-
-
     /*var mockFile = { name: '{{$guide->main_image}}'};
     mainImage.emit("addedfile", mockFile);
     mainImage.emit("thumbnail", mockFile, '{{$guide->main_image_url}}');
     mainImage.emit("complete", mockFile);
     mainImage.files.push(mockFile);*/
-
     $('.js-example-basic-single').select2();
-
     CKEDITOR.replace('introduction', {
       extraPlugins:'justify,videodetector',
       height : '300px',
@@ -452,7 +447,6 @@ $(document).ready(function() {
       filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
       filebrowserUploadMethod: 'form'
     });
-
    
     function addon_step_unique_id(){
         return "key_"+Math.random().toString(16).slice(2);
@@ -470,11 +464,9 @@ $(document).ready(function() {
             $(this).find('.text-danger').remove();
             $(this).find('.step_number').text(step_count);
             $(this).show('fast',function(){
-
                 var unique_id=addon_step_unique_id();
                 
                 $(this).find(".step_key").val(unique_id);
-
                 $(this).find(".step_description").attr('id','step_description_'+step_count);
                 CKEDITOR.replace('step_description_'+step_count, {
                   extraPlugins:'justify,videodetector',
@@ -483,10 +475,8 @@ $(document).ready(function() {
                   filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
                   filebrowserUploadMethod: 'form'
                 });
-
                 Dropzone.options.myAwesomeDropzone = false;
                 Dropzone.autoDiscover = false;
-
                 $(this).find('.dropzone-init').each(function(){
                     
                     var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
@@ -494,13 +484,13 @@ $(document).ready(function() {
                     var dropMaxFiles = 6;
                     var dropParamName = 'file_image';
                     var dropMaxFileSize = 2048;
-
                     $(this).dropzone({
                         url: dropUrl,
                         maxFiles: dropMaxFiles,
                         paramName: dropParamName,
                         maxFilesSize: dropMaxFileSize,
                         addRemoveLinks: true,
+                        acceptedFiles: ".jpeg,.jpg,.png",
                         init: function() {
                             this.on("complete", function(file) {
                                 //linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
@@ -532,7 +522,6 @@ $(document).ready(function() {
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if(result.value){
-
                     $.ajax({
                         url: "{{ route('admin.selfdiagnosis.remove.step',['_token' => csrf_token() ]) }}",
                         data: { step_key: keyId},
@@ -553,18 +542,14 @@ $(document).ready(function() {
             });
         },
         ready: function (setIndexes) {
-
             Dropzone.options.myAwesomeDropzone = false;
             Dropzone.autoDiscover = false;
-
             $('.guide_step_list').each(function(){
-
                 var unique_id = $(this).find(".step_key").val()
                 if($(this).find(".step_key").val()==''){
                     var unique_id=addon_step_unique_id();
                     $(this).find(".step_key").val(unique_id);
                 }
-
                 CKEDITOR.replace($(this).find('.step_description').attr('id'), {
                   extraPlugins:'justify,videodetector',
                   height : '300px',
@@ -572,33 +557,28 @@ $(document).ready(function() {
                   filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
                   filebrowserUploadMethod: 'form'
                 });
-
-                $(this).find('.dropzone-init').each(function(){
-                    
+                $(this).find('.dropzone-init').each(function(){                    
                     var dropUrl = "{{ route('admin.selfdiagnosis.upload', ['_token' => csrf_token()]) }}";
                     dropUrl+="&unique_id="+unique_id+"&guide_id="+guide_id;
                     var dropMaxFiles = 6;
                     var dropParamName = 'file_image';
                     var dropMaxFileSize = 2048;
-
                     $(this).dropzone({
                         url: dropUrl,
                         maxFiles: dropMaxFiles,
                         paramName: dropParamName,
                         maxFilesSize: dropMaxFileSize,
                         addRemoveLinks: true,
+                        acceptedFiles: ".jpeg,.jpg,.png",
                         init: function() {
                             this.on("complete", function(file) {
                                 //linkObj.find(".dz-remove").html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
                                 $(file._removeLink).html("<span class='fa fa-trash text-danger' style='font-size: 1.5em'></span>");
                             });
-
                             let myDropzone = this;
-
                             // If you only have access to the original image sizes on your server,
                             // and want to resize them in the browser:
                             
-
                             if(stepMediaArr[unique_id]){
                                 for (i = 0; i < stepMediaArr[unique_id].length; i++) {
                                     
@@ -612,9 +592,7 @@ $(document).ready(function() {
                                     //$(myDropzone).find(".dz-remove").attr("data-dz-media_id", stepMediaArr[unique_id][i].id);
                                 }
                             }
-
                             callRemoveImg();
-
                         },
                         success: function(file, response){
                             
@@ -626,7 +604,6 @@ $(document).ready(function() {
                         }
                     });
                 });
-
             });
         },
     });
@@ -637,21 +614,15 @@ $(document).ready(function() {
             $(this).find('.step_number').text(step_number);
         });
     }
-
 });
-
-
 function callRemoveImg(){
-
     $(".dz-remove").on("click", function (e) {
         
         e.preventDefault();
         e.stopPropagation();
-
         var imageId = $(this).data('dz-media_id');
        
         if(imageId){
-
             $.ajax({
                 url: "{{ route('admin.selfdiagnosis.remove.image',['_token' => csrf_token() ]) }}",
                 data: { imageId: imageId},
@@ -667,23 +638,18 @@ function callRemoveImg(){
         }
     });
 }
-
 function addMoreStep(){
   
   stepCount++;
-
   var ids = 'step_description'+stepCount;
   var html = $("#step_hidden_html");
-
   var ele = html.find('.step_description_cl').attr('id',ids);
   
   $("#step_html").append(html.html());
-
  /* $('.remove_level').on('click', function() {
     
     $(this).closest('.row').remove();
   });*/
-
   /*CKEDITOR.replace('step_description'+stepCount, {
     extraPlugins:'justify,videodetector',
     height : '300px',
@@ -691,7 +657,6 @@ function addMoreStep(){
     filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
     filebrowserUploadMethod: 'form'
   });*/
-
   /*CKEDITOR.editorConfig = function (config) {
       
     config.height = 300;
@@ -701,9 +666,7 @@ function addMoreStep(){
     config.filebrowserUploadUrl = "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}";
     config.filebrowserUploadMethod = 'form';
   };
-
   CKEDITOR.replace(ids);*/
 }
-
 </script>
 @endsection

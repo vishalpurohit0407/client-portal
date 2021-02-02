@@ -1,15 +1,15 @@
 .bootstrap-tagsinput{
-	border:1px solid;
-	width: 100%;
+    border:1px solid;
+    width: 100%;
 }
 .hr-dotted{
-	border-top: 2px dotted;
+    border-top: 2px dotted;
 }
 
 /*-------drop zone------*/
 
 .dz-preview.list-group{
-	display: block;
+    display: block;
 }
 .dz-preview.list-group-flush .list-group-item img {
     width: 100%;
@@ -25,11 +25,11 @@
 
 /*-------detail page------*/
 .bootstrap-tagsinput{
-	border:1px solid;
-	width: 100%;
+    border:1px solid;
+    width: 100%;
 }
 .hr-dotted{
-	border-top: 2px dotted;
+    border-top: 2px dotted;
 }
 .tuto-items-container .alert-text-right {
     position: absolute;
@@ -37,18 +37,18 @@
     top: 12px;
 }
 .tuto-items-container .alert{
-	padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem;
 }
 .tuto-items-container .alert .fa-check-circle{color: #74af5c}
 .tuto-items-container .alert ul{
-	list-style: none;
-	padding-left: 2.75rem;
+    list-style: none;
+    padding-left: 2.75rem;
 }
 .carousel-thumbnails-bottom .carousel-indicators{
-	position: static;
-	display: block;
-	padding: 0;
-	margin: 10px 0 0 0;
+    position: static;
+    display: block;
+    padding: 0;
+    margin: 10px 0 0 0;
 }
 .carousel-thumbnails-bottom .carousel-item{
     border: 1px solid #ccc;
@@ -56,35 +56,35 @@
     background: #F9F9F9;
 }
 .carousel-thumbnails-bottom .carousel-item img{
-	height: 415px;
-	width: auto;
-	border: 1px solid #ddd;
+    height: 415px;
+    width: auto;
+    border: 1px solid #ddd;
     background: #f9f9f9;
     margin: 0 auto;
     max-width: 100%;
     object-fit: cover;
 }
 .carousel-thumbnails-bottom .carousel-indicators li{
-	width: 15%;
-	display: inline-block;
-	height: 50px;
-	padding: 0;
-	margin: 0;
-	border: 0;
+    width: 15%;
+    display: inline-block;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+    border: 0;
 }
 .carousel-thumbnails-bottom .carousel-indicators li img{
-	height: 100%;
-	width: 100%;
-	object-fit: cover;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 .tabbing ul.tab-nav{
-	padding: 0;margin: 0;list-style: none;
+    padding: 0;margin: 0;list-style: none;
 }
 .tabbing ul.tab-nav li{
-	background-color: #f8fbfc;
-	display: inline-block;
-	padding: 10px 20px;
-	border-radius: 5px 5px 0 0;
+    background-color: #f8fbfc;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px 5px 0 0;
 }
 .tabbing .tab-content {
     background-color: #f8fbfc;
@@ -107,17 +107,17 @@
     top: -10px;
 }
 .dropzone{
-	border: 0;
-	padding: 0;
-	display: block;
+    border: 0;
+    padding: 0;
+    display: block;
 }
 .dropzone.dz-started .dz-message{display: block;}
 
 .dropzone .dz-message{
-	margin: 0;
+    margin: 0;
 }
 .dropzone .dz-preview .dz-remove{
-	margin-top: 10px;
+    margin-top: 10px;
 }
 .ribbon-wrapper {
     width: 85px;
@@ -168,17 +168,17 @@
 }
 
 .dropzone.dropzone-single{
-	display: flex;
-	margin: 0;
+    display: flex;
+    margin: 0;
 }
 .dropzone.dropzone-single .dz-preview{
-	position: absolute;
-	margin: 0;
+    position: absolute;
+    margin: 0;
 }
 
 .dropzone-saved-img{
-	height: 120px;
-	width: 120px;
+    height: 120px;
+    width: 120px;
 }
 .ribbon:before {
     left: 0
@@ -212,7 +212,7 @@
     box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
 }
 .custom_card .card-body{
-	padding-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
 }
 .custom_card .card-img-top{
     height: 250px;
@@ -321,6 +321,7 @@
 .drawing_wrapper{
     overflow: auto;
 }
+.step-instructions img{max-width: 100%;}
 @media (min-width: 1200px){
     .sidenav {
     max-width: 260px !important;
@@ -366,5 +367,3 @@
         height: 270px;
     }
 }
-
-

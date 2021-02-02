@@ -41,7 +41,9 @@ class GuideController extends Controller
         $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('guide_type','=','self-diagnosis')->where('main_title','!=','')->where('status','!=','2');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
-            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
+            $selfdiagnosis = $selfdiagnosis->where(function($query) use ($request){
+                $query->where('main_title','LIKE','%'.$request->search.'%')->orWhere('tags','LIKE','%'.$request->search.'%');
+            });
         }
         if(isset($request->category_id) && !empty($request->category_id)){
             $category_id=$request->category_id;
@@ -104,7 +106,7 @@ class GuideController extends Controller
             $file=$request->file('file_image');
             
             $request->validate([
-                'file_image' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'file_image' => 'mimes:jpeg,png,jpg|max:2048'
             ]);
             
             $file_name =$file->getClientOriginalName();
@@ -135,7 +137,7 @@ class GuideController extends Controller
         if($file && $id){
         
             $request->validate([
-                'file' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'file' => 'mimes:jpeg,png,jpg|max:2048'
             ]);
             
             $file_name =$file->getClientOriginalName();

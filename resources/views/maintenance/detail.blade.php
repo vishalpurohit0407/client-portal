@@ -1,9 +1,7 @@
 @extends('layouts.app')
 @section('pagewise_css')
 <style type="text/css">
-
     #printable { display: none; }
-
     @media print
     {
         #non-printable { display: none; }
@@ -108,6 +106,25 @@
                                 <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">{{$maintenance->cost}} USD ($)</div></strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
+                                <span class="alert-icon"><i class="fas fa-tags"></i></span>
+                                <span class="alert-text">Tags</span>
+                                <span class="alert-text-right">&nbsp;[
+                                    <a href="#content-sr" role="button" tabindex="0" class="togglelink">hide</a>]&nbsp;
+                                </span>
+                                <ul id="content-sr">
+                                    @if($maintenance->tags)                    @php
+                                            $tags=explode(",",$maintenance->tags);
+                                        @endphp        
+                                        @foreach($tags as $key => $tag)
+                                            <li class="toclevel-1">
+                                                <span class="tocnumber">{{$key+1}}</span> 
+                                                <span class="toctext">{{$tag}}</span>
+                                            </li>
+                                        @endforeach
+                                    @endif
+                                </ul>
+                            </div>
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-list-ol"></i></span>
                                 <span class="alert-text">Contents</span>
                                 <span class="alert-text-right">&nbsp;[
@@ -175,7 +192,6 @@
                                         </div>
                                       </div>
                                       
-
                                       
                                       <ol class="carousel-indicators">
                                         <li data-target="#carousel-tools" data-slide-to="0" class="active"> <img class="" src="https://wikifab.org/images/6/60/Repair_Cafe%27_IMG_20191031_142207_2.jpg"
@@ -294,7 +310,6 @@
                     @php 
                         $completed_guide = \App\GuideCompletion::where('guide_id',$maintenance->id)->where('user_id',\Auth::user()->id)->first();
                         $completed_guide_count = \App\GuideCompletion::where('guide_id',$maintenance->id)->count();
-
                     @endphp
                     @if($completed_guide)
                         <a class="btn btn-icon btn-primary text-white">
@@ -341,7 +356,6 @@ jQuery(document).ready(function($){
     $('.lightgallery').on('click', function(e) {
         e.preventDefault();
         var ids = $(this).data('id');
-
         $(this).lightGallery({
             dynamic: true,
             dynamicEl: elementArr[ids],
@@ -353,12 +367,10 @@ jQuery(document).ready(function($){
             autoplayControls:false,
         })
     }); 
-
     $('#lightgallery').on('click', function(e) {
         e.preventDefault();
         var url = $(this).data('image');
         var title = $(this).data('maintitle');
-
         $(this).lightGallery({
             dynamic: true,
             dynamicEl: [{src: url, thumb: url, subHtml : title}],
@@ -370,7 +382,6 @@ jQuery(document).ready(function($){
             autoplayControls:false,
         })
     }); 
-
     $(".togglelink").click(function(e){
         e.preventDefault();
         $($(this).attr('href')).slideToggle();
@@ -379,7 +390,6 @@ jQuery(document).ready(function($){
         else
            $(this).text("hide");
     });
-
     $("#content-sr li a[href^='#']").on('click', function(e) {
        e.preventDefault();
        var hash = this.hash;
@@ -390,23 +400,16 @@ jQuery(document).ready(function($){
            // /window.location.hash = hash;
            return window.history.pushState(null, null, hash)
          });
-
     });
 });
-
 function bigImg(x,type) {
     x.click();
-
 }
-
 function printDiv(divName) {
     var printContents = document.getElementById(divName).innerHTML;
     var originalContents = document.body.innerHTML;
-
     document.body.innerHTML = printContents;
-
     window.print();
-
     document.body.innerHTML = originalContents;
 }
 </script>

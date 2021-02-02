@@ -1,19 +1,12 @@
-
 /*!
-
 =========================================================
 * Argon Dashboard PRO - v1.1.0
 =========================================================
-
 * Product Page: https://www.creative-tim.com/product/argon-dashboard
 * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
 * Coded by www.creative-tim.com
-
 =========================================================
-
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
 */
 
 
@@ -1665,7 +1658,9 @@ var Dropzones = (function() {
 		var multiple = ($this.data('dropzone-multiple') !== undefined) ? true : false;
 		var preview = $this.find($dropzonePreview);
 		var currentFile = undefined;
-
+		var acceptedFiles = ($this.data('dropzone-accepted-files') !== undefined) ? $this.data('dropzone-accepted-files') : (!multiple) ? 'image/*' : null;
+		var dropMaxFileSize = ($this.data('dropzone-max-file-size') !== undefined) ? $this.data('dropzone-max-file-size') : 2048;
+		//console.log();
 		// Init options
 		var options = {
 			url: $this.data('dropzone-url'),
@@ -1674,7 +1669,8 @@ var Dropzones = (function() {
 			previewsContainer: preview.get(0),
 			previewTemplate: preview.html(),
 			maxFiles: (!multiple) ? 1 : null,
-			acceptedFiles: (!multiple) ? 'image/*' : null,
+			acceptedFiles: acceptedFiles,
+			maxFilesSize: dropMaxFileSize,
 			init: function() {
 				this.on("addedfile", function(file) {
 					if (!multiple && currentFile) {
