@@ -1,9 +1,7 @@
 @extends('layouts.app')
 @section('pagewise_css')
 <style type="text/css">
-
     #printable { display: none; }
-
     @media print
     {
         #non-printable { display: none; }
@@ -13,6 +11,9 @@
         float: none !important;
     }
 </style>
+@if($guide_flowchart)
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/1.0.1/svg.min.js"></script>
+@endif
 @endsection
 @section('content')
 <div class="header bg-primary pb-6">
@@ -58,10 +59,7 @@
                 </div>
 
                 <div class="col-4 text-right">
-                	<a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-default btn-sm">Export PDF</a>
-                	@php
-                        $guide_flowchart = \App\GuideFlowchart::where('guide_id',$selfdiagnosis->id)->first();
-                    @endphp
+                    <a href="{{route('selfdiagnosis.pdf.export',$selfdiagnosis->id)}}" class="btn btn-default btn-sm">Export PDF</a>
                     @if($guide_flowchart)
                         <a class="btn btn-primary btn-sm" href="{{route('user.flowchart',[$guide_flowchart->flowchart_id,$selfdiagnosis->id])}}">View Flowchart</a>
                     @endif
@@ -112,6 +110,25 @@
                                 <span class="alert-text-right"><strong><div class="tuto-items-details-container-right">{{$selfdiagnosis->cost}} USD ($)</div></strong></span>
                             </div>
                             <div class="alert alert-secondary fade show" role="alert">
+                                <span class="alert-icon"><i class="fas fa-tags"></i></span>
+                                <span class="alert-text">Tags</span>
+                                <span class="alert-text-right">&nbsp;[
+                                    <a href="#content-sr" role="button" tabindex="0" class="togglelink">hide</a>]&nbsp;
+                                </span>
+                                <ul id="content-sr">
+                                    @if($selfdiagnosis->tags)                    @php
+                                            $tags=explode(",",$selfdiagnosis->tags);
+                                        @endphp        
+                                        @foreach($tags as $key => $tag)
+                                            <li class="toclevel-1">
+                                                <span class="tocnumber">{{$key+1}}</span> 
+                                                <span class="toctext">{{$tag}}</span>
+                                            </li>
+                                        @endforeach
+                                    @endif
+                                </ul>
+                            </div>
+                            <div class="alert alert-secondary fade show" role="alert">
                                 <span class="alert-icon"><i class="fas fa-list-ol"></i></span>
                                 <span class="alert-text">Contents</span>
                                 <span class="alert-text-right">&nbsp;[
@@ -127,6 +144,16 @@
                                                 <span class="toctext">Introduction</span>
                                             </a>
                                         </li>
+                                        @if($guide_flowchart)
+                                            <li class="toclevel-1">
+                                                <a href="#Step_{{$step}}_-_{{\Str::slug('Flowchart', '_')}}">
+                                                    <span class="tocnumber">{{$srno}}</span> 
+                                                    <span class="toctext">Step {{$step}} - Flowchart</span>
+                                                </a>
+                                            </li>
+                                            @php $step++; @endphp
+                                            @php $srno++; @endphp
+                                        @endif
                                         @foreach($selfdiagnosis->guide_step as $stepdata)
                                             <li class="toclevel-1">
                                                 <a href="#Step_{{$step}}_-_{{\Str::slug($stepdata->title, '_')}}">
@@ -162,8 +189,15 @@
                 </div>
             @endif
             <br>
-            @if($selfdiagnosis->guide_step)
             @php $step = 1; @endphp
+            @if($guide_flowchart)
+                <div id="Step_{{$step}}_-_{{\Str::slug('Flowchart', '_')}}" class="mt-4">
+                    <h3 class="display-4">Step {{$step}} - Flowchart</h3>
+                    <div id="drawing" style="margin:30px auto; width:900px;"></div>
+                </div>
+                @php $step++; @endphp
+            @endif
+            @if($selfdiagnosis->guide_step)
                 @foreach($selfdiagnosis->guide_step as $stepkey => $stepdata)
                     <div id="Step_{{$step}}_-_{{\Str::slug($stepdata->title, '_')}}" class="mt-4">
                         <div class="row">
@@ -232,7 +266,6 @@
                     @php 
                         $completed_guide = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->where('user_id',\Auth::user()->id)->first();
                         $completed_guide_count = \App\GuideCompletion::where('guide_id',$selfdiagnosis->id)->count();
-
                     @endphp
                     @if($completed_guide)
                         <a class="btn btn-icon btn-primary text-white">
@@ -279,7 +312,6 @@ jQuery(document).ready(function($){
     $('.lightgallery').on('click', function(e) {
         e.preventDefault();
         var ids = $(this).data('id');
-
         $(this).lightGallery({
             dynamic: true,
             dynamicEl: elementArr[ids],
@@ -291,12 +323,10 @@ jQuery(document).ready(function($){
             autoplayControls:false,
         })
     }); 
-
     $('#lightgallery').on('click', function(e) {
         e.preventDefault();
         var url = $(this).data('image');
         var title = $(this).data('maintitle');
-
         $(this).lightGallery({
             dynamic: true,
             dynamicEl: [{src: url, thumb: url, subHtml : title}],
@@ -308,7 +338,6 @@ jQuery(document).ready(function($){
             autoplayControls:false,
         })
     }); 
-
     $(".togglelink").click(function(e){
         e.preventDefault();
         $($(this).attr('href')).slideToggle();
@@ -317,7 +346,6 @@ jQuery(document).ready(function($){
         else
            $(this).text("hide");
     });
-
     $("#content-sr li a[href^='#']").on('click', function(e) {
        e.preventDefault();
        var hash = this.hash;
@@ -328,24 +356,119 @@ jQuery(document).ready(function($){
            // /window.location.hash = hash;
            return window.history.pushState(null, null, hash)
          });
-
     });
 });
-
 function bigImg(x) {
     x.click();
-
 }
-
 function printDiv(divName) {
     var printContents = document.getElementById(divName).innerHTML;
     var originalContents = document.body.innerHTML;
-
     document.body.innerHTML = printContents;
-
     window.print();
-
     document.body.innerHTML = originalContents;
 }
 </script>
+@if($guide_flowchart)
+    <script src="{{asset('assets/vendor/flowsvg/jquery.scrollTo.min.js')}}"></script>
+    <script src="{{asset('assets/vendor/flowsvg/svg.min.js')}}"></script>
+    <script src="{{asset('assets/vendor/flowsvg/flowsvg.min.js')}}"></script>
+    <script>
+        var shapesArr = new Array();
+        @php
+            if($flowchart){
+                if($flowchart->flowchart_node){
+                    foreach ($flowchart->flowchart_node as $node){
+                        if ($node->type == 'decision') {
+                            $yes_decision = \App\Flowchartnode::where('id',$node->yes)->first();
+                            $no_decision = \App\Flowchartnode::where('id',$node->no)->first();
+                            $wordwrapDecision = explode("<br>",wordwrap($node->text,20,"<br>"));
+        @endphp
+                            var yes_lable = '{{$yes_decision ? $yes_decision->label : ''}}';
+                            var no_lable = '{{$no_decision ? $no_decision->label : ''}}';
+                            var decisionTextArr = <?php echo json_encode($wordwrapDecision); ?>;
+                            var orientArr = {
+                                    yes:'{{$node->orient_yes}}',
+                                    no:'{{$node->orient_no}}',
+                                }
+                            shapesArr.push({
+                                label: '{{$node->label}}', 
+                                type: '{{$node->type}}', 
+                                text : decisionTextArr,
+                                yes : yes_lable,
+                                no : no_lable,
+                                orient : orientArr,
+                            });
+        @php            
+                        }else if($node->type == 'process') {
+                        $next_process = \App\Flowchartnode::where('id',$node->next)->first();
+                        $wordwrapProcess = explode("<br>",wordwrap($node->text,25,"<br>"));
+                        $wordwrapProcessTip = explode("<br>",wordwrap($node->tips_text,25,"<br>"));
+        @endphp
+                            var processTextArr = <?php echo json_encode($wordwrapProcess); ?>;
+                            var processTextTipsArr = <?php echo json_encode($wordwrapProcessTip); ?>;
+                            var next_lable = '{{$next_process ? $next_process->label : ''}}';
+                            shapesArr.push({
+                                label: '{{$node->label}}', 
+                                type: '{{$node->type}}', 
+                                text : processTextArr,
+                                links: [
+                                {
+                                    text : '{{$node->link_text}}',
+                                    url : '{{$node->link_url}}',
+                                    target : '{{$node->link_target}}',
+                                }],
+                                tip: {
+                                    title: '{{$node->tips_title}}',
+                                    text: processTextTipsArr
+                                },
+                                next :  next_lable,
+                            });
+        @php
+                        }else if($node->type == 'finish') {
+                            $wordwrapData = explode("<br>",wordwrap($node->text,25,"<br>"));
+                            $wordwrapTipData = explode("<br>",wordwrap($node->tips_text,25,"<br>"));
+        @endphp
+                            var textArr = <?php echo json_encode($wordwrapData); ?>;
+                            var tipsTextArr = <?php echo json_encode($wordwrapTipData); ?>;
+                            shapesArr.push({
+                                label: '{{$node->label}}', 
+                                type: '{{$node->type}}', 
+                                text : textArr,
+                                links: [
+                                {
+                                    text : '{{$node->link_text}}',
+                                    url : '{{$node->link_url}}',
+                                    target : '{{$node->link_target}}',
+                                }],
+                                tip: {
+                                    title: '{{$node->tips_title}}',
+                                    text: tipsTextArr,
+                                },
+                            });
+        @php
+                        }
+                    } 
+                }
+            }
+        @endphp
+    ///////////////////// start flow chart ////////////////////////////////////////////////////////////
+        flowSVG.draw(SVG('drawing').size(900, 200));
+        flowSVG.config({
+            interactive: true,
+            showButtons: true,
+            connectorLength: 60,
+            scrollto: true,
+            defaultFontSize:'12',
+        });
+        flowSVG.shapes(shapesArr);
+        $(document).ready(function () {
+            var svg_height=20;
+            $("#drawing svg > g").each(function() {console.log($(this));
+                svg_height+=$(this).get(0).getBBox().height;
+            })
+            $("#drawing svg").attr('height',svg_height);
+        });
+    </script>
+@endif
 @endsection

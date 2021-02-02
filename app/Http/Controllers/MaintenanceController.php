@@ -25,7 +25,7 @@ class MaintenanceController extends Controller
      */
     public function index(Request $request)
     {
-        $maintenance = Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','!=','2')->orderBy('created_at', 'desc')->paginate($this->getrecord);
+        $maintenance = Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','1')->orderBy('created_at', 'desc')->paginate($this->getrecord);
         // echo "<pre>";print_r($maintenance);exit();
         if($request->ajax()){
             return view('maintenance.ajaxlist',array('maintenances'=>$maintenance));
@@ -38,10 +38,12 @@ class MaintenanceController extends Controller
 
     public function search(Request $request){
 
-        $maintenance=Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','!=','2');
+        $maintenance=Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','1');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
-            $maintenance=$maintenance->where('main_title','LIKE','%'.$request->search.'%');
+            $maintenance = $maintenance->where(function($query) use ($request){
+                $query->where('main_title','LIKE','%'.$request->search.'%')->orWhere('tags','LIKE','%'.$request->search.'%');
+            });
         }
         if(isset($request->category_id) && !empty($request->category_id)){
             $category_id=$request->category_id;

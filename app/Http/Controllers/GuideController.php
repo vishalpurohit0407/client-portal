@@ -41,7 +41,7 @@ class GuideController extends Controller
         $selfdiagnosis=Guide::with('guide_category','guide_category.category')->where('main_title','!=','')->where('guide_type','=','self-diagnosis')->where('status','=','1');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
-            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%');
+            $selfdiagnosis=$selfdiagnosis->where('main_title','LIKE','%'.$request->search.'%')->orWhere('tags','LIKE','%'.$request->search.'%');
         }
         if(isset($request->category_id) && !empty($request->category_id)){
             $category_id=$request->category_id;
@@ -139,7 +139,12 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Details','selfdiagnosis'=>$guide));
+        $guide_flowchart = \App\GuideFlowchart::where('guide_id',$guide->id)->first();
+        $flowchart=array();
+        if($guide_flowchart){
+            $flowchart = Flowchart::where('id',$guide_flowchart->flowchart_id)->with('flowchart_node')->first();
+        }
+        return view('selfdiagnosis.detail',array('title'=>'Self Diagnosis Details','selfdiagnosis'=>$guide,'guide_flowchart'=>$guide_flowchart,'flowchart'=>$flowchart));
     }
 
     /**

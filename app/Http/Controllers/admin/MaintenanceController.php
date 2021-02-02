@@ -41,7 +41,9 @@ class MaintenanceController extends Controller
         $maintenance=Guide::with('guide_category','guide_category.category')->where('guide_type','=','maintenance')->where('main_title','!=','')->where('status','!=','2');
         //->where('status','!=','2')
         if(isset($request->search) && !empty($request->search)){
-            $maintenance=$maintenance->where('main_title','LIKE','%'.$request->search.'%');
+            $maintenance = $maintenance->where(function($query) use ($request){
+                $query->where('main_title','LIKE','%'.$request->search.'%')->orWhere('tags','LIKE','%'.$request->search.'%');
+            });
         }
         if(isset($request->category_id) && !empty($request->category_id)){
             $category_id=$request->category_id;
@@ -88,7 +90,7 @@ class MaintenanceController extends Controller
             $file=$request->file('file_image');
             
             $request->validate([
-                'file_image' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'file_image' => 'mimes:jpeg,png,jpg|max:2048'
             ]);
             
             $file_name =$file->getClientOriginalName();
@@ -119,7 +121,7 @@ class MaintenanceController extends Controller
         if($file && $id){
         
             $request->validate([
-                'file' => 'mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'file' => 'mimes:jpeg,png,jpg|max:2048'
             ]);
             
             $file_name =$file->getClientOriginalName();
