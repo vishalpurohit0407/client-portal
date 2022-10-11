@@ -8,6 +8,9 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 
+
+ASASASASAZSASASASASAS
+
 class Admin extends Authenticatable
 {
     use Notifiable;
